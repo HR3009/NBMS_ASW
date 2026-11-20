@@ -314,24 +314,24 @@ RegenAllowedTime.CoderInfo.CustomAttributes.DefinitionFile='DID.c';
     Y_DCL_30sSAFETY_PACK.CoderInfo.CustomAttributes.HeaderFile = 'DID.h';
     Y_DCL_30sSAFETY_PACK.CoderInfo.CustomAttributes.DefinitionFile='DID.c';
 
-    % TABLE_DCL_30sSAFETY_PACK
-    TABLE_DCL_30sSAFETY_PACK = Simulink.Parameter;
-    %                                 0   5  10  20   30   40   50   60   70   80   90   95   100
-    TABLE_DCL_30sSAFETY_PACK.Value = [0,  0,  0,  0,   0,   0,   0,   0,   0,   0,   0,   0,   0;       % -30
-                                      0,  0,  0,  0,   0,   0,   0,   0,   0,   0,   0,   0,   0;       % -20
-                                      0,  7,  14, 56,  77,  91,  98,  105, 110, 110, 110, 110, 110;     % -10
-                                      14, 14, 35, 84,  110, 110, 110, 110, 110, 110, 110, 110, 110;     %   0 
-                                      20, 21, 56, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110;     %  10
-                                      20, 42, 84, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110;     %  25
-                                      20, 42, 84, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110;     %  45
-                                      20, 42, 84, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110;     %  55 
-                                      20, 35, 52, 98,  110, 110, 110, 110, 110, 110, 110, 110, 110;     %  60 
-                                      0,  0,  0,  0,   0,   0,   0,   0,   0,   0,   0,   0,   0;];      %  70 
-    TABLE_DCL_30sSAFETY_PACK.DataType = 'double';
-    TABLE_DCL_30sSAFETY_PACK.CoderInfo.StorageClass = 'Custom';
-    TABLE_DCL_30sSAFETY_PACK.CoderInfo.CustomStorageClass = 'ExportToFile';
-    TABLE_DCL_30sSAFETY_PACK.CoderInfo.CustomAttributes.HeaderFile = 'DID.h';
-    TABLE_DCL_30sSAFETY_PACK.CoderInfo.CustomAttributes.DefinitionFile='DID.c';
+    % % TABLE_DCL_30sSAFETY_PACK
+    % TABLE_DCL_30sSAFETY_PACK = Simulink.Parameter;
+    % %                                 0   5  10  20   30   40   50   60   70   80   90   95   100
+    % TABLE_DCL_30sSAFETY_PACK.Value = [0,  0,  0,  0,   0,   0,   0,   0,   0,   0,   0,   0,   0;       % -30
+    %                                   0,  0,  0,  0,   0,   0,   0,   0,   0,   0,   0,   0,   0;       % -20
+    %                                   0,  7,  14, 56,  77,  91,  98,  105, 110, 110, 110, 110, 110;     % -10
+    %                                   14, 14, 35, 84,  110, 110, 110, 110, 110, 110, 110, 110, 110;     %   0 
+    %                                   20, 21, 56, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110;     %  10
+    %                                   20, 42, 84, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110;     %  25
+    %                                   20, 42, 84, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110;     %  45
+    %                                   20, 42, 84, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110;     %  55 
+    %                                   20, 35, 52, 98,  110, 110, 110, 110, 110, 110, 110, 110, 110;     %  60 
+    %                                   0,  0,  0,  0,   0,   0,   0,   0,   0,   0,   0,   0,   0;];      %  70 
+    % TABLE_DCL_30sSAFETY_PACK.DataType = 'double';
+    % TABLE_DCL_30sSAFETY_PACK.CoderInfo.StorageClass = 'Custom';
+    % TABLE_DCL_30sSAFETY_PACK.CoderInfo.CustomStorageClass = 'ExportToFile';
+    % TABLE_DCL_30sSAFETY_PACK.CoderInfo.CustomAttributes.HeaderFile = 'DID.h';
+    % TABLE_DCL_30sSAFETY_PACK.CoderInfo.CustomAttributes.DefinitionFile='DID.c';
 
 %DISCHARGE CURRENT LIMIT - Continuous Safety(Pack)
     % X_DCL_CONT_SAFETY_PACK
@@ -352,24 +352,24 @@ RegenAllowedTime.CoderInfo.CustomAttributes.DefinitionFile='DID.c';
     Y_DCL_CONT_SAFETY_PACK.CoderInfo.CustomAttributes.HeaderFile = 'DID.h';
     Y_DCL_CONT_SAFETY_PACK.CoderInfo.CustomAttributes.DefinitionFile='DID.c';
   
-    % TABLE_DCL_CONT_SAFETY_PACK
-    TABLE_DCL_CONT_SAFETY_PACK = Simulink.Parameter;
-    %                                   0   5  10  20    30  40  50  60  70  80  90  95  100
-    TABLE_DCL_CONT_SAFETY_PACK.Value = [0,  0,  0,  0,    0,  0,  0,  0,  0,  0,  0,  0,  0;      % -30
-                                        0,  0,  0,  0,    0,  0,  0,  0,  0,  0,  0,  0,  0;      % -20
-                                        0,  7,  14, 21,   21, 31, 31, 31, 31, 31, 31, 31, 31;     % -10
-                                        14, 14, 35, 52,   52, 52, 52, 52, 52, 52, 52, 52, 52;     %   0 
-                                        20, 21, 56, 70,   84, 84, 84, 84, 84, 84, 84, 84, 84;     %  10
-                                        20, 42, 42, 70,   90, 90, 90, 90, 90, 90, 90, 90, 90;     %  25
-                                        20, 42, 42, 70,   90, 90, 90, 90, 90, 90, 90, 90, 90;     %  45
-                                        20, 42, 42, 52.5, 90, 90, 90, 90, 90, 90, 90, 90, 90;     %  55 
-                                        20, 28, 35, 35,   35, 35, 35, 35, 35, 35, 35, 35, 35;     %  60 
-                                        0,  0,  0,  0,    0,  0,  0,  0,  0,  0,  0,  0,  0;];     %  70 
-    TABLE_DCL_CONT_SAFETY_PACK.DataType = 'double';
-    TABLE_DCL_CONT_SAFETY_PACK.CoderInfo.StorageClass = 'Custom';
-    TABLE_DCL_CONT_SAFETY_PACK.CoderInfo.CustomStorageClass = 'ExportToFile';
-    TABLE_DCL_CONT_SAFETY_PACK.CoderInfo.CustomAttributes.HeaderFile = 'DID.h';
-    TABLE_DCL_CONT_SAFETY_PACK.CoderInfo.CustomAttributes.DefinitionFile='DID.c';   
+    % % TABLE_DCL_CONT_SAFETY_PACK
+    % TABLE_DCL_CONT_SAFETY_PACK = Simulink.Parameter;
+    % %                                   0   5  10  20    30  40  50  60  70  80  90  95  100
+    % TABLE_DCL_CONT_SAFETY_PACK.Value = [0,  0,  0,  0,    0,  0,  0,  0,  0,  0,  0,  0,  0;      % -30
+    %                                     0,  0,  0,  0,    0,  0,  0,  0,  0,  0,  0,  0,  0;      % -20
+    %                                     0,  7,  14, 21,   21, 31, 31, 31, 31, 31, 31, 31, 31;     % -10
+    %                                     14, 14, 35, 52,   52, 52, 52, 52, 52, 52, 52, 52, 52;     %   0 
+    %                                     20, 21, 56, 70,   84, 84, 84, 84, 84, 84, 84, 84, 84;     %  10
+    %                                     20, 42, 42, 70,   90, 90, 90, 90, 90, 90, 90, 90, 90;     %  25
+    %                                     20, 42, 42, 70,   90, 90, 90, 90, 90, 90, 90, 90, 90;     %  45
+    %                                     20, 42, 42, 52.5, 90, 90, 90, 90, 90, 90, 90, 90, 90;     %  55 
+    %                                     20, 28, 35, 35,   35, 35, 35, 35, 35, 35, 35, 35, 35;     %  60 
+    %                                     0,  0,  0,  0,    0,  0,  0,  0,  0,  0,  0,  0,  0;];     %  70 
+    % TABLE_DCL_CONT_SAFETY_PACK.DataType = 'double';
+    % TABLE_DCL_CONT_SAFETY_PACK.CoderInfo.StorageClass = 'Custom';
+    % TABLE_DCL_CONT_SAFETY_PACK.CoderInfo.CustomStorageClass = 'ExportToFile';
+    % TABLE_DCL_CONT_SAFETY_PACK.CoderInfo.CustomAttributes.HeaderFile = 'DID.h';
+    % TABLE_DCL_CONT_SAFETY_PACK.CoderInfo.CustomAttributes.DefinitionFile='DID.c';   
 
 %CHARGE CURRENT LIMIT - Continuous Safety(Pack)
     % X_CCL_CONT_SAFETY_PACK
@@ -390,23 +390,23 @@ RegenAllowedTime.CoderInfo.CustomAttributes.DefinitionFile='DID.c';
     Y_CCL_CONT_SAFETY_PACK.CoderInfo.CustomAttributes.HeaderFile = 'DID.h';
     Y_CCL_CONT_SAFETY_PACK.CoderInfo.CustomAttributes.DefinitionFile='DID.c';
 
-    % TABLE_CCL_CONT_SAFETY_PACK
-    TABLE_CCL_CONT_SAFETY_PACK = Simulink.Parameter;
-    %                                   0   5  10  20  30  40  50  60  70  80  90  95  100
-    TABLE_CCL_CONT_SAFETY_PACK.Value = [0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0;     % -30
-                                        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0;     % -20
-                                        16, 16, 16, 16, 3,  3,  2,  2,  0,  0,  0,  0, 0;     % -10
-                                        16, 16, 16, 16, 7,  7,  4,  4,  3,  3,  2,  0, 0;     %   0 
-                                        16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 7, 2;     %  10
-                                        16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 7, 2;     %  25
-                                        16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 7, 2;     %  45
-                                        16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 7, 2;     %  50 
-                                        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0;];   %  60                             
-    TABLE_CCL_CONT_SAFETY_PACK.DataType = 'double';
-    TABLE_CCL_CONT_SAFETY_PACK.CoderInfo.StorageClass = 'Custom';
-    TABLE_CCL_CONT_SAFETY_PACK.CoderInfo.CustomStorageClass = 'ExportToFile';
-    TABLE_CCL_CONT_SAFETY_PACK.CoderInfo.CustomAttributes.HeaderFile = 'DID.h';
-    TABLE_CCL_CONT_SAFETY_PACK.CoderInfo.CustomAttributes.DefinitionFile='DID.c';   
+    % % TABLE_CCL_CONT_SAFETY_PACK
+    % TABLE_CCL_CONT_SAFETY_PACK = Simulink.Parameter;
+    % %                                   0   5  10  20  30  40  50  60  70  80  90  95  100
+    % TABLE_CCL_CONT_SAFETY_PACK.Value = [0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0;     % -30
+    %                                     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0;     % -20
+    %                                     16, 16, 16, 16, 3,  3,  2,  2,  0,  0,  0,  0, 0;     % -10
+    %                                     16, 16, 16, 16, 7,  7,  4,  4,  3,  3,  2,  0, 0;     %   0 
+    %                                     16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 7, 2;     %  10
+    %                                     16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 7, 2;     %  25
+    %                                     16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 7, 2;     %  45
+    %                                     16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 7, 2;     %  50 
+    %                                     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0;];   %  60                             
+    % TABLE_CCL_CONT_SAFETY_PACK.DataType = 'double';
+    % TABLE_CCL_CONT_SAFETY_PACK.CoderInfo.StorageClass = 'Custom';
+    % TABLE_CCL_CONT_SAFETY_PACK.CoderInfo.CustomStorageClass = 'ExportToFile';
+    % TABLE_CCL_CONT_SAFETY_PACK.CoderInfo.CustomAttributes.HeaderFile = 'DID.h';
+    % TABLE_CCL_CONT_SAFETY_PACK.CoderInfo.CustomAttributes.DefinitionFile='DID.c';   
 
 %REGEN CURRENT LIMIT - Continuous Safety(Pack-5s)
     % X_RCL_CONT_SAFETY_PACK
@@ -428,22 +428,22 @@ RegenAllowedTime.CoderInfo.CustomAttributes.DefinitionFile='DID.c';
     Y_RCL_CONT_SAFETY_PACK.CoderInfo.CustomAttributes.DefinitionFile='DID.c';
 
     % TABLE_RCL_CONT_SAFETY_PACK
-    TABLE_RCL_CONT_SAFETY_PACK = Simulink.Parameter;
-    %                                   0   5  10  20  30  40  50  60  70  80  90  95  100
-    TABLE_RCL_CONT_SAFETY_PACK.Value = [0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0;     % -30
-                                        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0;     % -20
-                                        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0;     % -10
-                                        52, 52, 52, 52, 52, 52, 52, 49, 35, 21, 14, 7,  0;     %   0 
-                                        52, 52, 52, 52, 52, 52, 52, 52, 49, 35, 21, 17, 2;     %  10
-                                        52, 52, 52, 52, 52, 52, 52, 52, 52, 49, 28, 21, 2;     %  25
-                                        52, 52, 52, 52, 52, 52, 52, 52, 52, 49, 28, 21, 2;     %  45
-                                        52, 52, 52, 52, 52, 52, 52, 52, 52, 49, 28, 21, 2;     %  50 
-                                        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0;];   %  60                             
-    TABLE_RCL_CONT_SAFETY_PACK.DataType = 'double';
-    TABLE_RCL_CONT_SAFETY_PACK.CoderInfo.StorageClass = 'Custom';
-    TABLE_RCL_CONT_SAFETY_PACK.CoderInfo.CustomStorageClass = 'ExportToFile';
-    TABLE_RCL_CONT_SAFETY_PACK.CoderInfo.CustomAttributes.HeaderFile = 'DID.h';
-    TABLE_RCL_CONT_SAFETY_PACK.CoderInfo.CustomAttributes.DefinitionFile='DID.c';   
+    % TABLE_RCL_CONT_SAFETY_PACK = Simulink.Parameter;
+    % %                                   0   5  10  20  30  40  50  60  70  80  90  95  100
+    % TABLE_RCL_CONT_SAFETY_PACK.Value = [0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0;     % -30
+    %                                     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0;     % -20
+    %                                     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0;     % -10
+    %                                     52, 52, 52, 52, 52, 52, 52, 49, 35, 21, 14, 7,  0;     %   0 
+    %                                     52, 52, 52, 52, 52, 52, 52, 52, 49, 35, 21, 17, 2;     %  10
+    %                                     52, 52, 52, 52, 52, 52, 52, 52, 52, 49, 28, 21, 2;     %  25
+    %                                     52, 52, 52, 52, 52, 52, 52, 52, 52, 49, 28, 21, 2;     %  45
+    %                                     52, 52, 52, 52, 52, 52, 52, 52, 52, 49, 28, 21, 2;     %  50 
+    %                                     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0;];   %  60                             
+    % TABLE_RCL_CONT_SAFETY_PACK.DataType = 'double';
+    % TABLE_RCL_CONT_SAFETY_PACK.CoderInfo.StorageClass = 'Custom';
+    % TABLE_RCL_CONT_SAFETY_PACK.CoderInfo.CustomStorageClass = 'ExportToFile';
+    % TABLE_RCL_CONT_SAFETY_PACK.CoderInfo.CustomAttributes.HeaderFile = 'DID.h';
+    % TABLE_RCL_CONT_SAFETY_PACK.CoderInfo.CustomAttributes.DefinitionFile='DID.c';   
 
 %% SOC Vs OCV LOOKUP TABLE CONSTANT
 
@@ -467,36 +467,36 @@ RegenAllowedTime.CoderInfo.CustomAttributes.DefinitionFile='DID.c';
     Y_SOC_VS_OCV_DISCH.CoderInfo.CustomAttributes.DefinitionFile = 'DID.c';
 
     % TABLE_SOC_VS_OCV_DISCH 
-    TABLE_SOC_VS_OCV_DISCH = Simulink.Parameter;
+    % TABLE_SOC_VS_OCV_DISCH = Simulink.Parameter;
     %                                -20     -10       0      10      25      45      55  
-    TABLE_SOC_VS_OCV_DISCH.Value = [
-                                    2.934,  2.929,  2.920,  2.900,  2.911,  2.903,  2.922;   %   0 
-                                    3.148,  3.135,  3.129,  3.118,  3.123,  3.121,  3.133;   %   5 
-                                    3.295,  3.294,  3.289,  3.281,  3.272,  3.266,  3.276;   %  10 
-                                    3.409,  3.409,  3.405,  3.400,  3.395,  3.386,  3.395;   %  15 
-                                    3.450,  3.452,  3.451,  3.451,  3.452,  3.449,  3.452;   %  20 
-                                    3.494,  3.501,  3.501,  3.499,  3.499,  3.490,  3.496;   %  25 
-                                    3.552,  3.559,  3.558,  3.557,  3.554,  3.546,  3.551;   %  30 
-                                    3.597,  3.607,  3.607,  3.606,  3.603,  3.593,  3.598;   %  35 
-                                    3.636,  3.640,  3.641,  3.642,  3.642,  3.642,  3.648;   %  40 
-                                    3.667,  3.672,  3.674,  3.676,  3.676,  3.679,  3.685;   %  45 
-                                    3.708,  3.715,  3.717,  3.718,  3.718,  3.721,  3.727;   %  50 
-                                    3.753,  3.756,  3.758,  3.759,  3.763,  3.766,  3.763;   %  55 
-                                    3.799,  3.803,  3.805,  3.807,  3.813,  3.812,  3.808;   %  60 
-                                    3.868,  3.872,  3.872,  3.870,  3.877,  3.874,  3.866;   %  65 
-                                    3.907,  3.909,  3.910,  3.910,  3.912,  3.911,  3.907;   %  70 
-                                    3.946,  3.949,  3.950,  3.950,  3.953,  3.952,  3.947;   %  75 
-                                    4.006,  4.008,  4.009,  4.009,  4.012,  4.011,  4.005;   %  80
-                                    4.057,  4.059,  4.060,  4.060,  4.063,  4.063,  4.059;   %  85 
-                                    4.072,  4.075,  4.077,  4.077,  4.080,  4.080,  4.079;   %  90 
-                                    4.087,  4.091,  4.093,  4.094,  4.096,  4.096,  4.094;   %  95 
-                                    4.185,  4.185,  4.185,  4.185,  4.185,  4.185,  4.185;   % 100 
-                                    ];
-    TABLE_SOC_VS_OCV_DISCH.DataType = 'double';
-    TABLE_SOC_VS_OCV_DISCH.CoderInfo.StorageClass = 'Custom';
-    TABLE_SOC_VS_OCV_DISCH.CoderInfo.CustomStorageClass = 'ExportToFile';
-    TABLE_SOC_VS_OCV_DISCH.CoderInfo.CustomAttributes.HeaderFile = 'DID.h';
-    TABLE_SOC_VS_OCV_DISCH.CoderInfo.CustomAttributes.DefinitionFile = 'DID.c';
+    % TABLE_SOC_VS_OCV_DISCH.Value = [
+    %                                 2.934,  2.929,  2.920,  2.900,  2.911,  2.903,  2.922;   %   0 
+    %                                 3.148,  3.135,  3.129,  3.118,  3.123,  3.121,  3.133;   %   5 
+    %                                 3.295,  3.294,  3.289,  3.281,  3.272,  3.266,  3.276;   %  10 
+    %                                 3.409,  3.409,  3.405,  3.400,  3.395,  3.386,  3.395;   %  15 
+    %                                 3.450,  3.452,  3.451,  3.451,  3.452,  3.449,  3.452;   %  20 
+    %                                 3.494,  3.501,  3.501,  3.499,  3.499,  3.490,  3.496;   %  25 
+    %                                 3.552,  3.559,  3.558,  3.557,  3.554,  3.546,  3.551;   %  30 
+    %                                 3.597,  3.607,  3.607,  3.606,  3.603,  3.593,  3.598;   %  35 
+    %                                 3.636,  3.640,  3.641,  3.642,  3.642,  3.642,  3.648;   %  40 
+    %                                 3.667,  3.672,  3.674,  3.676,  3.676,  3.679,  3.685;   %  45 
+    %                                 3.708,  3.715,  3.717,  3.718,  3.718,  3.721,  3.727;   %  50 
+    %                                 3.753,  3.756,  3.758,  3.759,  3.763,  3.766,  3.763;   %  55 
+    %                                 3.799,  3.803,  3.805,  3.807,  3.813,  3.812,  3.808;   %  60 
+    %                                 3.868,  3.872,  3.872,  3.870,  3.877,  3.874,  3.866;   %  65 
+    %                                 3.907,  3.909,  3.910,  3.910,  3.912,  3.911,  3.907;   %  70 
+    %                                 3.946,  3.949,  3.950,  3.950,  3.953,  3.952,  3.947;   %  75 
+    %                                 4.006,  4.008,  4.009,  4.009,  4.012,  4.011,  4.005;   %  80
+    %                                 4.057,  4.059,  4.060,  4.060,  4.063,  4.063,  4.059;   %  85 
+    %                                 4.072,  4.075,  4.077,  4.077,  4.080,  4.080,  4.079;   %  90 
+    %                                 4.087,  4.091,  4.093,  4.094,  4.096,  4.096,  4.094;   %  95 
+    %                                 4.185,  4.185,  4.185,  4.185,  4.185,  4.185,  4.185;   % 100 
+    %                                 ];
+    % TABLE_SOC_VS_OCV_DISCH.DataType = 'double';
+    % TABLE_SOC_VS_OCV_DISCH.CoderInfo.StorageClass = 'Custom';
+    % TABLE_SOC_VS_OCV_DISCH.CoderInfo.CustomStorageClass = 'ExportToFile';
+    % TABLE_SOC_VS_OCV_DISCH.CoderInfo.CustomAttributes.HeaderFile = 'DID.h';
+    % TABLE_SOC_VS_OCV_DISCH.CoderInfo.CustomAttributes.DefinitionFile = 'DID.c';
 
 
 % SOC Vs OCV Table (CHARGING)
@@ -518,37 +518,37 @@ RegenAllowedTime.CoderInfo.CustomAttributes.DefinitionFile='DID.c';
     Y_SOC_VS_OCV_CHG.CoderInfo.CustomAttributes.HeaderFile = 'DID.h';
     Y_SOC_VS_OCV_CHG.CoderInfo.CustomAttributes.DefinitionFile = 'DID.c';
 
-    % TABLE_SOC_VS_OCV_CHG
-    TABLE_SOC_VS_OCV_CHG = Simulink.Parameter;
-    %                              -20     -10       0      10      25      45      55   
-    TABLE_SOC_VS_OCV_CHG.Value = [
-                                  2.934,  2.929,  2.920,  2.900,  2.911,  2.903,  2.922;    %   0 
-                                  3.260,  3.274,  3.271,  3.271,  3.254,  3.238,  3.240;    %   5 
-                                  3.387,  3.399,  3.397,  3.397,  3.385,  3.362,  3.363;    %  10 
-                                  3.436,  3.442,  3.442,  3.441,  3.439,  3.429,  3.430;    %  15 
-                                  3.481,  3.491,  3.491,  3.493,  3.492,  3.479,  3.481;    %  20 
-                                  3.538,  3.547,  3.546,  3.547,  3.540,  3.534,  3.534;    %  25 
-                                  3.586,  3.592,  3.592,  3.593,  3.589,  3.582,  3.582;    %  30 
-                                  3.616,  3.621,  3.622,  3.624,  3.622,  3.622,  3.623;    %  35 
-                                  3.644,  3.650,  3.651,  3.653,  3.652,  3.653,  3.656;    %  40 
-                                  3.677,  3.683,  3.685,  3.687,  3.686,  3.688,  3.691;    %  45 
-                                  3.719,  3.726,  3.727,  3.730,  3.728,  3.731,  3.734;    %  50 
-                                  3.766,  3.772,  3.774,  3.777,  3.776,  3.777,  3.780;    %  55 
-                                  3.819,  3.837,  3.838,  3.840,  3.835,  3.829,  3.831;    %  60 
-                                  3.880,  3.886,  3.886,  3.887,  3.885,  3.883,  3.882;    %  65 
-                                  3.913,  3.918,  3.919,  3.920,  3.918,  3.917,  3.917;    %  70 
-                                  3.952,  3.958,  3.959,  3.960,  3.958,  3.958,  3.958;    %  75 
-                                  4.010,  4.017,  4.017,  4.019,  4.017,  4.016,  4.016;    %  80 
-                                  4.061,  4.066,  4.067,  4.068,  4.067,  4.067,  4.067;    %  85 
-                                  4.076,  4.080,  4.082,  4.083,  4.083,  4.083,  4.084;    %  90 
-                                  4.090,  4.096,  4.098,  4.100,  4.099,  4.098,  4.099;    %  95 
-                                  4.185,  4.185,  4.185,  4.185,  4.185,  4.185,  4.185;    % 100 
-                                ];
-    TABLE_SOC_VS_OCV_CHG.DataType = 'double';
-    TABLE_SOC_VS_OCV_CHG.CoderInfo.StorageClass = 'Custom';
-    TABLE_SOC_VS_OCV_CHG.CoderInfo.CustomStorageClass = 'ExportToFile';
-    TABLE_SOC_VS_OCV_CHG.CoderInfo.CustomAttributes.HeaderFile = 'DID.h';
-    TABLE_SOC_VS_OCV_CHG.CoderInfo.CustomAttributes.DefinitionFile = 'DID.c';
+    % % TABLE_SOC_VS_OCV_CHG
+    % TABLE_SOC_VS_OCV_CHG = Simulink.Parameter;
+    % %                              -20     -10       0      10      25      45      55   
+    % TABLE_SOC_VS_OCV_CHG.Value = [
+    %                               2.934,  2.929,  2.920,  2.900,  2.911,  2.903,  2.922;    %   0 
+    %                               3.260,  3.274,  3.271,  3.271,  3.254,  3.238,  3.240;    %   5 
+    %                               3.387,  3.399,  3.397,  3.397,  3.385,  3.362,  3.363;    %  10 
+    %                               3.436,  3.442,  3.442,  3.441,  3.439,  3.429,  3.430;    %  15 
+    %                               3.481,  3.491,  3.491,  3.493,  3.492,  3.479,  3.481;    %  20 
+    %                               3.538,  3.547,  3.546,  3.547,  3.540,  3.534,  3.534;    %  25 
+    %                               3.586,  3.592,  3.592,  3.593,  3.589,  3.582,  3.582;    %  30 
+    %                               3.616,  3.621,  3.622,  3.624,  3.622,  3.622,  3.623;    %  35 
+    %                               3.644,  3.650,  3.651,  3.653,  3.652,  3.653,  3.656;    %  40 
+    %                               3.677,  3.683,  3.685,  3.687,  3.686,  3.688,  3.691;    %  45 
+    %                               3.719,  3.726,  3.727,  3.730,  3.728,  3.731,  3.734;    %  50 
+    %                               3.766,  3.772,  3.774,  3.777,  3.776,  3.777,  3.780;    %  55 
+    %                               3.819,  3.837,  3.838,  3.840,  3.835,  3.829,  3.831;    %  60 
+    %                               3.880,  3.886,  3.886,  3.887,  3.885,  3.883,  3.882;    %  65 
+    %                               3.913,  3.918,  3.919,  3.920,  3.918,  3.917,  3.917;    %  70 
+    %                               3.952,  3.958,  3.959,  3.960,  3.958,  3.958,  3.958;    %  75 
+    %                               4.010,  4.017,  4.017,  4.019,  4.017,  4.016,  4.016;    %  80 
+    %                               4.061,  4.066,  4.067,  4.068,  4.067,  4.067,  4.067;    %  85 
+    %                               4.076,  4.080,  4.082,  4.083,  4.083,  4.083,  4.084;    %  90 
+    %                               4.090,  4.096,  4.098,  4.100,  4.099,  4.098,  4.099;    %  95 
+    %                               4.185,  4.185,  4.185,  4.185,  4.185,  4.185,  4.185;    % 100 
+    %                             ];
+    % TABLE_SOC_VS_OCV_CHG.DataType = 'double';
+    % TABLE_SOC_VS_OCV_CHG.CoderInfo.StorageClass = 'Custom';
+    % TABLE_SOC_VS_OCV_CHG.CoderInfo.CustomStorageClass = 'ExportToFile';
+    % TABLE_SOC_VS_OCV_CHG.CoderInfo.CustomAttributes.HeaderFile = 'DID.h';
+    % TABLE_SOC_VS_OCV_CHG.CoderInfo.CustomAttributes.DefinitionFile = 'DID.c';
 
 %% DCIR LOOKUP TABLE
 
