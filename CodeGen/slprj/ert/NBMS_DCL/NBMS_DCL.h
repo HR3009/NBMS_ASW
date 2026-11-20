@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_DCL'.
  *
- * Model version                  : 7.9
+ * Model version                  : 7.14
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Wed Nov 11 09:32:04 2026
+ * C/C++ source code generated on : Fri Nov 20 12:34:33 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -58,9 +58,9 @@ extern void NBMS_DCL(const VEH_STT_LVL1_E *rtu_Veh_Lvl1, const uint8_T *rtu_SOC,
                      const boolean_T *rtu_G3_Common_Flt, const boolean_T
                      *rtu_G4_Common_Flt, const boolean_T *rtu_G3_Dischg_Flt,
                      const boolean_T *rtu_G4T1_Dischg_Flt, const boolean_T
-                     *rtu_G4T2_Dischg_Flt, real_T *rty_Dischg_CurrentLimit,
-                     real_T *rty_Timer30, B_NBMS_DCL_c_T *localB,
-                     DW_NBMS_DCL_f_T *localDW);
+                     *rtu_G4T2_Dischg_Flt, const boolean_T *rtu_derate_flg,
+                     real_T *rty_Dischg_CurrentLimit, real_T *rty_Timer30,
+                     B_NBMS_DCL_c_T *localB, DW_NBMS_DCL_f_T *localDW);
 
 /*-
  * The generated code includes comments that allow you to trace directly

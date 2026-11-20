@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_CCCV'.
  *
- * Model version                  : 7.23
+ * Model version                  : 7.32
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Wed Nov 11 09:32:01 2026
+ * C/C++ source code generated on : Fri Nov 20 12:34:29 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -39,9 +39,9 @@
 real_T NBMS_CCCV_CCL(real_T rtu_SoC, real_T rtu_temp)
 {
   /* Lookup_n-D: '<S3>/ContinuousSafety' */
-  return look2_binlxpw(rtu_temp, rtu_SoC, &TEMP[0], &SOC[0],
-                       rtCP_ContinuousSafety_tableData,
-                       rtCP_ContinuousSafety_maxIndex, 10U);
+  return look2_binlxpw(rtu_temp, rtu_SoC, &X_CCL_CONT_SAFETY_PACK[0],
+                       &Y_CCL_CONT_SAFETY_PACK[0], &TABLE_CCL_CONT_SAFETY_PACK[0],
+                       rtCP_ContinuousSafety_maxIndex, 9U);
 }
 
 /* Output and update for referenced model: 'NBMS_CCCV' */
@@ -63,7 +63,10 @@ void NBMS_CCCV(const OBC_E *rtu_mi_OBC_wakeup, const uint8_T *rtu_Display_SoC,
   real_T rtb_CCCurrLimit;
   real_T rtb_CVCurrLimit;
   real_T rtb_RevivalCurrLimit;
+  real_T rtb_SoH;
   real_T rtb_VoltLimit;
+  real_T rtb_VoltLimit_g;
+  real_T rtb_VoltLimit_p;
   real_T tmp_0;
   boolean_T tmp;
 
@@ -82,10 +85,23 @@ void NBMS_CCCV(const OBC_E *rtu_mi_OBC_wakeup, const uint8_T *rtu_Display_SoC,
    */
   rtb_CCCurrLimit = 0.001 * (real_T)CAL_CHRG_CC_CURRENT_LIMIT;
 
+  /* Gain: '<Root>/gainSoH' */
+  rtb_SoH = 0.01 * *rtu_SoH;
+
   /* Gain: '<Root>/gainRevivalCurrLt' incorporates:
    *  Constant: '<Root>/DDRevivalCurrLt'
    */
   rtb_RevivalCurrLimit = 0.001 * (real_T)CAL_DD_REVIVAL_CCL;
+
+  /* Gain: '<Root>/gainCCend' incorporates:
+   *  Constant: '<Root>/CCendThreshold'
+   */
+  rtb_VoltLimit_g = 0.001 * (real_T)CAL_CC_END_THRSH;
+
+  /* Gain: '<Root>/gainCVend' incorporates:
+   *  Constant: '<Root>/CVendThreshold'
+   */
+  rtb_VoltLimit_p = 0.001 * (real_T)CAL_CV_END_THRSH;
 
   /* Chart: '<Root>/Charge Profile' incorporates:
    *  DataTypeConversion: '<Root>/ConvToDouble'
@@ -117,15 +133,15 @@ void NBMS_CCCV(const OBC_E *rtu_mi_OBC_wakeup, const uint8_T *rtu_Display_SoC,
         if (localDW->temporalCounter_i1 >= (uint32_T)(CAL_CV_WAIT_TIMER * 10)) {
           localDW->is_CC = NBMS_CCCV_IN_NO_ACTIVE_CHILD;
           localDW->temporalCounter_i1 = 0U;
-          localDW->durationCounter_1_i = 0U;
+          localDW->durationCounter_1_m = 0U;
           localDW->is_CHARGE_CCCV = NBMS_CCCV_IN_CV;
           *rty_Chg_Mode_Req = CV;
-          localB->ChargeCurrentLimit = rtb_CVCurrLimit * *rtu_SoH;
+          localB->ChargeCurrentLimit = rtb_CVCurrLimit * rtb_SoH;
           *rty_ChargeVoltageLt = rtb_VoltLimit;
         }
       } else {
         /* case IN_CC_Start: */
-        if (!((real_T)*rtu_VtAvgmax * 0.001 >= CAL_CC_END_THRSH)) {
+        if (!((real_T)*rtu_VtAvgmax * 0.001 >= rtb_VoltLimit_g)) {
           localDW->durationCounter_1 = 0U;
         }
 
@@ -143,7 +159,7 @@ void NBMS_CCCV(const OBC_E *rtu_mi_OBC_wakeup, const uint8_T *rtu_Display_SoC,
           if (*rtu_mi_Pack_Volt >= 60.0) {
             /* Outputs for Function Call SubSystem: '<S2>/CCL' */
             localB->ChargeCurrentLimit = fmin(rtb_CCCurrLimit, NBMS_CCCV_CCL
-              ((real_T)*rtu_Display_SoC, *rtu_AppIn_BattTemp) * *rtu_SoH);
+              ((real_T)*rtu_Display_SoC, *rtu_AppIn_BattTemp) * rtb_SoH);
 
             /* End of Outputs for SubSystem: '<S2>/CCL' */
           }
@@ -152,13 +168,14 @@ void NBMS_CCCV(const OBC_E *rtu_mi_OBC_wakeup, const uint8_T *rtu_Display_SoC,
       break;
 
      case NBMS_CCCV_IN_CV:
-      if (!((real_T)*rtu_VtAvgmax * 0.001 >= CAL_CV_END_THRSH)) {
-        localDW->durationCounter_1_i = 0U;
+      if (!((real_T)*rtu_VtAvgmax * 0.001 >= rtb_VoltLimit_p)) {
+        localDW->durationCounter_1_m = 0U;
       }
 
-      if ((localDW->durationCounter_1_i > (uint32_T)(CAL_CV_END_DEBOUNCE_TIMER *
+      if ((localDW->durationCounter_1_m > (uint32_T)(CAL_CV_END_DEBOUNCE_TIMER *
             10)) || (localDW->temporalCounter_i1 >= (uint32_T)((int32_T)
             CAL_CV_COMPLETE_TIMER * 10))) {
+        localDW->durationCounter_1_i = 0U;
         localDW->is_CHARGE_CCCV = NBMS_CCCV_IN_Charge_Complete;
         *rty_Chg_Mode_Req = Charge_Complete;
         localB->ChargeCurrentLimit = 0.0;
@@ -172,36 +189,42 @@ void NBMS_CCCV(const OBC_E *rtu_mi_OBC_wakeup, const uint8_T *rtu_Display_SoC,
         *rty_soc_full = 0U;
       } else {
         *rty_Chg_Mode_Req = CV;
-        localB->ChargeCurrentLimit = rtb_CVCurrLimit * *rtu_SoH;
+        localB->ChargeCurrentLimit = rtb_CVCurrLimit * rtb_SoH;
         *rty_ChargeVoltageLt = rtb_VoltLimit;
       }
       break;
 
      case NBMS_CCCV_IN_Charge_Complete:
       *rty_soc_full = 100U;
-      if (*rtu_sm_BMSMODE != BMS_CHARGE) {
-        localDW->is_CHARGE_CCCV = NBMS_CCCV_IN_Charge_Disable;
-        *rty_Chg_Mode_Req = Disabled;
+      if (*rtu_Display_SoC == 100) {
+        localDW->durationCounter_1_i = 0U;
+      }
+
+      if ((localDW->durationCounter_1_i > 2U) && ((*rtu_mi_OBC_wakeup == Wake_Up)
+           && (*rtu_Display_SoC <= 99) && ((real_T)*rtu_MinCellVolt * 0.001 >=
+            2.25))) {
+        localDW->is_CHARGE_CCCV = NBMS_CCCV_IN_Charge_Standby;
+        *rty_Chg_Mode_Req = Standby;
         localB->ChargeCurrentLimit = 0.0;
         *rty_ChargeVoltageLt = 0.0;
-        *rty_soc_full = 0U;
       }
       break;
 
      case NBMS_CCCV_IN_Charge_Disable:
       *rty_soc_full = 0U;
-      if ((*rtu_mi_OBC_wakeup == Wake_Up) && (*rtu_Display_SoC <= 99) &&
-          ((real_T)*rtu_MinCellVolt * 0.001 >= 2.25)) {
-        localDW->is_CHARGE_CCCV = NBMS_CCCV_IN_Charge_Standby;
-        *rty_Chg_Mode_Req = Standby;
-        localB->ChargeCurrentLimit = 0.0;
-        *rty_ChargeVoltageLt = 0.0;
-      } else if (*rtu_Display_SoC == 100) {
+      if (*rtu_Display_SoC == 100) {
+        localDW->durationCounter_1_i = 0U;
         localDW->is_CHARGE_CCCV = NBMS_CCCV_IN_Charge_Complete;
         *rty_Chg_Mode_Req = Charge_Complete;
         localB->ChargeCurrentLimit = 0.0;
         *rty_ChargeVoltageLt = 0.0;
         *rty_soc_full = 100U;
+      } else if ((*rtu_mi_OBC_wakeup == Wake_Up) && (*rtu_Display_SoC <= 99) &&
+                 ((real_T)*rtu_MinCellVolt * 0.001 >= 2.25)) {
+        localDW->is_CHARGE_CCCV = NBMS_CCCV_IN_Charge_Standby;
+        *rty_Chg_Mode_Req = Standby;
+        localB->ChargeCurrentLimit = 0.0;
+        *rty_ChargeVoltageLt = 0.0;
       }
       break;
 
@@ -211,7 +234,7 @@ void NBMS_CCCV(const OBC_E *rtu_mi_OBC_wakeup, const uint8_T *rtu_Display_SoC,
 
       /* DataTypeConversion: '<Root>/DoubleConv' */
       tmp_0 = (real_T)*rtu_VtAvgmax * 0.001;
-      if (tmp && (tmp_0 < CAL_CC_END_THRSH)) {
+      if (tmp && (tmp_0 < rtb_VoltLimit_g)) {
         localDW->is_CHARGE_CCCV = NBMS_CCCV_IN_CC;
         localDW->durationCounter_1 = 0U;
         localDW->is_CC = NBMS_CCCV_IN_CC_Start;
@@ -221,17 +244,23 @@ void NBMS_CCCV(const OBC_E *rtu_mi_OBC_wakeup, const uint8_T *rtu_Display_SoC,
         if (*rtu_mi_Pack_Volt >= 60.0) {
           /* Outputs for Function Call SubSystem: '<S2>/CCL' */
           localB->ChargeCurrentLimit = fmin(rtb_CCCurrLimit, NBMS_CCCV_CCL
-            ((real_T)*rtu_Display_SoC, *rtu_AppIn_BattTemp) * *rtu_SoH);
+            ((real_T)*rtu_Display_SoC, *rtu_AppIn_BattTemp) * rtb_SoH);
 
           /* End of Outputs for SubSystem: '<S2>/CCL' */
         }
-      } else if (tmp && (tmp_0 >= CAL_CC_END_THRSH)) {
+      } else if (tmp && (tmp_0 >= rtb_VoltLimit_g)) {
         localDW->temporalCounter_i1 = 0U;
-        localDW->durationCounter_1_i = 0U;
+        localDW->durationCounter_1_m = 0U;
         localDW->is_CHARGE_CCCV = NBMS_CCCV_IN_CV;
         *rty_Chg_Mode_Req = CV;
-        localB->ChargeCurrentLimit = rtb_CVCurrLimit * *rtu_SoH;
+        localB->ChargeCurrentLimit = rtb_CVCurrLimit * rtb_SoH;
         *rty_ChargeVoltageLt = rtb_VoltLimit;
+      } else if (*rtu_mi_OBC_wakeup == Sleep) {
+        localDW->is_CHARGE_CCCV = NBMS_CCCV_IN_Charge_Disable;
+        *rty_Chg_Mode_Req = Disabled;
+        localB->ChargeCurrentLimit = 0.0;
+        *rty_ChargeVoltageLt = 0.0;
+        *rty_soc_full = 0U;
       }
       break;
     }
@@ -243,16 +272,22 @@ void NBMS_CCCV(const OBC_E *rtu_mi_OBC_wakeup, const uint8_T *rtu_Display_SoC,
   /* Chart: '<Root>/Charge Profile' incorporates:
    *  DataTypeConversion: '<Root>/DoubleConv'
    */
-  if (tmp_0 >= CAL_CC_END_THRSH) {
+  if (tmp_0 >= rtb_VoltLimit_g) {
     localDW->durationCounter_1++;
   } else {
     localDW->durationCounter_1 = 0U;
   }
 
-  if (tmp_0 >= CAL_CV_END_THRSH) {
+  if (*rtu_Display_SoC != 100) {
     localDW->durationCounter_1_i++;
   } else {
     localDW->durationCounter_1_i = 0U;
+  }
+
+  if (tmp_0 >= rtb_VoltLimit_p) {
+    localDW->durationCounter_1_m++;
+  } else {
+    localDW->durationCounter_1_m = 0U;
   }
 
   /* Chart: '<Root>/BMS NM Msg' */
@@ -280,8 +315,8 @@ void NBMS_CCCV(const OBC_E *rtu_mi_OBC_wakeup, const uint8_T *rtu_Display_SoC,
     /* case IN_SLEEP: */
     *rty_BMS_NM_Msg = SLEEP;
     if (((localDW->Ign_prev != localDW->Ign_start) && localDW->Ign_start) ||
-        (*rtu_OBC_HVIL_input && (*rtu_mi_OBC_wakeup == Wake_Up)) ||
-        *rtu_RTC_Wakeup) {
+        (*rtu_OBC_HVIL_input && *rtu_RTC_Wakeup) || (!*rtu_OBC_Heartbeat_fail &&
+         (*rtu_mi_OBC_wakeup == Wake_Up))) {
       localDW->durationCounter_1_c = 0U;
       localDW->is_c1_NBMS_CCCV = NBMS_CCCV_IN_ACTIVE;
       *rty_BMS_NM_Msg = ACTIVE;

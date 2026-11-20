@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_Regen'.
  *
- * Model version                  : 7.10
+ * Model version                  : 7.12
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Wed Nov 11 09:32:12 2026
+ * C/C++ source code generated on : Fri Nov 20 12:34:41 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)

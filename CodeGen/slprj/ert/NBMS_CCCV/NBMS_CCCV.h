@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_CCCV'.
  *
- * Model version                  : 7.23
+ * Model version                  : 7.32
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Wed Nov 11 09:32:01 2026
+ * C/C++ source code generated on : Fri Nov 20 12:34:29 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -36,6 +36,7 @@ typedef struct {
   uint32_T temporalCounter_i1;         /* '<Root>/Charge Profile' */
   uint32_T durationCounter_1;          /* '<Root>/Charge Profile' */
   uint32_T durationCounter_1_i;        /* '<Root>/Charge Profile' */
+  uint32_T durationCounter_1_m;        /* '<Root>/Charge Profile' */
   uint32_T durationCounter_1_c;        /* '<Root>/BMS NM Msg' */
   uint8_T is_active_c3_NBMS_CCCV;      /* '<Root>/Charge Profile' */
   uint8_T is_CHARGE_CCCV;              /* '<Root>/Charge Profile' */

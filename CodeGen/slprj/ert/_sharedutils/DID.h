@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_SoC'.
  *
- * Model version                  : 7.73
+ * Model version                  : 7.101
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Wed Nov 11 09:32:21 2026
+ * C/C++ source code generated on : Fri Nov 20 12:35:00 2026
  */
 
 #ifndef DID_h_
@@ -46,7 +46,31 @@ extern boolean_T CAL_SOH_Enable;
 extern real_T MosfetTime;
 extern real_T RegenAllowedTime;
 extern real_T SOC[13];
+extern real_T TABLE_CCL_CONT_SAFETY_PACK[117];
+extern real_T TABLE_DCIR_CHG[77];
+extern real_T TABLE_DCIR_DISCH[77];
+extern real_T TABLE_DCL_30sSAFETY_PACK[130];
+extern real_T TABLE_DCL_CONT_SAFETY_PACK[130];
+extern real_T TABLE_RCL_CONT_SAFETY_PACK[117];
+extern real_T TABLE_SOC_VS_OCV_CHG[147];
+extern real_T TABLE_SOC_VS_OCV_DISCH[147];
 extern real_T TEMP[10];
+extern real_T X_CCL_CONT_SAFETY_PACK[9];
+extern real_T X_DCIR_CHG[7];
+extern real_T X_DCIR_DISCH[7];
+extern real_T X_DCL_30sSAFETY_PACK[10];
+extern real_T X_DCL_CONT_SAFETY_PACK[10];
+extern real_T X_RCL_CONT_SAFETY_PACK[9];
+extern real_T X_SOC_VS_OCV_CHG[21];
+extern real_T X_SOC_VS_OCV_DISCH[21];
+extern real_T Y_CCL_CONT_SAFETY_PACK[13];
+extern real_T Y_DCIR_CHG[11];
+extern real_T Y_DCIR_DISCH[11];
+extern real_T Y_DCL_30sSAFETY_PACK[13];
+extern real_T Y_DCL_CONT_SAFETY_PACK[13];
+extern real_T Y_RCL_CONT_SAFETY_PACK[13];
+extern real_T Y_SOC_VS_OCV_CHG[7];
+extern real_T Y_SOC_VS_OCV_DISCH[7];
 
 #endif                                 /* DID_h_ */
 

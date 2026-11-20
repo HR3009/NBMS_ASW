@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_MosfetSeq'.
  *
- * Model version                  : 7.42
+ * Model version                  : 7.44
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Wed Nov 11 09:32:09 2026
+ * C/C++ source code generated on : Fri Nov 20 12:34:38 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -54,28 +54,33 @@
 
 /* Forward declaration for local functions */
 static void NBMS_Mosf_exit_internal_DEFAULT(DW_NBMS_MosfetSeq_f_T *localDW);
-static void NBMS_MosfetSe_G4Typ1DischgFault(const boolean_T
-  *rtu_mi_Hardwired_Ign, const BMS_MODE_E *rtu_sm_bmsmode, const
-  Active_DisChrg_E *rtu_AppIn_ActiveDischg, const boolean_T
-  *rtu_G4T2_Discharge_Fault, boolean_T *rty_Prechg_Mosfet_cmd, boolean_T
-  *rty_HV_Mosfet_cmd, boolean_T *rty_DCDC_Mosfet_cmd, BMS_PMosfet_STS_E
-  *rty_Prechg_Mosfet, BMS_HVMosfet_STS_E *rty_HV_Mosfet, BMS_DCDCMosfet_STS_E
-  *rty_DCDC_Mosfet, boolean_T *rty_ASC_Prep_flg, DW_NBMS_MosfetSeq_f_T *localDW);
 static void NBMS_MosfetSeq_No_Action(const boolean_T *rtu_mi_Hardwired_Ign,
   const BMS_MODE_E *rtu_sm_bmsmode, const boolean_T *rtu_mi_OBC_HVIL, const
-  OBC_E *rtu_mi_OBC_wakeup, boolean_T *rty_HV_Mosfet_cmd, boolean_T
-  *rty_DCDC_Mosfet_cmd, BMS_DCDCMosfet_STS_E *rty_DCDC_Mosfet,
+  OBC_E *rtu_mi_OBC_wakeup, const boolean_T *rtu_G4_Common_Fault, const
+  boolean_T *rtu_G4_Charge_Fault, const boolean_T *rtu_G4T2_Discharge_Fault,
+  const boolean_T *rtu_G4T1_Discharge_Fault, boolean_T *rty_HV_Mosfet_cmd,
+  boolean_T *rty_DCDC_Mosfet_cmd, BMS_DCDCMosfet_STS_E *rty_DCDC_Mosfet,
+  boolean_T *rty_ASC_Prep_flg, boolean_T *rty_Chrgr_Prep_Flag,
   DW_NBMS_MosfetSeq_f_T *localDW);
+static void NBMS_MosfetSeq_STANDBY(const real_T *constMosfetFB, const BMS_MODE_E
+  *rtu_sm_bmsmode, const Active_DisChrg_E *rtu_AppIn_ActiveDischg, const
+  boolean_T *rtu_AppIn_HVMosfetfb, const boolean_T *rtu_G4_Common_Fault, const
+  boolean_T *rtu_G4_Charge_Fault, const boolean_T *rtu_G4T2_Discharge_Fault,
+  const boolean_T *rtu_G4T1_Discharge_Fault, boolean_T *rty_HV_Mosfet_cmd,
+  boolean_T *rty_DCDC_Mosfet_cmd, BMS_HVMosfet_STS_E *rty_HV_Mosfet,
+  BMS_DCDCMosfet_STS_E *rty_DCDC_Mosfet, boolean_T *rty_ASC_Prep_flg, boolean_T *
+  rty_Chrgr_Prep_Flag, DW_NBMS_MosfetSeq_f_T *localDW);
 static void NBMS_MosfetSeq_DEFAULT(const real_T *constMosfetFB, const boolean_T *
   rtu_mi_Hardwired_Ign, const BMS_MODE_E *rtu_sm_bmsmode, const boolean_T
   *rtu_mi_OBC_HVIL, const OBC_E *rtu_mi_OBC_wakeup, const Active_DisChrg_E
   *rtu_AppIn_ActiveDischg, const boolean_T *rtu_AppIn_HVMosfetfb, const
-  boolean_T *rtu_G4T2_Discharge_Fault, boolean_T *rty_Prechg_Mosfet_cmd,
-  boolean_T *rty_HV_Mosfet_cmd, boolean_T *rty_DCDC_Mosfet_cmd,
-  BMS_PMosfet_STS_E *rty_Prechg_Mosfet, BMS_HVMosfet_STS_E *rty_HV_Mosfet,
-  BMS_DCDCMosfet_STS_E *rty_DCDC_Mosfet, boolean_T *rty_ASC_Prep_flg, boolean_T *
-  rty_Chrgr_Prep_Flag, boolean_T *rty_Prechg_Volt_Flt, DW_NBMS_MosfetSeq_f_T
-  *localDW);
+  boolean_T *rtu_G4_Common_Fault, const boolean_T *rtu_G4_Charge_Fault, const
+  boolean_T *rtu_G4T2_Discharge_Fault, const boolean_T *rtu_G4T1_Discharge_Fault,
+  boolean_T *rty_Prechg_Mosfet_cmd, boolean_T *rty_HV_Mosfet_cmd, boolean_T
+  *rty_DCDC_Mosfet_cmd, BMS_PMosfet_STS_E *rty_Prechg_Mosfet, BMS_HVMosfet_STS_E
+  *rty_HV_Mosfet, BMS_DCDCMosfet_STS_E *rty_DCDC_Mosfet, boolean_T
+  *rty_ASC_Prep_flg, boolean_T *rty_Chrgr_Prep_Flag, boolean_T
+  *rty_Prechg_Volt_Flt, DW_NBMS_MosfetSeq_f_T *localDW);
 static void N_exit_internal_Mosfet_Sequence(DW_NBMS_MosfetSeq_f_T *localDW);
 static void NBMS_MosfetSeq_CLOSING_SEQ_CHRG(const real_T *constMosfetFB, const
   boolean_T *rtu_mi_Hardwired_Ign, const BMS_MODE_E *rtu_sm_bmsmode, const
@@ -117,65 +122,13 @@ static void NBMS_Mosf_exit_internal_DEFAULT(DW_NBMS_MosfetSeq_f_T *localDW)
 }
 
 /* Function for Chart: '<Root>/Mosfet Control SM' */
-static void NBMS_MosfetSe_G4Typ1DischgFault(const boolean_T
-  *rtu_mi_Hardwired_Ign, const BMS_MODE_E *rtu_sm_bmsmode, const
-  Active_DisChrg_E *rtu_AppIn_ActiveDischg, const boolean_T
-  *rtu_G4T2_Discharge_Fault, boolean_T *rty_Prechg_Mosfet_cmd, boolean_T
-  *rty_HV_Mosfet_cmd, boolean_T *rty_DCDC_Mosfet_cmd, BMS_PMosfet_STS_E
-  *rty_Prechg_Mosfet, BMS_HVMosfet_STS_E *rty_HV_Mosfet, BMS_DCDCMosfet_STS_E
-  *rty_DCDC_Mosfet, boolean_T *rty_ASC_Prep_flg, DW_NBMS_MosfetSeq_f_T *localDW)
-{
-  if (*rtu_G4T2_Discharge_Fault) {
-    *rty_ASC_Prep_flg = true;
-    localDW->is_OnFaultDetection_i = NBMS_MosfetS_IN_NO_ACTIVE_CHILD;
-    localDW->is_G4Typ1DischgFault = NBMS_MosfetS_IN_NO_ACTIVE_CHILD;
-    localDW->is_DEFAULT = NBMS_Mosfe_IN_G4Typ2DischgFault;
-    localDW->is_G4Typ2DischgFault = NBMS_Mosfet_IN_OnFaultDetection;
-    localDW->is_OnFaultDetection_j = NBMS_MosfetSeq_IN_Def;
-    localDW->count2 = 0.0;
-  } else {
-    switch (localDW->is_G4Typ1DischgFault) {
-     case NBMS_MosfetSeq_IN_BMS_Sleep:
-      break;
-
-     default:
-      /* case IN_OnFaultDetection: */
-      if (((*rtu_sm_bmsmode == BMS_FAULT) && !*rtu_mi_Hardwired_Ign &&
-           (*rtu_AppIn_ActiveDischg == Completed)) || (*rtu_sm_bmsmode ==
-           BMS_SLEEP)) {
-        localDW->is_OnFaultDetection_i = NBMS_MosfetS_IN_NO_ACTIVE_CHILD;
-        localDW->is_G4Typ1DischgFault = NBMS_MosfetSeq_IN_BMS_Sleep;
-        *rty_Prechg_Mosfet = PDISCONNECTED;
-        *rty_HV_Mosfet = HV_DISCONNECTED;
-        *rty_DCDC_Mosfet = DCDC_DISCONNECTED;
-        *rty_Prechg_Mosfet_cmd = false;
-        *rty_HV_Mosfet_cmd = false;
-        *rty_DCDC_Mosfet_cmd = false;
-      } else if (localDW->is_OnFaultDetection_i == NBMS_MosfetSeq_IN_Def) {
-        if (localDW->count >= CAL_MOSFET_DISENG_THRSH) {
-          localDW->NA = false;
-          *rty_ASC_Prep_flg = false;
-          localDW->is_OnFaultDetection_i = NBMS_MosfetSeq_IN_OpenHVMosfet;
-          *rty_Prechg_Mosfet = PDISCONNECTED;
-          *rty_HV_Mosfet = HV_DISCONNECTED;
-          *rty_Prechg_Mosfet_cmd = false;
-          *rty_HV_Mosfet_cmd = false;
-        } else {
-          localDW->count += 100.0;
-        }
-      } else {
-        /* case IN_OpenHVMosfet: */
-      }
-      break;
-    }
-  }
-}
-
-/* Function for Chart: '<Root>/Mosfet Control SM' */
 static void NBMS_MosfetSeq_No_Action(const boolean_T *rtu_mi_Hardwired_Ign,
   const BMS_MODE_E *rtu_sm_bmsmode, const boolean_T *rtu_mi_OBC_HVIL, const
-  OBC_E *rtu_mi_OBC_wakeup, boolean_T *rty_HV_Mosfet_cmd, boolean_T
-  *rty_DCDC_Mosfet_cmd, BMS_DCDCMosfet_STS_E *rty_DCDC_Mosfet,
+  OBC_E *rtu_mi_OBC_wakeup, const boolean_T *rtu_G4_Common_Fault, const
+  boolean_T *rtu_G4_Charge_Fault, const boolean_T *rtu_G4T2_Discharge_Fault,
+  const boolean_T *rtu_G4T1_Discharge_Fault, boolean_T *rty_HV_Mosfet_cmd,
+  boolean_T *rty_DCDC_Mosfet_cmd, BMS_DCDCMosfet_STS_E *rty_DCDC_Mosfet,
+  boolean_T *rty_ASC_Prep_flg, boolean_T *rty_Chrgr_Prep_Flag,
   DW_NBMS_MosfetSeq_f_T *localDW)
 {
   if ((*rtu_sm_bmsmode == BMS_STANDBY) && (!*rtu_mi_Hardwired_Ign ||
@@ -186,6 +139,35 @@ static void NBMS_MosfetSeq_No_Action(const boolean_T *rtu_mi_Hardwired_Ign,
     localDW->durationCounter_1 = 0U;
     localDW->is_STANDBY = NBMS_MosfetSeq_IN_DEFAULT;
     *rty_HV_Mosfet_cmd = false;
+  } else if (*rtu_G4_Common_Fault) {
+    *rty_ASC_Prep_flg = true;
+    *rty_Chrgr_Prep_Flag = true;
+    localDW->is_No_Action = NBMS_MosfetS_IN_NO_ACTIVE_CHILD;
+    localDW->is_DEFAULT = NBMS_MosfetSeq_IN_G4CommonFault;
+    localDW->is_G4CommonFault = NBMS_Mosfet_IN_OnFaultDetection;
+    localDW->is_OnFaultDetection_g = NBMS_MosfetSeq_IN_Def;
+    localDW->count1 = 0.0;
+  } else if (*rtu_G4T1_Discharge_Fault) {
+    *rty_ASC_Prep_flg = true;
+    localDW->is_No_Action = NBMS_MosfetS_IN_NO_ACTIVE_CHILD;
+    localDW->is_DEFAULT = NBMS_Mosfe_IN_G4Typ1DischgFault;
+    localDW->is_G4Typ1DischgFault = NBMS_Mosfet_IN_OnFaultDetection;
+    localDW->is_OnFaultDetection_i = NBMS_MosfetSeq_IN_Def;
+    localDW->count = 0.0;
+  } else if (*rtu_G4T2_Discharge_Fault) {
+    *rty_ASC_Prep_flg = true;
+    localDW->is_No_Action = NBMS_MosfetS_IN_NO_ACTIVE_CHILD;
+    localDW->is_DEFAULT = NBMS_Mosfe_IN_G4Typ2DischgFault;
+    localDW->is_G4Typ2DischgFault = NBMS_Mosfet_IN_OnFaultDetection;
+    localDW->is_OnFaultDetection_j = NBMS_MosfetSeq_IN_Def;
+    localDW->count2 = 0.0;
+  } else if (*rtu_G4_Charge_Fault) {
+    *rty_Chrgr_Prep_Flag = true;
+    localDW->is_No_Action = NBMS_MosfetS_IN_NO_ACTIVE_CHILD;
+    localDW->is_DEFAULT = NBMS_MosfetSeq_IN_G4ChargeFault;
+    localDW->is_G4ChargeFault = NBMS_Mosfet_IN_OnFaultDetection;
+    localDW->is_OnFaultDetection = NBMS_MosfetSeq_IN_Def;
+    localDW->count3 = 0.0;
   } else {
     localDW->NA = true;
     if (localDW->is_No_Action == NBMS_MosfetSeq_IN_CloseDCDC) {
@@ -211,16 +193,89 @@ static void NBMS_MosfetSeq_No_Action(const boolean_T *rtu_mi_Hardwired_Ign,
 }
 
 /* Function for Chart: '<Root>/Mosfet Control SM' */
+static void NBMS_MosfetSeq_STANDBY(const real_T *constMosfetFB, const BMS_MODE_E
+  *rtu_sm_bmsmode, const Active_DisChrg_E *rtu_AppIn_ActiveDischg, const
+  boolean_T *rtu_AppIn_HVMosfetfb, const boolean_T *rtu_G4_Common_Fault, const
+  boolean_T *rtu_G4_Charge_Fault, const boolean_T *rtu_G4T2_Discharge_Fault,
+  const boolean_T *rtu_G4T1_Discharge_Fault, boolean_T *rty_HV_Mosfet_cmd,
+  boolean_T *rty_DCDC_Mosfet_cmd, BMS_HVMosfet_STS_E *rty_HV_Mosfet,
+  BMS_DCDCMosfet_STS_E *rty_DCDC_Mosfet, boolean_T *rty_ASC_Prep_flg, boolean_T *
+  rty_Chrgr_Prep_Flag, DW_NBMS_MosfetSeq_f_T *localDW)
+{
+  if (*rtu_G4_Common_Fault) {
+    *rty_ASC_Prep_flg = true;
+    *rty_Chrgr_Prep_Flag = true;
+    localDW->is_STANDBY = NBMS_MosfetS_IN_NO_ACTIVE_CHILD;
+    localDW->is_DEFAULT = NBMS_MosfetSeq_IN_G4CommonFault;
+    localDW->is_G4CommonFault = NBMS_Mosfet_IN_OnFaultDetection;
+    localDW->is_OnFaultDetection_g = NBMS_MosfetSeq_IN_Def;
+    localDW->count1 = 0.0;
+  } else if (*rtu_G4T1_Discharge_Fault) {
+    *rty_ASC_Prep_flg = true;
+    localDW->is_STANDBY = NBMS_MosfetS_IN_NO_ACTIVE_CHILD;
+    localDW->is_DEFAULT = NBMS_Mosfe_IN_G4Typ1DischgFault;
+    localDW->is_G4Typ1DischgFault = NBMS_Mosfet_IN_OnFaultDetection;
+    localDW->is_OnFaultDetection_i = NBMS_MosfetSeq_IN_Def;
+    localDW->count = 0.0;
+  } else if (*rtu_G4T2_Discharge_Fault) {
+    *rty_ASC_Prep_flg = true;
+    localDW->is_STANDBY = NBMS_MosfetS_IN_NO_ACTIVE_CHILD;
+    localDW->is_DEFAULT = NBMS_Mosfe_IN_G4Typ2DischgFault;
+    localDW->is_G4Typ2DischgFault = NBMS_Mosfet_IN_OnFaultDetection;
+    localDW->is_OnFaultDetection_j = NBMS_MosfetSeq_IN_Def;
+    localDW->count2 = 0.0;
+  } else if (*rtu_G4_Charge_Fault) {
+    *rty_Chrgr_Prep_Flag = true;
+    localDW->is_STANDBY = NBMS_MosfetS_IN_NO_ACTIVE_CHILD;
+    localDW->is_DEFAULT = NBMS_MosfetSeq_IN_G4ChargeFault;
+    localDW->is_G4ChargeFault = NBMS_Mosfet_IN_OnFaultDetection;
+    localDW->is_OnFaultDetection = NBMS_MosfetSeq_IN_Def;
+    localDW->count3 = 0.0;
+  } else {
+    switch (localDW->is_STANDBY) {
+     case NBMS_MosfetSeq_IN_DEFAULT:
+      if (*rtu_AppIn_HVMosfetfb) {
+        localDW->durationCounter_1 = 0U;
+      }
+
+      if (localDW->durationCounter_1 >= (uint32_T)ceil(*constMosfetFB * 10.0)) {
+        localDW->is_STANDBY = NBMS_MosfetSe_IN_OpenHVMosfet_n;
+        *rty_HV_Mosfet = HV_DISCONNECTED;
+      } else {
+        *rty_HV_Mosfet_cmd = false;
+      }
+      break;
+
+     case NBMS_MosfetSe_IN_OpenDCDCMosfet:
+      break;
+
+     default:
+      /* case IN_OpenHVMosfet: */
+      if ((*rtu_AppIn_ActiveDischg == Completed) || (*rtu_sm_bmsmode ==
+           BMS_SLEEP)) {
+        localDW->is_STANDBY = NBMS_MosfetSe_IN_OpenDCDCMosfet;
+        *rty_DCDC_Mosfet_cmd = false;
+        *rty_DCDC_Mosfet = DCDC_DISCONNECTED;
+      } else {
+        *rty_HV_Mosfet = HV_DISCONNECTED;
+      }
+      break;
+    }
+  }
+}
+
+/* Function for Chart: '<Root>/Mosfet Control SM' */
 static void NBMS_MosfetSeq_DEFAULT(const real_T *constMosfetFB, const boolean_T *
   rtu_mi_Hardwired_Ign, const BMS_MODE_E *rtu_sm_bmsmode, const boolean_T
   *rtu_mi_OBC_HVIL, const OBC_E *rtu_mi_OBC_wakeup, const Active_DisChrg_E
   *rtu_AppIn_ActiveDischg, const boolean_T *rtu_AppIn_HVMosfetfb, const
-  boolean_T *rtu_G4T2_Discharge_Fault, boolean_T *rty_Prechg_Mosfet_cmd,
-  boolean_T *rty_HV_Mosfet_cmd, boolean_T *rty_DCDC_Mosfet_cmd,
-  BMS_PMosfet_STS_E *rty_Prechg_Mosfet, BMS_HVMosfet_STS_E *rty_HV_Mosfet,
-  BMS_DCDCMosfet_STS_E *rty_DCDC_Mosfet, boolean_T *rty_ASC_Prep_flg, boolean_T *
-  rty_Chrgr_Prep_Flag, boolean_T *rty_Prechg_Volt_Flt, DW_NBMS_MosfetSeq_f_T
-  *localDW)
+  boolean_T *rtu_G4_Common_Fault, const boolean_T *rtu_G4_Charge_Fault, const
+  boolean_T *rtu_G4T2_Discharge_Fault, const boolean_T *rtu_G4T1_Discharge_Fault,
+  boolean_T *rty_Prechg_Mosfet_cmd, boolean_T *rty_HV_Mosfet_cmd, boolean_T
+  *rty_DCDC_Mosfet_cmd, BMS_PMosfet_STS_E *rty_Prechg_Mosfet, BMS_HVMosfet_STS_E
+  *rty_HV_Mosfet, BMS_DCDCMosfet_STS_E *rty_DCDC_Mosfet, boolean_T
+  *rty_ASC_Prep_flg, boolean_T *rty_Chrgr_Prep_Flag, boolean_T
+  *rty_Prechg_Volt_Flt, DW_NBMS_MosfetSeq_f_T *localDW)
 {
   boolean_T tmp;
   tmp = !localDW->NA;
@@ -323,10 +378,50 @@ static void NBMS_MosfetSeq_DEFAULT(const real_T *constMosfetFB, const boolean_T 
       break;
 
      case NBMS_Mosfe_IN_G4Typ1DischgFault:
-      NBMS_MosfetSe_G4Typ1DischgFault(rtu_mi_Hardwired_Ign, rtu_sm_bmsmode,
-        rtu_AppIn_ActiveDischg, rtu_G4T2_Discharge_Fault, rty_Prechg_Mosfet_cmd,
-        rty_HV_Mosfet_cmd, rty_DCDC_Mosfet_cmd, rty_Prechg_Mosfet, rty_HV_Mosfet,
-        rty_DCDC_Mosfet, rty_ASC_Prep_flg, localDW);
+      if (*rtu_G4T2_Discharge_Fault) {
+        *rty_ASC_Prep_flg = true;
+        localDW->is_OnFaultDetection_i = NBMS_MosfetS_IN_NO_ACTIVE_CHILD;
+        localDW->is_G4Typ1DischgFault = NBMS_MosfetS_IN_NO_ACTIVE_CHILD;
+        localDW->is_DEFAULT = NBMS_Mosfe_IN_G4Typ2DischgFault;
+        localDW->is_G4Typ2DischgFault = NBMS_Mosfet_IN_OnFaultDetection;
+        localDW->is_OnFaultDetection_j = NBMS_MosfetSeq_IN_Def;
+        localDW->count2 = 0.0;
+      } else {
+        switch (localDW->is_G4Typ1DischgFault) {
+         case NBMS_MosfetSeq_IN_BMS_Sleep:
+          break;
+
+         default:
+          /* case IN_OnFaultDetection: */
+          if (((*rtu_sm_bmsmode == BMS_FAULT) && !*rtu_mi_Hardwired_Ign &&
+               (*rtu_AppIn_ActiveDischg == Completed)) || (*rtu_sm_bmsmode ==
+               BMS_SLEEP)) {
+            localDW->is_OnFaultDetection_i = NBMS_MosfetS_IN_NO_ACTIVE_CHILD;
+            localDW->is_G4Typ1DischgFault = NBMS_MosfetSeq_IN_BMS_Sleep;
+            *rty_Prechg_Mosfet = PDISCONNECTED;
+            *rty_HV_Mosfet = HV_DISCONNECTED;
+            *rty_DCDC_Mosfet = DCDC_DISCONNECTED;
+            *rty_Prechg_Mosfet_cmd = false;
+            *rty_HV_Mosfet_cmd = false;
+            *rty_DCDC_Mosfet_cmd = false;
+          } else if (localDW->is_OnFaultDetection_i == NBMS_MosfetSeq_IN_Def) {
+            if (localDW->count >= CAL_MOSFET_DISENG_THRSH) {
+              localDW->NA = false;
+              *rty_ASC_Prep_flg = false;
+              localDW->is_OnFaultDetection_i = NBMS_MosfetSeq_IN_OpenHVMosfet;
+              *rty_Prechg_Mosfet = PDISCONNECTED;
+              *rty_HV_Mosfet = HV_DISCONNECTED;
+              *rty_Prechg_Mosfet_cmd = false;
+              *rty_HV_Mosfet_cmd = false;
+            } else {
+              localDW->count += 100.0;
+            }
+          } else {
+            /* case IN_OpenHVMosfet: */
+          }
+          break;
+        }
+      }
       break;
 
      case NBMS_Mosfe_IN_G4Typ2DischgFault:
@@ -370,42 +465,19 @@ static void NBMS_MosfetSeq_DEFAULT(const real_T *constMosfetFB, const boolean_T 
 
      case NBMS_MosfetSeq_IN_No_Action:
       NBMS_MosfetSeq_No_Action(rtu_mi_Hardwired_Ign, rtu_sm_bmsmode,
-        rtu_mi_OBC_HVIL, rtu_mi_OBC_wakeup, rty_HV_Mosfet_cmd,
-        rty_DCDC_Mosfet_cmd, rty_DCDC_Mosfet, localDW);
+        rtu_mi_OBC_HVIL, rtu_mi_OBC_wakeup, rtu_G4_Common_Fault,
+        rtu_G4_Charge_Fault, rtu_G4T2_Discharge_Fault, rtu_G4T1_Discharge_Fault,
+        rty_HV_Mosfet_cmd, rty_DCDC_Mosfet_cmd, rty_DCDC_Mosfet,
+        rty_ASC_Prep_flg, rty_Chrgr_Prep_Flag, localDW);
       break;
 
      default:
       /* case IN_STANDBY: */
-      switch (localDW->is_STANDBY) {
-       case NBMS_MosfetSeq_IN_DEFAULT:
-        if (*rtu_AppIn_HVMosfetfb) {
-          localDW->durationCounter_1 = 0U;
-        }
-
-        if (localDW->durationCounter_1 >= (uint32_T)ceil(*constMosfetFB * 10.0))
-        {
-          localDW->is_STANDBY = NBMS_MosfetSe_IN_OpenHVMosfet_n;
-          *rty_HV_Mosfet = HV_DISCONNECTED;
-        } else {
-          *rty_HV_Mosfet_cmd = false;
-        }
-        break;
-
-       case NBMS_MosfetSe_IN_OpenDCDCMosfet:
-        break;
-
-       default:
-        /* case IN_OpenHVMosfet: */
-        if ((*rtu_AppIn_ActiveDischg == Completed) || (*rtu_sm_bmsmode ==
-             BMS_SLEEP)) {
-          localDW->is_STANDBY = NBMS_MosfetSe_IN_OpenDCDCMosfet;
-          *rty_DCDC_Mosfet_cmd = false;
-          *rty_DCDC_Mosfet = DCDC_DISCONNECTED;
-        } else {
-          *rty_HV_Mosfet = HV_DISCONNECTED;
-        }
-        break;
-      }
+      NBMS_MosfetSeq_STANDBY(constMosfetFB, rtu_sm_bmsmode,
+        rtu_AppIn_ActiveDischg, rtu_AppIn_HVMosfetfb, rtu_G4_Common_Fault,
+        rtu_G4_Charge_Fault, rtu_G4T2_Discharge_Fault, rtu_G4T1_Discharge_Fault,
+        rty_HV_Mosfet_cmd, rty_DCDC_Mosfet_cmd, rty_HV_Mosfet, rty_DCDC_Mosfet,
+        rty_ASC_Prep_flg, rty_Chrgr_Prep_Flag, localDW);
       break;
     }
   }
@@ -810,7 +882,8 @@ void NBMS_MosfetSeq(const boolean_T *rtu_mi_Hardwired_Ign, const BMS_MODE_E
   } else if (localDW->is_c3_NBMS_MosfetSeq == NBMS_MosfetSeq_IN_DEFAULT) {
     NBMS_MosfetSeq_DEFAULT(&constMosfetFB, rtu_mi_Hardwired_Ign, rtu_sm_bmsmode,
       rtu_mi_OBC_HVIL, rtu_mi_OBC_wakeup, rtu_AppIn_ActiveDischg,
-      rtu_AppIn_HVMosfetfb, rtu_G4T2_Discharge_Fault, rty_Prechg_Mosfet_cmd,
+      rtu_AppIn_HVMosfetfb, rtu_G4_Common_Fault, rtu_G4_Charge_Fault,
+      rtu_G4T2_Discharge_Fault, rtu_G4T1_Discharge_Fault, rty_Prechg_Mosfet_cmd,
       rty_HV_Mosfet_cmd, rty_DCDC_Mosfet_cmd, rty_Prechg_Mosfet, rty_HV_Mosfet,
       rty_DCDC_Mosfet, rty_ASC_Prep_flg, rty_Chrgr_Prep_Flag,
       rty_Prechg_Volt_Flt, localDW);

@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_App'.
  *
- * Model version                  : 7.74
+ * Model version                  : 1.0
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Wed Nov 11 09:32:27 2026
+ * C/C++ source code generated on : Fri Nov 20 12:35:07 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -25,6 +25,26 @@ typedef enum {
   Completed,
   Invalid
 } Active_DisChrg_E;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_BMS_BattSoCDerate_E_
+#define DEFINED_TYPEDEF_FOR_BMS_BattSoCDerate_E_
+
+typedef enum {
+  SOC_No_Derating = 0,                 /* Default value */
+  SOC_Derating
+} BMS_BattSoCDerate_E;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_BMS_BattTempDerate_E_
+#define DEFINED_TYPEDEF_FOR_BMS_BattTempDerate_E_
+
+typedef enum {
+  No_Derating = 0,                     /* Default value */
+  Derating
+} BMS_BattTempDerate_E;
 
 #endif
 

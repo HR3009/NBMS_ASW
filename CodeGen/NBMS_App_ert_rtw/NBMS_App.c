@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_App'.
  *
- * Model version                  : 7.74
+ * Model version                  : 1.0
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Wed Nov 11 09:32:27 2026
+ * C/C++ source code generated on : Fri Nov 20 12:35:07 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -60,6 +60,9 @@ void NBMS_App_step(void)
   /* UnitDelay: '<S1>/udlyDSoC' */
   NBMS_App_B.DisplaySoC = NBMS_App_DW.udlyDSoC_DSTATE;
 
+  /* UnitDelay: '<S1>/udlyBMS_NM' */
+  NBMS_App_B.BMS_NM_Msg = NBMS_App_DW.udlyBMS_NM_DSTATE;
+
   /* ModelReference: '<S1>/BMS Mode State Machine' incorporates:
    *  Inport: '<Root>/AppIn_CVmodeTimer'
    *  Inport: '<Root>/AppIn_ChgMode'
@@ -91,8 +94,8 @@ void NBMS_App_step(void)
           &NBMS_App_Inputs.G4ChargeFault, &NBMS_App_Inputs.ObcHeartbeatFailure,
           &NBMS_App_B.DisplaySoC, &NBMS_App_DW.udlyMinCellVt_DSTATE,
           &NBMS_App_Inputs.G4Type1DischargeFault,
-          &NBMS_App_Inputs.G4Type2DischargeFault,
-          &NBMS_App_Outputs.AppOut_BMSMODE,
+          &NBMS_App_Inputs.G4Type2DischargeFault, &NBMS_App_B.BMS_NM_Msg,
+          &NBMS_App_Outputs.AppOut_BMSMODE, &NBMS_App_B.Ignition_Sts,
           &(NBMS_App_DW.BMSModeStateMachine_InstanceDat.rtdw));
 
   /* ModelReference: '<S1>/Mosfet Control State Machine' incorporates:
@@ -147,17 +150,21 @@ void NBMS_App_step(void)
    *  Inport: '<Root>/AppIn_BattCurrent'
    *  Inport: '<Root>/AppIn_BattTemp'
    *  Inport: '<Root>/AppIn_BattVoltages'
-   *  Inport: '<Root>/AppIn_HardwiredIgn'
+   *  Inport: '<Root>/AppIn_EEPROMSoCWarn15'
    *  Inport: '<Root>/AppIn_I2Cerror'
    *  Inport: '<Root>/AppIn_LastStoredCycle'
    *  Inport: '<Root>/AppIn_LastStoredSOC'
    *  Inport: '<Root>/AppIn_LastStoredSOH'
    *  Inport: '<Root>/AppIn_OBCwakeup'
    *  Inport: '<Root>/AppIn_PackVolt'
+   *  Inport: '<Root>/AppIn_RTCwakeup'
+   *  Inport: '<Root>/AppIn_SoCLEDSW'
    *  Inport: '<Root>/AppIn_VehL1'
    *  Outport: '<Root>/AppOut_AvailableEnergy'
    *  Outport: '<Root>/AppOut_BMSMODE'
    *  Outport: '<Root>/AppOut_BattPackSOC'
+   *  Outport: '<Root>/AppOut_BattSoCDerating'
+   *  Outport: '<Root>/AppOut_BattTempDerating'
    *  Outport: '<Root>/AppOut_BatteryCapacity'
    *  Outport: '<Root>/AppOut_ChargeCapacity'
    *  Outport: '<Root>/AppOut_CurrentCapacity'
@@ -177,12 +184,14 @@ void NBMS_App_step(void)
    */
   NBMS_SoC(&NBMS_App_DW.udlySoCFull_DSTATE, &NBMS_App_Inputs.BattTemp[0],
            &NBMS_App_Inputs.BattCurr, &NBMS_App_Inputs.BattVolt[0],
-           &NBMS_App_Inputs.IgnitionStatus, &rtb_PrevChgReq,
+           &NBMS_App_B.Ignition_Sts, &rtb_PrevChgReq,
            &NBMS_App_Outputs.AppOut_BMSMODE, &NBMS_App_Inputs.LastStoredSoC,
            &NBMS_App_Inputs.LastStoredCycle, &NBMS_App_Inputs.I2CError,
            &NBMS_App_Inputs.LastStoredSoH, &NBMS_App_Inputs.OBCWakeup,
            &NBMS_App_Inputs.PackVoltage, &NBMS_App_Inputs.VehicleLevel,
-           &NBMS_App_DW.udlyDCL_DSTATE, &NBMS_App_Outputs.AppOut_DisplaySoC,
+           &NBMS_App_DW.udlyDCL_DSTATE, &NBMS_App_Inputs.RTCWakeup,
+           &NBMS_App_Inputs.SocLedSwitch, &NBMS_App_Inputs.EEPROMSoCWarn15,
+           &NBMS_App_Outputs.AppOut_DisplaySoC,
            &NBMS_App_Outputs.AppOut_BatteryCapacity,
            &NBMS_App_Outputs.AppOut_LowSoCWarn15,
            &NBMS_App_Outputs.AppOut_LowSoC, &NBMS_App_Outputs.AppOut_LowSoCWarn,
@@ -197,6 +206,8 @@ void NBMS_App_step(void)
            &NBMS_App_B.SensorVoltFail, &NBMS_App_B.AvgSensorVoltFail,
            &NBMS_App_B.usecAvgBatteryCurrent,
            &NBMS_App_Outputs.AppOut_ChargeCapacity,
+           &NBMS_App_Outputs.AppOut_BattTempDerating,
+           &NBMS_App_Outputs.AppOut_BattSoCDerating,
            &(NBMS_App_DW.StateofCharge_InstanceData.rtb),
            &(NBMS_App_DW.StateofCharge_InstanceData.rtdw),
            &(NBMS_App_DW.StateofCharge_InstanceData.rtzce));
@@ -268,6 +279,7 @@ void NBMS_App_step(void)
    *  Inport: '<Root>/AppIn_G4T1DischargeFlt'
    *  Inport: '<Root>/AppIn_G4T2DischargeFlt'
    *  Inport: '<Root>/AppIn_VehL1'
+   *  Outport: '<Root>/AppOut_DerateFlg'
    *  Outport: '<Root>/AppOut_DischgCurrLimit'
    *  Outport: '<Root>/AppOut_Timer30'
    *  UnitDelay: '<S1>/udlySOC'
@@ -278,6 +290,7 @@ void NBMS_App_step(void)
            &NBMS_App_Inputs.G3DischgFault,
            &NBMS_App_Inputs.G4Type1DischargeFault,
            &NBMS_App_Inputs.G4Type2DischargeFault,
+           &NBMS_App_Outputs.AppOut_DerateFlg,
            &NBMS_App_Outputs.AppOut_DischgCurrLimit,
            &NBMS_App_Outputs.AppOut_Timer30,
            &(NBMS_App_DW.DischargeCurrentLimit_InstanceD.rtb),
@@ -320,6 +333,11 @@ void NBMS_App_step(void)
    *  ModelReference: '<S1>/State of Charge'
    */
   NBMS_App_DW.udlyMinCellVt_DSTATE = NBMS_App_B.VoltageMin;
+
+  /* Update for UnitDelay: '<S1>/udlyBMS_NM' incorporates:
+   *  Outport: '<Root>/AppOut_BMS_NM_Msg'
+   */
+  NBMS_App_DW.udlyBMS_NM_DSTATE = NBMS_App_Outputs.AppOut_BMS_NM_Msg;
 
   /* Update for UnitDelay: '<S1>/udlySoCFull' */
   NBMS_App_DW.udlySoCFull_DSTATE = NBMS_App_B.soc_full;

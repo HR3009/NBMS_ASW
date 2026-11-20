@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_CCCV'.
  *
- * Model version                  : 7.23
+ * Model version                  : 7.32
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Wed Nov 11 09:32:01 2026
+ * C/C++ source code generated on : Fri Nov 20 12:34:29 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -82,13 +82,9 @@ preprocessor word size checks.
 #define rtmSetErrorStatusPointer(rtm, val) ((rtm)->errorStatus = (val))
 #endif
 
-extern const real_T rtCP_pooled_kBbY2t9qTCco[130];
-extern const uint32_T rtCP_pooled_8CKvuowr1N9x[2];
+extern const uint32_T rtCP_pooled_4VxQjGiMgLkO[2];
 
-#define rtCP_ContinuousSafety_tableData rtCP_pooled_kBbY2t9qTCco /* Expression: [0 0 0 0 0 0 0 0 0 0 0 0 0;0 0 0 0 0 0 0 0 0 0 0 0 0;16 16 16 16 3 3 2 2 0 0 0 0 0;16 16 16 16 7 7 4 4 3 3 2 2 0;16 16 16 16 16 16 16 16 16 16 16 7 2;16 16 16 16 16 16 16 16 16 16 16 7 2;16 16 16 16 16 16 16 16 16 16 16 7 2;16 16 16 16 16 16 16 16 16 16 16 7 2;0 0 0 0 0 0 0 0 0 0 0 0 0;0 0 0 0 0 0 0 0 0 0 0 0 0]
-                                                                  * Referenced by: '<S3>/ContinuousSafety'
-                                                                  */
-#define rtCP_ContinuousSafety_maxIndex rtCP_pooled_8CKvuowr1N9x  /* Computed Parameter: rtCP_ContinuousSafety_maxIndex
+#define rtCP_ContinuousSafety_maxIndex rtCP_pooled_4VxQjGiMgLkO  /* Computed Parameter: rtCP_ContinuousSafety_maxIndex
                                                                   * Referenced by: '<S3>/ContinuousSafety'
                                                                   */
 #endif                                 /* NBMS_CCCV_private_h_ */

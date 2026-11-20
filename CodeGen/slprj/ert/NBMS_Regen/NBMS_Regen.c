@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_Regen'.
  *
- * Model version                  : 7.10
+ * Model version                  : 7.12
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Wed Nov 11 09:32:12 2026
+ * C/C++ source code generated on : Fri Nov 20 12:34:41 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -18,8 +18,8 @@
 #include "NBMS_Regen_types.h"
 #include <math.h>
 #include "look2_binlxpw.h"
-#include "NBMS_Regen_private.h"
 #include "DID.h"
+#include "NBMS_Regen_private.h"
 
 /* Named constants for Chart: '<Root>/CalcRegenOverCurrent' */
 #define NBMS_Regen_IN_Comparison       ((uint8_T)1U)
@@ -44,8 +44,8 @@ void NBMS_Regen(const real_T *rtu_MeasuredCurrent, const real_T rtu_Temp[6],
    *  MinMax: '<Root>/FindMaxTemp'
    */
   rtb_RegenCurrent_b = look2_binlxpw(rtb_RegenCurrent_b, *rtu_SOC,
-    rtCP_RgenCurrent_bp01Data, rtCP_RgenCurrent_bp02Data,
-    rtCP_RgenCurrent_tableData, rtCP_RgenCurrent_maxIndex, 9U);
+    &X_RCL_CONT_SAFETY_PACK[0], &Y_RCL_CONT_SAFETY_PACK[0],
+    &TABLE_RCL_CONT_SAFETY_PACK[0], rtCP_RgenCurrent_maxIndex, 9U);
 
   /* Chart: '<Root>/CalcRegenOverCurrent' */
   if (localDW->is_active_c3_NBMS_Regen == 0) {

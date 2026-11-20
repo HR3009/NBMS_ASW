@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_App'.
  *
- * Model version                  : 7.74
+ * Model version                  : 1.0
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Wed Nov 11 09:32:27 2026
+ * C/C++ source code generated on : Fri Nov 20 12:35:07 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -52,12 +52,14 @@
 typedef struct {
   real_T SensorVoltFail;               /* '<S1>/State of Charge' */
   Charger_Mode_Req_E ChrgReq;          /* '<S1>/UdlyChrgReq' */
+  BMS_NM_Msg_E BMS_NM_Msg;             /* '<S1>/udlyBMS_NM' */
   BMS_HVMosfet_STS_E HVMosfet;         /* '<S1>/udlyHvMOSFET' */
   int16_T usecAvgBatteryCurrent;       /* '<S1>/State of Charge' */
   int16_T VoltageMin;                  /* '<S1>/State of Charge' */
   int16_T AvgSensorVoltFail;           /* '<S1>/State of Charge' */
   uint8_T DisplaySoC;                  /* '<S1>/udlyDSoC' */
   uint8_T soc_full;                    /* '<S1>/Charger Profile' */
+  boolean_T Ignition_Sts;              /* '<S1>/BMS Mode State Machine' */
 } B_NBMS_App_T;
 
 /* Block states (default storage) for system '<Root>' */
@@ -66,6 +68,7 @@ typedef struct {
   BMS_HVMosfet_STS_E udlyHvMOSFET_DSTATE;/* '<S1>/udlyHvMOSFET' */
   Charger_Mode_Req_E UdlyChrgReq_DSTATE;/* '<S1>/UdlyChrgReq' */
   Charger_Mode_Req_E udlyChgReq_DSTATE;/* '<S1>/udlyChgReq' */
+  BMS_NM_Msg_E udlyBMS_NM_DSTATE;      /* '<S1>/udlyBMS_NM' */
   BMS_MODE_E udlyBmsMode1_DSTATE;      /* '<S1>/udlyBmsMode1' */
   int16_T udlyMinCellVt_DSTATE;        /* '<S1>/udlyMinCellVt' */
   uint8_T udlyDSoC_DSTATE;             /* '<S1>/udlyDSoC' */
@@ -118,6 +121,7 @@ typedef struct {
   boolean_T BattPackTempSensorFailure; /* '<Root>/AppIn_BattPackTempSnsrFail' */
   boolean_T VoltImbalanceError;        /* '<Root>/AppIn_VltImbFlt' */
   boolean_T TempImbalanceWarn;         /* '<Root>/AppIn_TempImbWarn' */
+  boolean_T EEPROMSoCWarn15;           /* '<Root>/AppIn_EEPROMSoCWarn15' */
 } NBMS_App_Inputs_St;
 
 /* Storage class 'Outputs', for system '<Root>' */
@@ -138,10 +142,12 @@ typedef struct {
   real_T AppOut_RegenCurrent;          /* '<Root>/AppOut_RegenCurrent' */
   BMS_HVMosfet_STS_E AppOut_HVMosfet;  /* '<Root>/AppOut_HVMosfet' */
   Charger_Mode_Req_E AppOut_ChgModeReq;/* '<Root>/AppOut_ChgModeReq' */
-  BMS_MODE_E AppOut_BMSMODE;           /* '<Root>/AppOut_BMSMODE' */
   BMS_NM_Msg_E AppOut_BMS_NM_Msg;      /* '<Root>/AppOut_BMS_NM_Msg' */
+  BMS_MODE_E AppOut_BMSMODE;           /* '<Root>/AppOut_BMSMODE' */
   BMS_PMosfet_STS_E AppOut_PrechgMosfet;/* '<Root>/AppOut_PrechgMosfet' */
   BMS_DCDCMosfet_STS_E AppOut_DCDCMosfet;/* '<Root>/AppOut_DCDCMosfet' */
+  BMS_BattTempDerate_E AppOut_BattTempDerating;/* '<Root>/AppOut_BattTempDerating' */
+  BMS_BattSoCDerate_E AppOut_BattSoCDerating;/* '<Root>/AppOut_BattSoCDerating' */
   uint16_T AppOut_SOCcc;               /* '<Root>/AppOut_SOCcc' */
   uint16_T AppOut_SOCocvavg;           /* '<Root>/AppOut_SOCocvavg' */
   uint8_T AppOut_DisplaySoC;           /* '<Root>/AppOut_DisplaySoC' */

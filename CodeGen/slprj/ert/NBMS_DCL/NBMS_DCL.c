@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_DCL'.
  *
- * Model version                  : 7.9
+ * Model version                  : 7.14
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Wed Nov 11 09:32:04 2026
+ * C/C++ source code generated on : Fri Nov 20 12:34:33 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -33,9 +33,9 @@ void NBMS_DCL(const VEH_STT_LVL1_E *rtu_Veh_Lvl1, const uint8_T *rtu_SOC, const
               real_T rtu_Temperature[6], const real_T *rtu_Current, const
               boolean_T *rtu_G3_Common_Flt, const boolean_T *rtu_G4_Common_Flt,
               const boolean_T *rtu_G3_Dischg_Flt, const boolean_T
-              *rtu_G4T1_Dischg_Flt, const boolean_T *rtu_G4T2_Dischg_Flt, real_T
-              *rty_Dischg_CurrentLimit, real_T *rty_Timer30, B_NBMS_DCL_c_T
-              *localB, DW_NBMS_DCL_f_T *localDW)
+              *rtu_G4T1_Dischg_Flt, const boolean_T *rtu_G4T2_Dischg_Flt, const
+              boolean_T *rtu_derate_flg, real_T *rty_Dischg_CurrentLimit, real_T
+              *rty_Timer30, B_NBMS_DCL_c_T *localB, DW_NBMS_DCL_f_T *localDW)
 {
   real_T maxV;
   int32_T k;
@@ -58,8 +58,9 @@ void NBMS_DCL(const VEH_STT_LVL1_E *rtu_Veh_Lvl1, const uint8_T *rtu_SOC, const
      *  DataTypeConversion: '<S3>/COnvToDouble'
      *  MinMax: '<S3>/FindMaxTemp'
      */
-    localB->CurrentLimit = look2_binlxpw(maxV, *rtu_SOC, &TEMP[0], &SOC[0],
-      rtCP_Continuous_Safety_Pack_tab, rtCP_Continuous_Safety_Pack_max, 10U);
+    localB->CurrentLimit = look2_binlxpw(maxV, *rtu_SOC,
+      &X_DCL_CONT_SAFETY_PACK[0], &Y_DCL_CONT_SAFETY_PACK[0],
+      &TABLE_DCL_CONT_SAFETY_PACK[0], rtCP_Continuous_Safety_Pack_max, 10U);
 
     /* RelationalOperator: '<S3>/ChkBattCurrAboveSafetyLt' incorporates:
      *  Abs: '<S3>/Absolute'
@@ -138,8 +139,9 @@ void NBMS_DCL(const VEH_STT_LVL1_E *rtu_Veh_Lvl1, const uint8_T *rtu_SOC, const
        *  MinMax: '<S3>/FindMaxTemp'
        *  Switch: '<S3>/SelCurrentLimit'
        */
-      localB->CurrentLimit = look2_binlxpw(maxV, *rtu_SOC, &TEMP[0], &SOC[0],
-        rtCP_u0s_Safety_Pack_tableData, rtCP_u0s_Safety_Pack_maxIndex, 10U);
+      localB->CurrentLimit = look2_binlxpw(maxV, *rtu_SOC,
+        &X_DCL_30sSAFETY_PACK[0], &Y_DCL_30sSAFETY_PACK[0],
+        &TABLE_DCL_30sSAFETY_PACK[0], rtCP_u0s_Safety_Pack_maxIndex, 10U);
     }
 
     /* End of Switch: '<S3>/SelCurrentLimit' */
@@ -148,19 +150,38 @@ void NBMS_DCL(const VEH_STT_LVL1_E *rtu_Veh_Lvl1, const uint8_T *rtu_SOC, const
   /* End of RelationalOperator: '<S2>/Compare' */
   /* End of Outputs for SubSystem: '<S1>/DCL' */
 
-  /* Switch: '<S1>/selDCL' incorporates:
-   *  Constant: '<S1>/ZeroDCL'
+  /* Switch: '<S1>/selDCL1' incorporates:
+   *  Constant: '<S1>/DerateDCL'
    *  Logic: '<Root>/ChkG4DischgFlt'
    *  Logic: '<S1>/ChkForFault'
+   *  MinMax: '<S1>/FindMin'
+   *  Switch: '<S1>/selDCL'
    */
-  if (*rtu_G3_Common_Flt || *rtu_G4_Common_Flt || *rtu_G3_Dischg_Flt ||
-      (*rtu_G4T1_Dischg_Flt || *rtu_G4T2_Dischg_Flt)) {
+  if (*rtu_derate_flg) {
+    /* Switch: '<S1>/selDCL' incorporates:
+     *  Constant: '<S1>/ZeroDCL'
+     *  Logic: '<Root>/ChkG4DischgFlt'
+     *  Logic: '<S1>/ChkForFault'
+     */
+    if (*rtu_G3_Common_Flt || *rtu_G4_Common_Flt || *rtu_G3_Dischg_Flt ||
+        (*rtu_G4T1_Dischg_Flt || *rtu_G4T2_Dischg_Flt)) {
+      maxV = 0.0;
+    } else {
+      maxV = localB->CurrentLimit;
+    }
+
+    *rty_Dischg_CurrentLimit = fmin(50.0, maxV);
+  } else if (*rtu_G3_Common_Flt || *rtu_G4_Common_Flt || *rtu_G3_Dischg_Flt || (*
+              rtu_G4T1_Dischg_Flt || *rtu_G4T2_Dischg_Flt)) {
+    /* Switch: '<S1>/selDCL' incorporates:
+     *  Constant: '<S1>/ZeroDCL'
+     */
     *rty_Dischg_CurrentLimit = 0.0;
   } else {
     *rty_Dischg_CurrentLimit = localB->CurrentLimit;
   }
 
-  /* End of Switch: '<S1>/selDCL' */
+  /* End of Switch: '<S1>/selDCL1' */
 }
 
 /* Model initialize function */

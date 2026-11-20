@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_ChargeOCV'.
  *
- * Model version                  : 7.2
+ * Model version                  : 7.12
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Tue Nov 10 18:06:02 2026
+ * C/C++ source code generated on : Fri Nov 20 12:34:48 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -17,6 +17,7 @@
 #include "rtwtypes.h"
 #include "NBMS_ChargeOCV_private.h"
 #include "look2_binlcapw.h"
+#include "DID.h"
 
 /* Disable for referenced model: 'NBMS_ChargeOCV' */
 void NBMS_ChargeOCV_Disable(real_T *rty_Initial_SOC, DW_NBMS_ChargeOCV_f_T
@@ -24,7 +25,7 @@ void NBMS_ChargeOCV_Disable(real_T *rty_Initial_SOC, DW_NBMS_ChargeOCV_f_T
 {
   if (localDW->TmpModelReferenceSubsystem_MODE) {
     /* Outputs for Enabled SubSystem: '<Root>/TmpModelReferenceSubsystem' incorporates:
-     *  EnablePort: '<Root>/Enable'
+     *  EnablePort: '<Root>/EnableWhenValid'
      */
     /* Disable for Outport: '<Root>/Initial_SOC' */
     *rty_Initial_SOC = 0.0;
@@ -34,119 +35,117 @@ void NBMS_ChargeOCV_Disable(real_T *rty_Initial_SOC, DW_NBMS_ChargeOCV_f_T
 
 /* Output and update for referenced model: 'NBMS_ChargeOCV' */
 void NBMS_ChargeOCV(const real_T *rtu_Temp, const int16_T *rtu_OCV, const
-                    boolean_T *rtu_Enable, real_T *rty_Initial_SOC,
+                    boolean_T *rtu_EnableWhenValid, real_T *rty_Initial_SOC,
                     DW_NBMS_ChargeOCV_f_T *localDW)
 {
-  real_T rtb_Gain;
-  real_T rtb_UnitDelay;
+  real_T rtb_SoC;
+  real_T rtb_delayCalculatedOCV;
   real_T tmp;
-  int32_T s1_iter;
+  int32_T IteratedSoC;
 
   /* Outputs for Enabled SubSystem: '<Root>/TmpModelReferenceSubsystem' incorporates:
-   *  EnablePort: '<Root>/Enable'
+   *  EnablePort: '<Root>/EnableWhenValid'
    */
-  if (*rtu_Enable) {
+  if (*rtu_EnableWhenValid) {
     localDW->TmpModelReferenceSubsystem_MODE = true;
 
     /* Outputs for Iterator SubSystem: '<Root>/OCV vs SOC @ all Temperatures' incorporates:
-     *  ForIterator: '<S1>/For Iterator'
+     *  ForIterator: '<S1>/SoCIteration'
      */
-    /* InitializeConditions for UnitDelay: '<S1>/Unit Delay' */
-    localDW->UnitDelay_DSTATE = 0.0;
+    /* InitializeConditions for UnitDelay: '<S1>/udlyCalcOCV' */
+    localDW->udlyCalcOCV_DSTATE = 0.0;
 
-    /* InitializeConditions for UnitDelay: '<S1>/Unit Delay2' */
-    localDW->UnitDelay2_DSTATE = 0.0;
+    /* InitializeConditions for UnitDelay: '<S1>/udlySoC' */
+    localDW->udlySoC_DSTATE = 0.0;
 
-    /* InitializeConditions for UnitDelay: '<S1>/Unit Delay1' */
-    localDW->UnitDelay1_DSTATE = 0.0;
-    for (s1_iter = 0; s1_iter < 501; s1_iter++) {
-      /* UnitDelay: '<S1>/Unit Delay' */
-      rtb_UnitDelay = localDW->UnitDelay_DSTATE;
+    /* InitializeConditions for UnitDelay: '<S1>/udlyInitialSoC' */
+    localDW->udlyInitialSoC_DSTATE = 0.0;
+    for (IteratedSoC = 0; IteratedSoC < 501; IteratedSoC++) {
+      /* UnitDelay: '<S1>/udlyCalcOCV' */
+      rtb_delayCalculatedOCV = localDW->udlyCalcOCV_DSTATE;
 
-      /* Gain: '<S1>/Gain' */
-      rtb_Gain = 0.2 * (real_T)s1_iter;
+      /* Gain: '<S1>/scaleSoC' */
+      rtb_SoC = 0.2 * (real_T)IteratedSoC;
 
       /* Lookup_n-D: '<S1>/OCV vs SOC at all Temp' incorporates:
-       *  Gain: '<S1>/Gain'
-       *  UnitDelay: '<S1>/Unit Delay'
+       *  Gain: '<S1>/scaleSoC'
+       *  UnitDelay: '<S1>/udlyCalcOCV'
        */
-      localDW->UnitDelay_DSTATE = look2_binlcapw(rtb_Gain, *rtu_Temp,
-        rtCP_OCVvsSOCatallTemp_bp01Data, rtCP_OCVvsSOCatallTemp_bp02Data,
-        rtCP_OCVvsSOCatallTemp_tableDat, rtCP_OCVvsSOCatallTemp_maxIndex, 21U);
+      localDW->udlyCalcOCV_DSTATE = look2_binlcapw(rtb_SoC, *rtu_Temp,
+        &X_SOC_VS_OCV_CHG[0], &Y_SOC_VS_OCV_CHG[0], &TABLE_SOC_VS_OCV_CHG[0],
+        rtCP_OCVvsSOCatallTemp_maxIndex, 21U);
 
-      /* RelationalOperator: '<S1>/Relational Operator2' incorporates:
-       *  RelationalOperator: '<S1>/Relational Operator'
-       *  RelationalOperator: '<S1>/Relational Operator1'
-       *  RelationalOperator: '<S1>/Relational Operator3'
-       *  Sum: '<S1>/Add2'
-       *  Switch: '<S1>/Switch'
-       *  Switch: '<S1>/Switch1'
-       *  Switch: '<S1>/Switch2'
+      /* RelationalOperator: '<S1>/ChkOCVaboveCalcOCV' incorporates:
+       *  RelationalOperator: '<S1>/ChkLowerOCVBound'
+       *  RelationalOperator: '<S1>/ChkOCVBelowCalcOCV'
+       *  RelationalOperator: '<S1>/ChkUpperOCVBound'
+       *  Sum: '<S1>/CalcDiffOCV'
+       *  Switch: '<S1>/latchInitialSoC'
+       *  Switch: '<S1>/selInitalSoC'
+       *  Switch: '<S1>/selSoC'
        */
       tmp = (real_T)*rtu_OCV * 0.001;
 
-      /* Switch: '<S1>/Switch1' incorporates:
-       *  Constant: '<S1>/Constant'
-       *  Constant: '<S1>/Constant1'
-       *  Logic: '<S1>/AND'
+      /* Switch: '<S1>/selInitalSoC' incorporates:
+       *  Constant: '<S1>/MaxSoC'
+       *  Constant: '<S1>/MinSoC'
+       *  Logic: '<S1>/DetectOCVCrossing '
+       *  Lookup_n-D: '<S1>/OCV vs SOC at Temp'
        *  Lookup_n-D: '<S1>/OCV vs SOC at all Temp1'
-       *  Lookup_n-D: '<S1>/OCV vs SOC at all Temp2'
-       *  RelationalOperator: '<S1>/Relational Operator'
-       *  RelationalOperator: '<S1>/Relational Operator1'
-       *  RelationalOperator: '<S1>/Relational Operator2'
-       *  RelationalOperator: '<S1>/Relational Operator3'
-       *  Switch: '<S1>/Switch'
-       *  Switch: '<S1>/Switch2'
-       *  UnitDelay: '<S1>/Unit Delay'
+       *  RelationalOperator: '<S1>/ChkLowerOCVBound'
+       *  RelationalOperator: '<S1>/ChkOCVBelowCalcOCV'
+       *  RelationalOperator: '<S1>/ChkOCVaboveCalcOCV'
+       *  RelationalOperator: '<S1>/ChkUpperOCVBound'
+       *  Switch: '<S1>/latchInitialSoC'
+       *  Switch: '<S1>/selSoC'
+       *  UnitDelay: '<S1>/udlyCalcOCV'
        */
-      if (tmp >= look2_binlcapw(100.0, *rtu_Temp,
-           rtCP_OCVvsSOCatallTemp1_bp01Dat, rtCP_OCVvsSOCatallTemp1_bp02Dat,
-           rtCP_OCVvsSOCatallTemp1_tableDa, rtCP_OCVvsSOCatallTemp1_maxInde, 21U))
-      {
-        rtb_UnitDelay = 100.0;
-      } else if (tmp <= look2_binlcapw(0.0, *rtu_Temp,
-                  rtCP_OCVvsSOCatallTemp2_bp01Dat,
-                  rtCP_OCVvsSOCatallTemp2_bp02Dat,
-                  rtCP_OCVvsSOCatallTemp2_tableDa,
-                  rtCP_OCVvsSOCatallTemp2_maxInde, 21U)) {
-        /* Switch: '<S1>/Switch2' incorporates:
-         *  Constant: '<S1>/Constant1'
+      if (tmp >= look2_binlcapw(100.0, *rtu_Temp, &X_SOC_VS_OCV_CHG[0],
+           &Y_SOC_VS_OCV_CHG[0], &TABLE_SOC_VS_OCV_CHG[0],
+           rtCP_OCVvsSOCatallTemp1_maxInde, 21U)) {
+        rtb_delayCalculatedOCV = 100.0;
+      } else if (tmp <= look2_binlcapw(0.0, *rtu_Temp, &X_SOC_VS_OCV_CHG[0],
+                  &Y_SOC_VS_OCV_CHG[0], &TABLE_SOC_VS_OCV_CHG[0],
+                  rtCP_OCVvsSOCatTemp_maxIndex, 21U)) {
+        /* Switch: '<S1>/selSoC' incorporates:
+         *  Constant: '<S1>/MinSoC'
          */
-        rtb_UnitDelay = 0.0;
-      } else if ((rtb_UnitDelay < tmp) && (localDW->UnitDelay_DSTATE >= tmp)) {
-        /* Switch: '<S1>/Switch' incorporates:
-         *  Product: '<S1>/Divide'
-         *  Product: '<S1>/Product'
-         *  Sum: '<S1>/Add'
-         *  Sum: '<S1>/Add1'
-         *  Sum: '<S1>/Add2'
-         *  Sum: '<S1>/Add3'
-         *  Switch: '<S1>/Switch2'
-         *  UnitDelay: '<S1>/Unit Delay'
-         *  UnitDelay: '<S1>/Unit Delay2'
+        rtb_delayCalculatedOCV = 0.0;
+      } else if ((localDW->udlyCalcOCV_DSTATE >= tmp) && (rtb_delayCalculatedOCV
+                  < tmp)) {
+        /* Switch: '<S1>/latchInitialSoC' incorporates:
+         *  Product: '<S1>/CalcSoC'
+         *  Product: '<S1>/divSoCbyOCV'
+         *  Sum: '<S1>/CalcDiffOCV'
+         *  Sum: '<S1>/CalcDiffSoC'
+         *  Sum: '<S1>/CalcDiffcalcOCV'
+         *  Sum: '<S1>/SoCDifference'
+         *  Switch: '<S1>/selSoC'
+         *  UnitDelay: '<S1>/udlyCalcOCV'
+         *  UnitDelay: '<S1>/udlySoC'
          */
-        rtb_UnitDelay = rtb_Gain - (rtb_Gain - localDW->UnitDelay2_DSTATE) /
-          (localDW->UnitDelay_DSTATE - rtb_UnitDelay) * (tmp -
-          localDW->UnitDelay_DSTATE);
+        rtb_delayCalculatedOCV = rtb_SoC - (rtb_SoC - localDW->udlySoC_DSTATE) /
+          (localDW->udlyCalcOCV_DSTATE - rtb_delayCalculatedOCV) * (tmp -
+          localDW->udlyCalcOCV_DSTATE);
       } else {
-        /* Switch: '<S1>/Switch' incorporates:
-         *  Switch: '<S1>/Switch2'
-         *  UnitDelay: '<S1>/Unit Delay1'
+        /* Switch: '<S1>/latchInitialSoC' incorporates:
+         *  Switch: '<S1>/selSoC'
+         *  UnitDelay: '<S1>/udlyInitialSoC'
          */
-        rtb_UnitDelay = localDW->UnitDelay1_DSTATE;
+        rtb_delayCalculatedOCV = localDW->udlyInitialSoC_DSTATE;
       }
 
-      /* Update for UnitDelay: '<S1>/Unit Delay2' */
-      localDW->UnitDelay2_DSTATE = rtb_Gain;
+      /* Update for UnitDelay: '<S1>/udlySoC' */
+      localDW->udlySoC_DSTATE = rtb_SoC;
 
-      /* Update for UnitDelay: '<S1>/Unit Delay1' */
-      localDW->UnitDelay1_DSTATE = rtb_UnitDelay;
+      /* Update for UnitDelay: '<S1>/udlyInitialSoC' */
+      localDW->udlyInitialSoC_DSTATE = rtb_delayCalculatedOCV;
     }
 
     /* End of Outputs for SubSystem: '<Root>/OCV vs SOC @ all Temperatures' */
 
     /* SignalConversion generated from: '<Root>/Initial_SOC' */
-    *rty_Initial_SOC = rtb_UnitDelay;
+    *rty_Initial_SOC = rtb_delayCalculatedOCV;
   } else {
     NBMS_ChargeOCV_Disable(rty_Initial_SOC, localDW);
   }

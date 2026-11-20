@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_SoC'.
  *
- * Model version                  : 7.73
+ * Model version                  : 7.101
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Wed Nov 11 09:32:21 2026
+ * C/C++ source code generated on : Fri Nov 20 12:35:00 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -16,6 +16,26 @@
 #ifndef NBMS_SoC_types_h_
 #define NBMS_SoC_types_h_
 #include "rtwtypes.h"
+#ifndef DEFINED_TYPEDEF_FOR_BMS_BattSoCDerate_E_
+#define DEFINED_TYPEDEF_FOR_BMS_BattSoCDerate_E_
+
+typedef enum {
+  SOC_No_Derating = 0,                 /* Default value */
+  SOC_Derating
+} BMS_BattSoCDerate_E;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_BMS_BattTempDerate_E_
+#define DEFINED_TYPEDEF_FOR_BMS_BattTempDerate_E_
+
+typedef enum {
+  No_Derating = 0,                     /* Default value */
+  Derating
+} BMS_BattTempDerate_E;
+
+#endif
+
 #ifndef DEFINED_TYPEDEF_FOR_BMS_MODE_E_
 #define DEFINED_TYPEDEF_FOR_BMS_MODE_E_
 

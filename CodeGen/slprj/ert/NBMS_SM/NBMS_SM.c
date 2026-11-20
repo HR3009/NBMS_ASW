@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_SM'.
  *
- * Model version                  : 7.16
+ * Model version                  : 7.27
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Tue Nov 10 18:06:00 2026
+ * C/C++ source code generated on : Fri Nov 20 12:34:45 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -89,7 +89,8 @@ void NBMS_SM(const boolean_T *rtu_AppIn_HardwiredIgn, const boolean_T
              *rtu_AppIn_G4ChargeFlt, const boolean_T *rtu_AppIn_OBCHeartbeatFail,
              const uint8_T *rtu_DisplaySoc, const int16_T *rtu_MinCellVolt,
              const boolean_T *rtu_AppIn_G4T1DischargeFlt, const boolean_T
-             *rtu_AppIn_G4T2DischargeFlt, BMS_MODE_E *rty_sm_BMSMODE,
+             *rtu_AppIn_G4T2DischargeFlt, const BMS_NM_Msg_E *rtu_BMS_NM_Msg,
+             BMS_MODE_E *rty_sm_BMSMODE, boolean_T *rty_Ignition_Sts,
              DW_NBMS_SM_f_T *localDW)
 {
   boolean_T G4DischargeFault;
@@ -99,7 +100,6 @@ void NBMS_SM(const boolean_T *rtu_AppIn_HardwiredIgn, const boolean_T
 
   /* Chart: '<Root>/BMS_MODE_STATE_MACHINE' incorporates:
    *  DataTypeConversion: '<Root>/ConvertToDouble'
-   *  Logic: '<Root>/OR'
    */
   if (localDW->temporalCounter_i1 < 127) {
     localDW->temporalCounter_i1++;
@@ -107,8 +107,14 @@ void NBMS_SM(const boolean_T *rtu_AppIn_HardwiredIgn, const boolean_T
 
   localDW->SoC_LED_SW_prev = localDW->SoC_LED_SW_start;
   localDW->SoC_LED_SW_start = *rtu_AppIn_SoCLEDSW;
+  localDW->OBC_Wakeup_prev = localDW->OBC_Wakeup_start;
+  localDW->OBC_Wakeup_start = *rtu_AppIn_OBCwakeup;
+  localDW->RTC_Wakeup_prev = localDW->RTC_Wakeup_start;
+  localDW->RTC_Wakeup_start = *rtu_AppIn_RTCwakeup;
   if (localDW->is_active_c3_NBMS_SM == 0) {
     localDW->SoC_LED_SW_prev = *rtu_AppIn_SoCLEDSW;
+    localDW->OBC_Wakeup_prev = *rtu_AppIn_OBCwakeup;
+    localDW->RTC_Wakeup_prev = *rtu_AppIn_RTCwakeup;
     localDW->is_active_c3_NBMS_SM = 1U;
     localDW->is_c3_NBMS_SM = NBMS_SM_IN_Sleep;
     *rty_sm_BMSMODE = BMS_SLEEP;
@@ -122,7 +128,8 @@ void NBMS_SM(const boolean_T *rtu_AppIn_HardwiredIgn, const boolean_T
         *rty_sm_BMSMODE = BMS_FAULT;
       } else if (*rtu_AppIn_OBCHeartbeatFail || !*rtu_AppIn_OBCHVIL ||
                  (*rtu_Chrg_mode_req == Charge_Complete) || (*rtu_AppIn_ChgMode ==
-                  Error) || (*rtu_AppIn_CVmodeTimer == Expired)) {
+                  Error) || (*rtu_AppIn_CVmodeTimer == Expired) ||
+                 (*rtu_BMS_NM_Msg == SLEEP)) {
         localDW->temporalCounter_i1 = 0U;
         localDW->is_c3_NBMS_SM = NBMS_SM_IN_Standby;
         *rty_sm_BMSMODE = BMS_STANDBY;
@@ -132,9 +139,8 @@ void NBMS_SM(const boolean_T *rtu_AppIn_HardwiredIgn, const boolean_T
       break;
 
      case NBMS_SM_IN_Discharge:
-      if (*rtu_AppIn_G3CommonFlt || (*rtu_AppIn_G4T1DischargeFlt ||
-           *rtu_AppIn_G4T2DischargeFlt) || *rtu_AppIn_G3DischargeFlt ||
-          *rtu_AppIn_G4CommonFlt) {
+      if (*rtu_AppIn_G3CommonFlt || G4DischargeFault ||
+          *rtu_AppIn_G3DischargeFlt || *rtu_AppIn_G4CommonFlt) {
         localDW->temporalCounter_i1 = 0U;
         localDW->is_c3_NBMS_SM = NBMS_SM_IN_Fault;
         *rty_sm_BMSMODE = BMS_FAULT;
@@ -160,8 +166,11 @@ void NBMS_SM(const boolean_T *rtu_AppIn_HardwiredIgn, const boolean_T
      case NBMS_SM_IN_Sleep:
       if (*rtu_AppIn_HardwiredIgn || ((localDW->SoC_LED_SW_prev !=
             localDW->SoC_LED_SW_start) && localDW->SoC_LED_SW_start) ||
-          (!*rtu_AppIn_OBCHeartbeatFail && (*rtu_AppIn_OBCwakeup == Wake_Up)) ||
-          *rtu_AppIn_RTCwakeup) {
+          (!*rtu_AppIn_OBCHeartbeatFail && ((localDW->OBC_Wakeup_prev !=
+             localDW->OBC_Wakeup_start) && (localDW->OBC_Wakeup_start == Wake_Up)))
+          || ((localDW->RTC_Wakeup_prev != localDW->RTC_Wakeup_start) &&
+              localDW->RTC_Wakeup_start)) {
+        *rty_Ignition_Sts = true;
         localDW->temporalCounter_i1 = 0U;
         localDW->is_c3_NBMS_SM = NBMS_SM_IN_Standby;
         *rty_sm_BMSMODE = BMS_STANDBY;
@@ -175,10 +184,12 @@ void NBMS_SM(const boolean_T *rtu_AppIn_HardwiredIgn, const boolean_T
       if (!*rtu_AppIn_HardwiredIgn && (*rtu_HV_Mosfet == HV_DISCONNECTED) &&
           (!*rtu_AppIn_RTCwakeup || (*rtu_AppIn_OBCwakeup != Wake_Up)) &&
           (localDW->temporalCounter_i1 >= 100)) {
+        *rty_Ignition_Sts = false;
         localDW->is_c3_NBMS_SM = NBMS_SM_IN_Sleep;
         *rty_sm_BMSMODE = BMS_SLEEP;
       } else if (*rtu_AppIn_G4CommonFlt || *rtu_AppIn_G3CommonFlt ||
-                 *rtu_AppIn_G4ChargeFlt) {
+                 *rtu_AppIn_G4ChargeFlt || G4DischargeFault ||
+                 *rtu_AppIn_G3DischargeFlt) {
         localDW->temporalCounter_i1 = 0U;
         localDW->is_c3_NBMS_SM = NBMS_SM_IN_Fault;
         *rty_sm_BMSMODE = BMS_FAULT;
