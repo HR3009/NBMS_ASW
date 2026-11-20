@@ -571,23 +571,23 @@ RegenAllowedTime.CoderInfo.CustomAttributes.DefinitionFile='DID.c';
     Y_DCIR_DISCH.CoderInfo.CustomAttributes.HeaderFile = 'DID.h';
     Y_DCIR_DISCH.CoderInfo.CustomAttributes.DefinitionFile = 'DID.c';
 
-    % TABLE_DCIR_DISCH (7x11 Matrix: Temp [BP1] x SOC [BP2])
-    TABLE_DCIR_DISCH = Simulink.Parameter;
-    %                               0      10      20      30      40      50      60      70      80      90     100   
-    TABLE_DCIR_DISCH.Value = [
-                                0.4429, 0.4429, 0.1677, 0.1473, 0.1409, 0.1403, 0.1384, 0.1409, 0.1428, 0.1421, 0.1510;   % -20
-                                0.2169, 0.2169, 0.0906, 0.0755, 0.0721, 0.0709, 0.0713, 0.0732, 0.0738, 0.0709, 0.0772;   % -10 
-                                0.1281, 0.1281, 0.0657, 0.0554, 0.0530, 0.0530, 0.0526, 0.0531, 0.0556, 0.0525, 0.0558;   %   0 
-                                0.0808, 0.0808, 0.0453, 0.0396, 0.0389, 0.0387, 0.0385, 0.0396, 0.0407, 0.0380, 0.0417;   %  10 
-                                0.1135, 0.0531, 0.0333, 0.0290, 0.0284, 0.0284, 0.0280, 0.0284, 0.0299, 0.0277, 0.0296;   %  25 
-                                0.0885, 0.0407, 0.0269, 0.0233, 0.0227, 0.0229, 0.0219, 0.0228, 0.0239, 0.0210, 0.0234;   %  45 
-                                0.0860, 0.0373, 0.0250, 0.0221, 0.0220, 0.0218, 0.0207, 0.0214, 0.0224, 0.0195, 0.0220    %  60 
-                            ];
-    TABLE_DCIR_DISCH.DataType = 'double';
-    TABLE_DCIR_DISCH.CoderInfo.StorageClass = 'Custom';
-    TABLE_DCIR_DISCH.CoderInfo.CustomStorageClass = 'ExportToFile';
-    TABLE_DCIR_DISCH.CoderInfo.CustomAttributes.HeaderFile = 'DID.h';
-    TABLE_DCIR_DISCH.CoderInfo.CustomAttributes.DefinitionFile = 'DID.c';
+    % % TABLE_DCIR_DISCH (7x11 Matrix: Temp [BP1] x SOC [BP2])
+    % TABLE_DCIR_DISCH = Simulink.Parameter;
+    % %                               0      10      20      30      40      50      60      70      80      90     100   
+    % TABLE_DCIR_DISCH.Value = [
+    %                             0.4429, 0.4429, 0.1677, 0.1473, 0.1409, 0.1403, 0.1384, 0.1409, 0.1428, 0.1421, 0.1510;   % -20
+    %                             0.2169, 0.2169, 0.0906, 0.0755, 0.0721, 0.0709, 0.0713, 0.0732, 0.0738, 0.0709, 0.0772;   % -10 
+    %                             0.1281, 0.1281, 0.0657, 0.0554, 0.0530, 0.0530, 0.0526, 0.0531, 0.0556, 0.0525, 0.0558;   %   0 
+    %                             0.0808, 0.0808, 0.0453, 0.0396, 0.0389, 0.0387, 0.0385, 0.0396, 0.0407, 0.0380, 0.0417;   %  10 
+    %                             0.1135, 0.0531, 0.0333, 0.0290, 0.0284, 0.0284, 0.0280, 0.0284, 0.0299, 0.0277, 0.0296;   %  25 
+    %                             0.0885, 0.0407, 0.0269, 0.0233, 0.0227, 0.0229, 0.0219, 0.0228, 0.0239, 0.0210, 0.0234;   %  45 
+    %                             0.0860, 0.0373, 0.0250, 0.0221, 0.0220, 0.0218, 0.0207, 0.0214, 0.0224, 0.0195, 0.0220    %  60 
+    %                         ];
+    % TABLE_DCIR_DISCH.DataType = 'double';
+    % TABLE_DCIR_DISCH.CoderInfo.StorageClass = 'Custom';
+    % TABLE_DCIR_DISCH.CoderInfo.CustomStorageClass = 'ExportToFile';
+    % TABLE_DCIR_DISCH.CoderInfo.CustomAttributes.HeaderFile = 'DID.h';
+    % TABLE_DCIR_DISCH.CoderInfo.CustomAttributes.DefinitionFile = 'DID.c';
 
 % DCIR - CHARGE (Ohms)
     % X_DCIR_CHG 
@@ -608,20 +608,20 @@ RegenAllowedTime.CoderInfo.CustomAttributes.DefinitionFile='DID.c';
     Y_DCIR_CHG.CoderInfo.CustomAttributes.HeaderFile = 'DID.h';
     Y_DCIR_CHG.CoderInfo.CustomAttributes.DefinitionFile = 'DID.c';
 
-    % TABLE_DCIR_CHG 
-    TABLE_DCIR_CHG = Simulink.Parameter;
-    %                             0      10      20      30      40      50      60      70      80      90     100   
-    TABLE_DCIR_CHG.Value = [
-                               0.1796, 0.1796, 0.1427, 0.2163, 0.2033, 0.2013, 0.2128, 0.2128, 0.2128, 0.2128, 0.2128;   % -20  
-                               0.0883, 0.0883, 0.0672, 0.1006, 0.0948, 0.0949, 0.1067, 0.1035, 0.1035, 0.1035, 0.1035;   % -10 
-                               0.0742, 0.0742, 0.0579, 0.0531, 0.0482, 0.0485, 0.0584, 0.0576, 0.0631, 0.0631, 0.0631;   %   0 
-                               0.0554, 0.0554, 0.0407, 0.0412, 0.0380, 0.0390, 0.0386, 0.0389, 0.0429, 0.0402, 0.0402;   %  10 
-                               0.0590, 0.0414, 0.0282, 0.0291, 0.0272, 0.0277, 0.0285, 0.0271, 0.0286, 0.0269, 0.0269;   %  25 
-                               0.0479, 0.0358, 0.0221, 0.0233, 0.0215, 0.0217, 0.0218, 0.0212, 0.0220, 0.0195, 0.0195;   %  45 
-                               0.0448, 0.0327, 0.0200, 0.0219, 0.0202, 0.0204, 0.0205, 0.0195, 0.0206, 0.0181, 0.0181;   %  60 
-                          ];
-    TABLE_DCIR_CHG.DataType = 'double';
-    TABLE_DCIR_CHG.CoderInfo.StorageClass = 'Custom';
-    TABLE_DCIR_CHG.CoderInfo.CustomStorageClass = 'ExportToFile';
-    TABLE_DCIR_CHG.CoderInfo.CustomAttributes.HeaderFile = 'DID.h';
-    TABLE_DCIR_CHG.CoderInfo.CustomAttributes.DefinitionFile = 'DID.c';
+    % % TABLE_DCIR_CHG 
+    % TABLE_DCIR_CHG = Simulink.Parameter;
+    % %                             0      10      20      30      40      50      60      70      80      90     100   
+    % TABLE_DCIR_CHG.Value = [
+    %                            0.1796, 0.1796, 0.1427, 0.2163, 0.2033, 0.2013, 0.2128, 0.2128, 0.2128, 0.2128, 0.2128;   % -20  
+    %                            0.0883, 0.0883, 0.0672, 0.1006, 0.0948, 0.0949, 0.1067, 0.1035, 0.1035, 0.1035, 0.1035;   % -10 
+    %                            0.0742, 0.0742, 0.0579, 0.0531, 0.0482, 0.0485, 0.0584, 0.0576, 0.0631, 0.0631, 0.0631;   %   0 
+    %                            0.0554, 0.0554, 0.0407, 0.0412, 0.0380, 0.0390, 0.0386, 0.0389, 0.0429, 0.0402, 0.0402;   %  10 
+    %                            0.0590, 0.0414, 0.0282, 0.0291, 0.0272, 0.0277, 0.0285, 0.0271, 0.0286, 0.0269, 0.0269;   %  25 
+    %                            0.0479, 0.0358, 0.0221, 0.0233, 0.0215, 0.0217, 0.0218, 0.0212, 0.0220, 0.0195, 0.0195;   %  45 
+    %                            0.0448, 0.0327, 0.0200, 0.0219, 0.0202, 0.0204, 0.0205, 0.0195, 0.0206, 0.0181, 0.0181;   %  60 
+    %                       ];
+    % TABLE_DCIR_CHG.DataType = 'double';
+    % TABLE_DCIR_CHG.CoderInfo.StorageClass = 'Custom';
+    % TABLE_DCIR_CHG.CoderInfo.CustomStorageClass = 'ExportToFile';
+    % TABLE_DCIR_CHG.CoderInfo.CustomAttributes.HeaderFile = 'DID.h';
+    % TABLE_DCIR_CHG.CoderInfo.CustomAttributes.DefinitionFile = 'DID.c';
