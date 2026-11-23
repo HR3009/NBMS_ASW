@@ -1,7 +1,7 @@
 classdef VDU_MACHINE_STS_E < Simulink.IntEnumType
 enumeration 
     SNA(0)
-    SLEEP(1)
+    VDU_SLEEP(1)
     POWER_ON(2)
     IDLE(3)
     DRIVE(4)
