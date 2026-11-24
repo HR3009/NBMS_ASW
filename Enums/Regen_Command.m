@@ -1,14 +1,14 @@
 classdef Regen_Command < Simulink.IntEnumType
     enumeration
-    NotActive(0)
+    NO_REGEN(0)
     COAST_REGEN(1)
-    COAST_FORCED_REGEN(2)
-    COAST_BRAKE_REGEN(3)
-    COAST_FORCED_BRAKE_REGEN(4)
+    BRAKE_REGEN(2)
+    REGEN_RESERVATION(3)
+    REG_RESERVATION(4)
     end
     methods (Static)
         function retVal = getDefaultValue()
-            retVal = Regen_Command.NotActive;
+            retVal = Regen_Command.NO_REGEN;
         end
     end
 end
