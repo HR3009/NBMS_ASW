@@ -625,3 +625,10 @@ RegenAllowedTime.CoderInfo.CustomAttributes.DefinitionFile='DID.c';
     % TABLE_DCIR_CHG.CoderInfo.CustomStorageClass = 'ExportToFile';
     % TABLE_DCIR_CHG.CoderInfo.CustomAttributes.HeaderFile = 'DID.h';
     % TABLE_DCIR_CHG.CoderInfo.CustomAttributes.DefinitionFile = 'DID.c';
+%% TTC PARAMETER
+
+%CAL_CV_ChargeTime
+CAL_CV_ChargeTime =Simulink.Parameter;
+CAL_CV_ChargeTime.Value =1; 
+CAL_CV_ChargeTime.DataType='fixdt(0,8,0.01,0)';
+CAL_CV_ChargeTime.CoderInfo.StorageClass='ExportedGlobal';
