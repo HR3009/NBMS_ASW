@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_SM'.
  *
- * Model version                  : 7.27
+ * Model version                  : 7.29
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Fri Nov 20 12:34:45 2026
+ * C/C++ source code generated on : Wed Nov 25 15:35:12 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -26,22 +26,22 @@
 #define NBMS_SM_IN_Standby             ((uint8_T)5U)
 
 /* Forward declaration for local functions */
-static void NBMS_SM_Fault(const boolean_T *G4DischargeFault, const boolean_T
-  *rtu_AppIn_HardwiredIgn, const boolean_T *rtu_AppIn_OBCHVIL, const OBC_E
-  *rtu_AppIn_OBCwakeup, const BMS_HVMosfet_STS_E *rtu_HV_Mosfet, const
-  Charger_Mode_E *rtu_AppIn_ChgMode, const Charger_Mode_Req_E *rtu_Chrg_mode_req,
-  const boolean_T *rtu_AppIn_TRerror, const boolean_T *rtu_AppIn_TRtimer, const
-  boolean_T *rtu_AppIn_G3DischargeFlt, const boolean_T *rtu_AppIn_G3CommonFlt,
+static void NBMS_SM_Fault(const boolean_T *G3DischargeFault, const boolean_T
+  *G4DischargeFault, const boolean_T *rtu_AppIn_HardwiredIgn, const boolean_T
+  *rtu_AppIn_OBCHVIL, const OBC_E *rtu_AppIn_OBCwakeup, const BMS_HVMosfet_STS_E
+  *rtu_HV_Mosfet, const Charger_Mode_E *rtu_AppIn_ChgMode, const
+  Charger_Mode_Req_E *rtu_Chrg_mode_req, const boolean_T *rtu_AppIn_TRerror,
+  const boolean_T *rtu_AppIn_TRtimer, const boolean_T *rtu_AppIn_G3CommonFlt,
   const boolean_T *rtu_AppIn_G4CommonFlt, const boolean_T *rtu_AppIn_G4ChargeFlt,
   BMS_MODE_E *rty_sm_BMSMODE, DW_NBMS_SM_f_T *localDW);
 
 /* Function for Chart: '<Root>/BMS_MODE_STATE_MACHINE' */
-static void NBMS_SM_Fault(const boolean_T *G4DischargeFault, const boolean_T
-  *rtu_AppIn_HardwiredIgn, const boolean_T *rtu_AppIn_OBCHVIL, const OBC_E
-  *rtu_AppIn_OBCwakeup, const BMS_HVMosfet_STS_E *rtu_HV_Mosfet, const
-  Charger_Mode_E *rtu_AppIn_ChgMode, const Charger_Mode_Req_E *rtu_Chrg_mode_req,
-  const boolean_T *rtu_AppIn_TRerror, const boolean_T *rtu_AppIn_TRtimer, const
-  boolean_T *rtu_AppIn_G3DischargeFlt, const boolean_T *rtu_AppIn_G3CommonFlt,
+static void NBMS_SM_Fault(const boolean_T *G3DischargeFault, const boolean_T
+  *G4DischargeFault, const boolean_T *rtu_AppIn_HardwiredIgn, const boolean_T
+  *rtu_AppIn_OBCHVIL, const OBC_E *rtu_AppIn_OBCwakeup, const BMS_HVMosfet_STS_E
+  *rtu_HV_Mosfet, const Charger_Mode_E *rtu_AppIn_ChgMode, const
+  Charger_Mode_Req_E *rtu_Chrg_mode_req, const boolean_T *rtu_AppIn_TRerror,
+  const boolean_T *rtu_AppIn_TRtimer, const boolean_T *rtu_AppIn_G3CommonFlt,
   const boolean_T *rtu_AppIn_G4CommonFlt, const boolean_T *rtu_AppIn_G4ChargeFlt,
   BMS_MODE_E *rty_sm_BMSMODE, DW_NBMS_SM_f_T *localDW)
 {
@@ -58,13 +58,13 @@ static void NBMS_SM_Fault(const boolean_T *G4DischargeFault, const boolean_T
     localDW->is_c3_NBMS_SM = NBMS_SM_IN_Charge;
     *rty_sm_BMSMODE = BMS_CHARGE;
   } else if (!*rtu_AppIn_OBCHVIL && *rtu_AppIn_HardwiredIgn &&
-             !*G4DischargeFault && !*rtu_AppIn_G3DischargeFlt &&
-             !*rtu_AppIn_G3CommonFlt && !*rtu_AppIn_G4CommonFlt) {
+             !*G4DischargeFault && !*G3DischargeFault && !*rtu_AppIn_G3CommonFlt
+             && !*rtu_AppIn_G4CommonFlt) {
     localDW->is_c3_NBMS_SM = NBMS_SM_IN_Discharge;
     *rty_sm_BMSMODE = BMS_DISCHARGE;
   } else if (!*rtu_AppIn_G4CommonFlt && !*rtu_AppIn_G3CommonFlt &&
-             !*rtu_AppIn_G4ChargeFlt && !*G4DischargeFault &&
-             !*rtu_AppIn_G3DischargeFlt) {
+             !*rtu_AppIn_G4ChargeFlt && !*G4DischargeFault && !*G3DischargeFault)
+  {
     localDW->temporalCounter_i1 = 0U;
     localDW->is_c3_NBMS_SM = NBMS_SM_IN_Standby;
     *rty_sm_BMSMODE = BMS_STANDBY;
@@ -90,10 +90,14 @@ void NBMS_SM(const boolean_T *rtu_AppIn_HardwiredIgn, const boolean_T
              const uint8_T *rtu_DisplaySoc, const int16_T *rtu_MinCellVolt,
              const boolean_T *rtu_AppIn_G4T1DischargeFlt, const boolean_T
              *rtu_AppIn_G4T2DischargeFlt, const BMS_NM_Msg_E *rtu_BMS_NM_Msg,
-             BMS_MODE_E *rty_sm_BMSMODE, boolean_T *rty_Ignition_Sts,
-             DW_NBMS_SM_f_T *localDW)
+             const boolean_T *rtu_LowSoCWarn, BMS_MODE_E *rty_sm_BMSMODE,
+             boolean_T *rty_Ignition_Sts, DW_NBMS_SM_f_T *localDW)
 {
+  boolean_T G3DischargeFault;
   boolean_T G4DischargeFault;
+
+  /* Logic: '<Root>/OR1' */
+  G3DischargeFault = (*rtu_AppIn_G3DischargeFlt || *rtu_LowSoCWarn);
 
   /* Logic: '<Root>/OR' */
   G4DischargeFault = (*rtu_AppIn_G4T1DischargeFlt || *rtu_AppIn_G4T2DischargeFlt);
@@ -139,8 +143,8 @@ void NBMS_SM(const boolean_T *rtu_AppIn_HardwiredIgn, const boolean_T
       break;
 
      case NBMS_SM_IN_Discharge:
-      if (*rtu_AppIn_G3CommonFlt || G4DischargeFault ||
-          *rtu_AppIn_G3DischargeFlt || *rtu_AppIn_G4CommonFlt) {
+      if (*rtu_AppIn_G3CommonFlt || G4DischargeFault || G3DischargeFault ||
+          *rtu_AppIn_G4CommonFlt) {
         localDW->temporalCounter_i1 = 0U;
         localDW->is_c3_NBMS_SM = NBMS_SM_IN_Fault;
         *rty_sm_BMSMODE = BMS_FAULT;
@@ -155,10 +159,10 @@ void NBMS_SM(const boolean_T *rtu_AppIn_HardwiredIgn, const boolean_T
       break;
 
      case NBMS_SM_IN_Fault:
-      NBMS_SM_Fault(&G4DischargeFault, rtu_AppIn_HardwiredIgn, rtu_AppIn_OBCHVIL,
-                    rtu_AppIn_OBCwakeup, rtu_HV_Mosfet, rtu_AppIn_ChgMode,
-                    rtu_Chrg_mode_req, rtu_AppIn_TRerror, rtu_AppIn_TRtimer,
-                    rtu_AppIn_G3DischargeFlt, rtu_AppIn_G3CommonFlt,
+      NBMS_SM_Fault(&G3DischargeFault, &G4DischargeFault, rtu_AppIn_HardwiredIgn,
+                    rtu_AppIn_OBCHVIL, rtu_AppIn_OBCwakeup, rtu_HV_Mosfet,
+                    rtu_AppIn_ChgMode, rtu_Chrg_mode_req, rtu_AppIn_TRerror,
+                    rtu_AppIn_TRtimer, rtu_AppIn_G3CommonFlt,
                     rtu_AppIn_G4CommonFlt, rtu_AppIn_G4ChargeFlt, rty_sm_BMSMODE,
                     localDW);
       break;
@@ -188,8 +192,8 @@ void NBMS_SM(const boolean_T *rtu_AppIn_HardwiredIgn, const boolean_T
         localDW->is_c3_NBMS_SM = NBMS_SM_IN_Sleep;
         *rty_sm_BMSMODE = BMS_SLEEP;
       } else if (*rtu_AppIn_G4CommonFlt || *rtu_AppIn_G3CommonFlt ||
-                 *rtu_AppIn_G4ChargeFlt || G4DischargeFault ||
-                 *rtu_AppIn_G3DischargeFlt) {
+                 *rtu_AppIn_G4ChargeFlt || G4DischargeFault || G3DischargeFault)
+      {
         localDW->temporalCounter_i1 = 0U;
         localDW->is_c3_NBMS_SM = NBMS_SM_IN_Fault;
         *rty_sm_BMSMODE = BMS_FAULT;

@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_SoC'.
  *
- * Model version                  : 7.101
+ * Model version                  : 7.110
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Fri Nov 20 12:35:00 2026
+ * C/C++ source code generated on : Wed Nov 25 15:37:59 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -77,7 +77,6 @@ typedef struct {
   int16_T AvgVoltofCell0;              /* '<S135>/Counterfor20' */
   uint8_T SoC;                         /* '<S78>/SOC_Full' */
   uint8_T LatchedFullSoC;              /* '<S71>/SOC_Full' */
-  uint8_T SoCStart;                    /* '<S35>/Display_SOC' */
   boolean_T Compare;                   /* '<S96>/Compare' */
   boolean_T Compare_k;                 /* '<S95>/Compare' */
   boolean_T Compare_h;                 /* '<S101>/Compare' */
@@ -94,7 +93,6 @@ typedef struct {
   real_T CalcCurrAccum_DSTATE;         /* '<S6>/CalcCurrAccum' */
   real_T udlySoCcc_DSTATE;             /* '<S6>/udlySoCcc' */
   real_T udlySoC_DSTATE;               /* '<S42>/udlySoC' */
-  real_T udlyLifeCycle_DSTATE;         /* '<S5>/udlyLifeCycle' */
   real_T AccumulateBattCurrent_DSTATE; /* '<S17>/Accumulate BattCurrent' */
   real_T udlyCycleCount_DSTATE;        /* '<S17>/udlyCycleCount' */
   real_T udlyLifeCylce_DSTATE;         /* '<S17>/udlyLifeCylce' */
@@ -114,22 +112,19 @@ typedef struct {
   int16_T u0Delay_DWORK1[20];          /* '<S156>/20Delay' */
   int16_T u0Delay_DWORK1_m[50];        /* '<S108>/50Delay' */
   int16_T u0Delay_DWORK1_p[20];        /* '<S107>/20Delay' */
-  uint8_T udlyDislaySoC_DSTATE;        /* '<S42>/udlyDislaySoC' */
-  uint8_T UDlySOC_DSTATE;              /* '<S42>/UDlySOC' */
   uint8_T uDlySoC_DSTATE;              /* '<S42>/uDlySoC' */
+  uint8_T UDlySOC_DSTATE;              /* '<S42>/UDlySOC' */
   uint8_T UdlySoc_DSTATE;              /* '<S42>/UdlySoc' */
+  uint8_T udlyDislaySoC_DSTATE;        /* '<S42>/udlyDislaySoC' */
   uint8_T udlyDSoC_DSTATE;             /* '<S42>/udlyDSoC' */
   uint8_T udlyDisplaySoC_DSTATE;       /* '<S42>/udlyDisplaySoC' */
-  uint8_T udlySoH_DSTATE_k;            /* '<S18>/udlySoH' */
   uint8_T uUnitDelay_DSTATE;           /* '<S108>/1UnitDelay' */
   uint8_T uUnitDelay_DSTATE_f;         /* '<S107>/1UnitDelay' */
   boolean_T DelayInput1_DSTATE_g;      /* '<S98>/Delay Input1' */
-  boolean_T DelayInput1_DSTATE_a;      /* '<S70>/Delay Input1' */
   boolean_T ZeroReset_DSTATE;          /* '<S42>/ZeroReset' */
   boolean_T udlyEnableCurrent_DSTATE;  /* '<S60>/udlyEnableCurrent' */
-  boolean_T udlySoHtrigger_DSTATE;     /* '<S18>/udlySoHtrigger' */
-  boolean_T DelayInput1_DSTATE_j;      /* '<S33>/Delay Input1' */
-  boolean_T DelayInput1_DSTATE_ju;     /* '<S49>/Delay Input1' */
+  boolean_T DelayInput1_DSTATE_a;      /* '<S70>/Delay Input1' */
+  boolean_T DelayInput1_DSTATE_j;      /* '<S49>/Delay Input1' */
   boolean_T udlyStartSoC_DSTATE;       /* '<S1>/udlyStartSoC' */
   int8_T DischargeAccumulator_PrevResetS;/* '<S6>/DischargeAccumulator' */
   int8_T CalcCurrAccum_PrevResetState; /* '<S6>/CalcCurrAccum' */
@@ -148,7 +143,6 @@ typedef struct {
   uint8_T is_Decision;                 /* '<S60>/StateWaitCondition' */
   boolean_T Memory_PreviousInput;      /* '<S59>/Memory' */
   boolean_T Memory_PreviousInput_c;    /* '<S103>/Memory' */
-  boolean_T Memory_PreviousInput_m;    /* '<S25>/Memory' */
   boolean_T Memory_PreviousInput_a;    /* '<S84>/Memory' */
   boolean_T Memory_PreviousInput_g;    /* '<S82>/Memory' */
   boolean_T Memory_PreviousInput_al;   /* '<S83>/Memory' */
@@ -194,6 +188,11 @@ typedef struct {
   ZCSigState CalcOCV_Trig_ZCE;         /* '<S1>/CalcOCV' */
 } ZCE_NBMS_SoC_T;
 
+/* Invariant block signals for model 'NBMS_SoC' */
+typedef struct {
+  const real_T SoH;                    /* '<S18>/Constant' */
+} ConstB_NBMS_SoC_h_T;
+
 /* Real-time Model Data Structure */
 struct tag_RTM_NBMS_SoC_T {
   const char_T **errorStatus;
@@ -226,22 +225,22 @@ extern void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6]
                      *rtu_Charger_Mode_Req, const BMS_MODE_E *rtu_sm_BMSMODE_en,
                      const real_T *rtu_AppIn_LastStoredSOC, const real_T
                      *rtu_AppIn_LastStoredCycle, const boolean_T
-                     *rtu_AppIn_I2Cerror, const real_T *rtu_AppIn_LastStoredSOH,
-                     const OBC_E *rtu_OBCWakeup, const real_T *rtu_mi_Pack_Volt,
-                     const VEH_STT_LVL1_E *rtu_AppIn_VehL1, const real_T
+                     *rtu_AppIn_I2Cerror, const OBC_E *rtu_OBCWakeup, const
+                     real_T *rtu_mi_Pack_Volt, const VDU_MACHINE_STS_E
+                     *rtu_AppIn_MachineStatus, const real_T
                      *rtu_DischrgCurrLimit, const boolean_T *rtu_RTC_Wakeup,
                      const boolean_T *rtu_AppIn_SoCLEDSW, const boolean_T
                      *rtu_EEPROM_SOC_WARN15, uint8_T *rty_Display_SOC, real_T
                      *rty_Battery_Capacity, boolean_T *rty_LOW_SOC_WARN_15,
                      boolean_T *rty_LOW_SOC, boolean_T *rty_LOW_SOC_WARN, real_T
-                     *rty_Batt_Pack_SOC, real_T *rty_LifeCycle, real_T *rty_SOH,
-                     int16_T *rty_VtAvgMax, real_T *rty_CurrentCapacity,
-                     uint16_T *rty_SOCcc, uint16_T *rty_SOCAvg, int16_T
-                     *rty_Vmin, real_T *rty_SOC_OCVInit, real_T
-                     *rty_SOCAvgInitial, real_T *rty_AvailableEnergy, int16_T
-                     *rty_VtAvgMin, real_T *rty_FailSensorVolt, int16_T
-                     *rty_FailSensorVoltAvg, int16_T *rty_BatteryCurrentAvg5sec,
-                     real_T *rty_ChargeCapacity, BMS_BattTempDerate_E
+                     *rty_Batt_Pack_SOC, real_T *rty_LifeCycle, int16_T
+                     *rty_VtAvgMax, real_T *rty_CurrentCapacity, uint16_T
+                     *rty_SOCcc, uint16_T *rty_SOCAvg, int16_T *rty_Vmin, real_T
+                     *rty_SOC_OCVInit, real_T *rty_SOCAvgInitial, real_T
+                     *rty_AvailableEnergy, int16_T *rty_VtAvgMin, real_T
+                     *rty_FailSensorVolt, int16_T *rty_FailSensorVoltAvg,
+                     int16_T *rty_BatteryCurrentAvg5sec, real_T
+                     *rty_ChargeCapacity, BMS_BattTempDerate_E
                      *rty_Batt_Temp_Derating, BMS_BattSoCDerate_E
                      *rty_Batt_SoC_Derating, B_NBMS_SoC_c_T *localB,
                      DW_NBMS_SoC_f_T *localDW, ZCE_NBMS_SoC_T *localZCE);
@@ -249,6 +248,34 @@ extern void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6]
 /*-
  * These blocks were eliminated from the model due to optimizations:
  *
+ * Block '<S24>/CalcDOD' : Unused code path elimination
+ * Block '<S24>/CalcDischgCapacity' : Unused code path elimination
+ * Block '<S24>/CalcMinSoH' : Unused code path elimination
+ * Block '<S24>/CalcSoH' : Unused code path elimination
+ * Block '<S24>/MaxSoC' : Unused code path elimination
+ * Block '<S24>/MaxSoH' : Unused code path elimination
+ * Block '<S24>/scaleMeasuredCharge' : Unused code path elimination
+ * Block '<S18>/Charg_Capacity1' : Unused code path elimination
+ * Block '<S25>/Logic' : Unused code path elimination
+ * Block '<S25>/Memory' : Unused code path elimination
+ * Block '<S27>/Compare' : Unused code path elimination
+ * Block '<S27>/Constant' : Unused code path elimination
+ * Block '<S32>/Compare' : Unused code path elimination
+ * Block '<S32>/Constant' : Unused code path elimination
+ * Block '<S33>/Delay Input1' : Unused code path elimination
+ * Block '<S33>/FixPt Relational Operator' : Unused code path elimination
+ * Block '<S34>/Compare' : Unused code path elimination
+ * Block '<S34>/Constant' : Unused code path elimination
+ * Block '<S18>/MaxSoH' : Unused code path elimination
+ * Block '<S18>/SoHBoundaries' : Unused code path elimination
+ * Block '<S18>/UpdateSoHTrigger' : Unused code path elimination
+ * Block '<S18>/cnvToDouble' : Unused code path elimination
+ * Block '<S18>/selIgnFallbackSoH' : Unused code path elimination
+ * Block '<S18>/selLifecycleClamp' : Unused code path elimination
+ * Block '<S18>/selUpdatedSoH' : Unused code path elimination
+ * Block '<S18>/udlySoH' : Unused code path elimination
+ * Block '<S18>/udlySoHtrigger' : Unused code path elimination
+ * Block '<S5>/udlyLifeCycle' : Unused code path elimination
  * Block '<S68>/Data Type Duplicate' : Unused code path elimination
  * Block '<S68>/Data Type Propagation' : Unused code path elimination
  * Block '<S65>/Data Type Duplicate' : Unused code path elimination
@@ -301,7 +328,7 @@ extern void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6]
  * '<S6>'   : 'NBMS_SoC/SOC/SOC Estimation'
  * '<S7>'   : 'NBMS_SoC/SOC/SOC Fault Detection'
  * '<S8>'   : 'NBMS_SoC/SOC/VtAvg'
- * '<S9>'   : 'NBMS_SoC/SOC/FindDerating/ChkSoCabove20'
+ * '<S9>'   : 'NBMS_SoC/SOC/FindDerating/ChkSoCbelow20'
  * '<S10>'  : 'NBMS_SoC/SOC/FindDerating/ChkTempabove56'
  * '<S11>'  : 'NBMS_SoC/SOC/FindDerating/ChkTempbelow10'
  * '<S12>'  : 'NBMS_SoC/SOC/FindDerating/Derate'

@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_Regen'.
  *
- * Model version                  : 7.12
+ * Model version                  : 7.14
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Fri Nov 20 12:34:41 2026
+ * C/C++ source code generated on : Wed Nov 25 15:35:08 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -45,7 +45,7 @@ void NBMS_Regen(const real_T *rtu_MeasuredCurrent, const real_T rtu_Temp[6],
    */
   rtb_RegenCurrent_b = look2_binlxpw(rtb_RegenCurrent_b, *rtu_SOC,
     &X_RCL_CONT_SAFETY_PACK[0], &Y_RCL_CONT_SAFETY_PACK[0],
-    &TABLE_RCL_CONT_SAFETY_PACK[0], rtCP_RgenCurrent_maxIndex, 9U);
+    rtCP_RgenCurrent_tableData, rtCP_RgenCurrent_maxIndex, 9U);
 
   /* Chart: '<Root>/CalcRegenOverCurrent' */
   if (localDW->is_active_c3_NBMS_Regen == 0) {

@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_MosfetSeq'.
  *
- * Model version                  : 7.44
+ * Model version                  : 7.45
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Fri Nov 20 12:34:38 2026
+ * C/C++ source code generated on : Wed Nov 25 15:35:05 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -58,11 +58,13 @@ typedef enum {
 #define DEFINED_TYPEDEF_FOR_BMS_MODE_E_
 
 typedef enum {
-  BMS_SLEEP = 0,                       /* Default value */
+  BMS_SNA = 0,                         /* Default value */
+  BMS_SLEEP,
   BMS_DISCHARGE,
   BMS_CHARGE,
   BMS_STANDBY,
-  BMS_FAULT
+  BMS_FAULT,
+  BMS_DIAGNOSTIC
 } BMS_MODE_E;
 
 #endif

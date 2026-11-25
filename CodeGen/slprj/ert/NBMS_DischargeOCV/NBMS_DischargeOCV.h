@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_DischargeOCV'.
  *
- * Model version                  : 7.6
+ * Model version                  : 7.7
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Fri Nov 20 12:34:51 2026
+ * C/C++ source code generated on : Mon Nov 23 15:35:35 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)

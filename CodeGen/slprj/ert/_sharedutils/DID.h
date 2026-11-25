@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_SoC'.
  *
- * Model version                  : 7.101
+ * Model version                  : 7.106
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Fri Nov 20 12:35:00 2026
+ * C/C++ source code generated on : Mon Nov 23 15:35:50 2026
  */
 
 #ifndef DID_h_
@@ -45,16 +45,6 @@ extern uint8_T CAL_SOC_WRN_THRSH;
 extern boolean_T CAL_SOH_Enable;
 extern real_T MosfetTime;
 extern real_T RegenAllowedTime;
-extern real_T SOC[13];
-extern real_T TABLE_CCL_CONT_SAFETY_PACK[117];
-extern real_T TABLE_DCIR_CHG[77];
-extern real_T TABLE_DCIR_DISCH[77];
-extern real_T TABLE_DCL_30sSAFETY_PACK[130];
-extern real_T TABLE_DCL_CONT_SAFETY_PACK[130];
-extern real_T TABLE_RCL_CONT_SAFETY_PACK[117];
-extern real_T TABLE_SOC_VS_OCV_CHG[147];
-extern real_T TABLE_SOC_VS_OCV_DISCH[147];
-extern real_T TEMP[10];
 extern real_T X_CCL_CONT_SAFETY_PACK[9];
 extern real_T X_DCIR_CHG[7];
 extern real_T X_DCIR_DISCH[7];

@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_SoC'.
  *
- * Model version                  : 7.101
+ * Model version                  : 7.110
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Fri Nov 20 12:35:00 2026
+ * C/C++ source code generated on : Wed Nov 25 15:37:59 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -20,7 +20,7 @@
 #define DEFINED_TYPEDEF_FOR_BMS_BattSoCDerate_E_
 
 typedef enum {
-  SOC_No_Derating = 0,                 /* Default value */
+  SOC_NoDerating = 0,                  /* Default value */
   SOC_Derating
 } BMS_BattSoCDerate_E;
 
@@ -30,8 +30,8 @@ typedef enum {
 #define DEFINED_TYPEDEF_FOR_BMS_BattTempDerate_E_
 
 typedef enum {
-  No_Derating = 0,                     /* Default value */
-  Derating
+  Temp_NoDerating = 0,                 /* Default value */
+  Temp_Derating
 } BMS_BattTempDerate_E;
 
 #endif
@@ -40,11 +40,13 @@ typedef enum {
 #define DEFINED_TYPEDEF_FOR_BMS_MODE_E_
 
 typedef enum {
-  BMS_SLEEP = 0,                       /* Default value */
+  BMS_SNA = 0,                         /* Default value */
+  BMS_SLEEP,
   BMS_DISCHARGE,
   BMS_CHARGE,
   BMS_STANDBY,
-  BMS_FAULT
+  BMS_FAULT,
+  BMS_DIAGNOSTIC
 } BMS_MODE_E;
 
 #endif
@@ -73,17 +75,18 @@ typedef enum {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_VEH_STT_LVL1_E_
-#define DEFINED_TYPEDEF_FOR_VEH_STT_LVL1_E_
+#ifndef DEFINED_TYPEDEF_FOR_VDU_MACHINE_STS_E_
+#define DEFINED_TYPEDEF_FOR_VDU_MACHINE_STS_E_
 
 typedef enum {
-  VL1_SNA = 0,
-  VEH_SLEEP,                           /* Default value */
-  AWAKE,
-  STANDBY,
+  SNA = 0,                             /* Default value */
+  VDU_SLEEP,
+  POWER_ON,
+  IDLE,
   DRIVE,
-  CHARGE
-} VEH_STT_LVL1_E;
+  FAULT,
+  DERATE
+} VDU_MACHINE_STS_E;
 
 #endif
 

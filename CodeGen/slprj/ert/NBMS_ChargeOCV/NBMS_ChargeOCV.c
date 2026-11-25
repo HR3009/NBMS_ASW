@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_ChargeOCV'.
  *
- * Model version                  : 7.12
+ * Model version                  : 7.15
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Fri Nov 20 12:34:48 2026
+ * C/C++ source code generated on : Mon Nov 23 15:35:30 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -16,7 +16,7 @@
 #include "NBMS_ChargeOCV.h"
 #include "rtwtypes.h"
 #include "NBMS_ChargeOCV_private.h"
-#include "look2_binlcapw.h"
+#include "look2_binlxpw.h"
 #include "DID.h"
 
 /* Disable for referenced model: 'NBMS_ChargeOCV' */
@@ -67,13 +67,13 @@ void NBMS_ChargeOCV(const real_T *rtu_Temp, const int16_T *rtu_OCV, const
       /* Gain: '<S1>/scaleSoC' */
       rtb_SoC = 0.2 * (real_T)IteratedSoC;
 
-      /* Lookup_n-D: '<S1>/OCV vs SOC at all Temp' incorporates:
+      /* Lookup_n-D: '<S1>/2-D Lookup Table' incorporates:
        *  Gain: '<S1>/scaleSoC'
        *  UnitDelay: '<S1>/udlyCalcOCV'
        */
-      localDW->udlyCalcOCV_DSTATE = look2_binlcapw(rtb_SoC, *rtu_Temp,
-        &X_SOC_VS_OCV_CHG[0], &Y_SOC_VS_OCV_CHG[0], &TABLE_SOC_VS_OCV_CHG[0],
-        rtCP_OCVvsSOCatallTemp_maxIndex, 21U);
+      localDW->udlyCalcOCV_DSTATE = look2_binlxpw(rtb_SoC, *rtu_Temp,
+        &X_SOC_VS_OCV_CHG[0], &Y_SOC_VS_OCV_CHG[0], rtCP_uDLookupTable_tableData,
+        rtCP_uDLookupTable_maxIndex, 21U);
 
       /* RelationalOperator: '<S1>/ChkOCVaboveCalcOCV' incorporates:
        *  RelationalOperator: '<S1>/ChkLowerOCVBound'
@@ -90,8 +90,8 @@ void NBMS_ChargeOCV(const real_T *rtu_Temp, const int16_T *rtu_OCV, const
        *  Constant: '<S1>/MaxSoC'
        *  Constant: '<S1>/MinSoC'
        *  Logic: '<S1>/DetectOCVCrossing '
-       *  Lookup_n-D: '<S1>/OCV vs SOC at Temp'
-       *  Lookup_n-D: '<S1>/OCV vs SOC at all Temp1'
+       *  Lookup_n-D: '<S1>/2-D Lookup Table1'
+       *  Lookup_n-D: '<S1>/2-D Lookup Table2'
        *  RelationalOperator: '<S1>/ChkLowerOCVBound'
        *  RelationalOperator: '<S1>/ChkOCVBelowCalcOCV'
        *  RelationalOperator: '<S1>/ChkOCVaboveCalcOCV'
@@ -100,13 +100,13 @@ void NBMS_ChargeOCV(const real_T *rtu_Temp, const int16_T *rtu_OCV, const
        *  Switch: '<S1>/selSoC'
        *  UnitDelay: '<S1>/udlyCalcOCV'
        */
-      if (tmp >= look2_binlcapw(100.0, *rtu_Temp, &X_SOC_VS_OCV_CHG[0],
-           &Y_SOC_VS_OCV_CHG[0], &TABLE_SOC_VS_OCV_CHG[0],
-           rtCP_OCVvsSOCatallTemp1_maxInde, 21U)) {
+      if (tmp >= look2_binlxpw(100.0, *rtu_Temp, &X_SOC_VS_OCV_CHG[0],
+           &Y_SOC_VS_OCV_CHG[0], rtCP_uDLookupTable2_tableData,
+           rtCP_uDLookupTable2_maxIndex, 21U)) {
         rtb_delayCalculatedOCV = 100.0;
-      } else if (tmp <= look2_binlcapw(0.0, *rtu_Temp, &X_SOC_VS_OCV_CHG[0],
-                  &Y_SOC_VS_OCV_CHG[0], &TABLE_SOC_VS_OCV_CHG[0],
-                  rtCP_OCVvsSOCatTemp_maxIndex, 21U)) {
+      } else if (tmp <= look2_binlxpw(0.0, *rtu_Temp, &X_SOC_VS_OCV_CHG[0],
+                  &Y_SOC_VS_OCV_CHG[0], rtCP_uDLookupTable1_tableData,
+                  rtCP_uDLookupTable1_maxIndex, 21U)) {
         /* Switch: '<S1>/selSoC' incorporates:
          *  Constant: '<S1>/MinSoC'
          */

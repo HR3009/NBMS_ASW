@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_Fault'.
  *
- * Model version                  : 1.4
+ * Model version                  : 1.6
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Tue Nov 10 18:05:50 2026
+ * C/C++ source code generated on : Wed Nov 25 15:35:01 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)

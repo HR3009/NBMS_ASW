@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_CCCV'.
  *
- * Model version                  : 7.23
+ * Model version                  : 7.34
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Tue Nov 10 18:05:45 2026
+ * C/C++ source code generated on : Mon Nov 23 15:34:57 2026
  */
 
 #include "look2_binlxpw.h"

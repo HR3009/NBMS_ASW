@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_SM'.
  *
- * Model version                  : 7.27
+ * Model version                  : 7.29
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Fri Nov 20 12:34:45 2026
+ * C/C++ source code generated on : Wed Nov 25 15:35:12 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -66,8 +66,9 @@ extern void NBMS_SM(const boolean_T *rtu_AppIn_HardwiredIgn, const boolean_T
                     const int16_T *rtu_MinCellVolt, const boolean_T
                     *rtu_AppIn_G4T1DischargeFlt, const boolean_T
                     *rtu_AppIn_G4T2DischargeFlt, const BMS_NM_Msg_E
-                    *rtu_BMS_NM_Msg, BMS_MODE_E *rty_sm_BMSMODE, boolean_T
-                    *rty_Ignition_Sts, DW_NBMS_SM_f_T *localDW);
+                    *rtu_BMS_NM_Msg, const boolean_T *rtu_LowSoCWarn, BMS_MODE_E
+                    *rty_sm_BMSMODE, boolean_T *rty_Ignition_Sts, DW_NBMS_SM_f_T
+                    *localDW);
 
 /*-
  * The generated code includes comments that allow you to trace directly

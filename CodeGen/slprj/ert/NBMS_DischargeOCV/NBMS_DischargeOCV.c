@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_DischargeOCV'.
  *
- * Model version                  : 7.6
+ * Model version                  : 7.7
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Fri Nov 20 12:34:51 2026
+ * C/C++ source code generated on : Mon Nov 23 15:35:35 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -72,8 +72,8 @@ void NBMS_DischargeOCV(const real_T *rtu_Temp, const int16_T *rtu_OCV, const
        *  UnitDelay: '<S1>/udlyCalcOCV'
        */
       localDW->udlyCalcOCV_DSTATE = look2_binlcpw(rtb_SoC, *rtu_Temp,
-        &X_SOC_VS_OCV_DISCH[0], &Y_SOC_VS_OCV_DISCH[0], &TABLE_SOC_VS_OCV_DISCH
-        [0], rtCP_OCVvsSOCatallTemp_maxIndex, 21U);
+        &X_SOC_VS_OCV_DISCH[0], &Y_SOC_VS_OCV_DISCH[0],
+        rtCP_OCVvsSOCatallTemp_tableDat, rtCP_OCVvsSOCatallTemp_maxIndex, 21U);
 
       /* RelationalOperator: '<S1>/ChkOCVaboveCalcOCV' incorporates:
        *  RelationalOperator: '<S1>/ChkLowerOCVBound'
@@ -101,11 +101,11 @@ void NBMS_DischargeOCV(const real_T *rtu_Temp, const int16_T *rtu_OCV, const
        *  UnitDelay: '<S1>/udlyCalcOCV'
        */
       if (tmp >= look2_binlcpw(100.0, *rtu_Temp, &X_SOC_VS_OCV_DISCH[0],
-           &Y_SOC_VS_OCV_DISCH[0], &TABLE_SOC_VS_OCV_DISCH[0],
+           &Y_SOC_VS_OCV_DISCH[0], rtCP_OCVvsSOCatallTemp1_tableDa,
            rtCP_OCVvsSOCatallTemp1_maxInde, 21U)) {
         rtb_delayCalculatedOCV = 100.0;
       } else if (tmp <= look2_binlcpw(0.0, *rtu_Temp, &X_SOC_VS_OCV_DISCH[0],
-                  &Y_SOC_VS_OCV_DISCH[0], &TABLE_SOC_VS_OCV_DISCH[0],
+                  &Y_SOC_VS_OCV_DISCH[0], rtCP_OCVvsSOCatallTemp2_tableDa,
                   rtCP_OCVvsSOCatallTemp2_maxInde, 21U)) {
         /* Switch: '<S1>/selSoC' incorporates:
          *  Constant: '<S1>/MinSoC'

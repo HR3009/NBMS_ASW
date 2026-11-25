@@ -1,0 +1,10 @@
+-ID:/Rathi/BMS/N_BMS/NBMS/CodeGen/slprj/ert/NBMS_ChargeOCV
+-ID:/Rathi/BMS/N_BMS/NBMS/CodeGen/slprj/ert/NBMS_DischargeOCV
+-ID:/Rathi/BMS/N_BMS/NBMS/CodeGen
+-ID:/Rathi/BMS/N_BMS/NBMS/CodeGen/slprj/ert/NBMS_SoC
+-I"C:/Program Files/MATLAB/R2026b/extern/include"
+-I"C:/Program Files/MATLAB/R2026b/simulink/include"
+-I"C:/Program Files/MATLAB/R2026b/rtw/c/src"
+-I"C:/Program Files/MATLAB/R2026b/rtw/c/src/ext_mode/common"
+-I"C:/Program Files/MATLAB/R2026b/rtw/c/ert"
+-ID:/Rathi/BMS/N_BMS/NBMS/CodeGen/slprj/ert/_sharedutils

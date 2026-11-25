@@ -5,7 +5,7 @@
  *
  * Model version                  : 1.0
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Fri Nov 20 12:35:07 2026
+ * C/C++ source code generated on : Wed Nov 25 15:38:07 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -30,6 +30,7 @@
 #include "NBMS_CCCV.h"
 #include "NBMS_DCL.h"
 #include "NBMS_Regen.h"
+#include "NBMS_TTC.h"
 #include "zero_crossing_types.h"
 
 /* Includes for objects with custom storage classes */
@@ -50,7 +51,11 @@
 
 /* Block signals (default storage) */
 typedef struct {
+  real_T PrevDCL;                      /* '<S1>/udlyDCL' */
   real_T SensorVoltFail;               /* '<S1>/State of Charge' */
+  real_T DischargeCurrLimit;           /* '<S1>/Discharge Current Limit' */
+  real_T Timer30;                      /* '<S1>/Discharge Current Limit' */
+  real_T SoH;                          /* '<S1>/State of Charge' */
   Charger_Mode_Req_E ChrgReq;          /* '<S1>/UdlyChrgReq' */
   BMS_NM_Msg_E BMS_NM_Msg;             /* '<S1>/udlyBMS_NM' */
   BMS_HVMosfet_STS_E HVMosfet;         /* '<S1>/udlyHvMOSFET' */
@@ -59,7 +64,11 @@ typedef struct {
   int16_T AvgSensorVoltFail;           /* '<S1>/State of Charge' */
   uint8_T DisplaySoC;                  /* '<S1>/udlyDSoC' */
   uint8_T soc_full;                    /* '<S1>/Charger Profile' */
+  uint8_T SoC;                         /* '<S1>/udlySOC' */
   boolean_T Ignition_Sts;              /* '<S1>/BMS Mode State Machine' */
+  boolean_T Derate;                    /* '<S1>/Fault' */
+  boolean_T DischDeratefromCont;       /* '<S1>/Fault' */
+  boolean_T DischDerateafterX1;        /* '<S1>/Fault' */
 } B_NBMS_App_T;
 
 /* Block states (default storage) for system '<Root>' */
@@ -75,6 +84,7 @@ typedef struct {
   uint8_T udlySoCFull_DSTATE;          /* '<S1>/udlySoCFull' */
   uint8_T uDlyDSOC_DSTATE;             /* '<S1>/uDlyDSOC' */
   uint8_T udlySOC_DSTATE;              /* '<S1>/udlySOC' */
+  boolean_T udlySoC_DSTATE;            /* '<S1>/udlySoC' */
   MdlrefDW_NBMS_SM_T BMSModeStateMachine_InstanceDat;/* '<S1>/BMS Mode State Machine' */
   MdlrefDW_NBMS_MosfetSeq_T MosfetControlStateMachine_Insta;/* '<S1>/Mosfet Control State Machine' */
   MdlrefDW_NBMS_SoC_T StateofCharge_InstanceData;/* '<S1>/State of Charge' */
@@ -82,46 +92,51 @@ typedef struct {
   MdlrefDW_NBMS_CCCV_T ChargerProfile_InstanceData;/* '<S1>/Charger Profile' */
   MdlrefDW_NBMS_DCL_T DischargeCurrentLimit_InstanceD;/* '<S1>/Discharge Current Limit' */
   MdlrefDW_NBMS_Regen_T RegenCurrentLimit_InstanceData;/* '<S1>/Regen Current Limit' */
+  MdlrefDW_NBMS_TTC_T Model_InstanceData;/* '<S1>/Model' */
 } DW_NBMS_App_T;
 
 /* Storage class 'Inputs', for system '<Root>' */
 typedef struct {
-  real_T BattTemp[6];                  /* '<Root>/AppIn_BattTemp' */
-  real_T BattVolt[20];                 /* '<Root>/AppIn_BattVoltages' */
-  real_T LoadVoltage;                  /* '<Root>/AppIn_LoadVolt' */
-  real_T PackVoltage;                  /* '<Root>/AppIn_PackVolt' */
-  real_T BattCurr;                     /* '<Root>/AppIn_BattCurrent' */
-  real_T LastStoredSoC;                /* '<Root>/AppIn_LastStoredSOC' */
-  real_T LastStoredCycle;              /* '<Root>/AppIn_LastStoredCycle' */
-  real_T LastStoredSoH;                /* '<Root>/AppIn_LastStoredSOH' */
-  OBC_E OBCWakeup;                     /* '<Root>/AppIn_OBCwakeup' */
-  Charger_Mode_E ChgMode;              /* '<Root>/AppIn_ChgMode' */
-  CV_Mode_Timer_E CvModeTimer;         /* '<Root>/AppIn_CVmodeTimer' */
-  Active_DisChrg_E ActiveDischarge;    /* '<Root>/AppIn_ActiveDischg' */
-  VEH_STT_LVL1_E VehicleLevel;         /* '<Root>/AppIn_VehL1' */
-  boolean_T IgnitionStatus;            /* '<Root>/AppIn_HardwiredIgn' */
-  boolean_T RTCWakeup;                 /* '<Root>/AppIn_RTCwakeup' */
-  boolean_T McuInterlock;              /* '<Root>/AppIn_MCUHVIL' */
-  boolean_T ObcInterlock;              /* '<Root>/AppIn_OBCHVIL' */
-  boolean_T SocLedSwitch;              /* '<Root>/AppIn_SoCLEDSW' */
-  boolean_T ThermalRunawayError;       /* '<Root>/AppIn_TRerror' */
-  boolean_T ThermalRunawayTimer;       /* '<Root>/AppIn_TRtimer' */
-  boolean_T G3CommonFault;             /* '<Root>/AppIn_G3CommonFlt' */
-  boolean_T G3DischgFault;             /* '<Root>/AppIn_G3DischargeFlt' */
-  boolean_T G4Type1DischargeFault;     /* '<Root>/AppIn_G4T1DischargeFlt' */
-  boolean_T G4Type2DischargeFault;     /* '<Root>/AppIn_G4T2DischargeFlt' */
-  boolean_T G4CommonFault;             /* '<Root>/AppIn_G4CommonFlt' */
-  boolean_T G4ChargeFault;             /* '<Root>/AppIn_G4ChargeFlt' */
-  boolean_T ObcHeartbeatFailure;       /* '<Root>/AppIn_OBCHeartbeatFail' */
-  boolean_T I2CError;                  /* '<Root>/AppIn_I2Cerror' */
-  boolean_T HVMosfetFb;                /* '<Root>/AppIn_HVMosfetfb' */
-  boolean_T DCDCMosfetFb;              /* '<Root>/AppIn_DCDCMosfetfb' */
-  boolean_T PrechgMosfetFb;            /* '<Root>/AppIn_PMosfetfb' */
-  boolean_T BMSVoltSensorFailure;      /* '<Root>/AppIn_BMSVltSnsrFail' */
-  boolean_T BattPackTempSensorFailure; /* '<Root>/AppIn_BattPackTempSnsrFail' */
-  boolean_T VoltImbalanceError;        /* '<Root>/AppIn_VltImbFlt' */
-  boolean_T TempImbalanceWarn;         /* '<Root>/AppIn_TempImbWarn' */
-  boolean_T EEPROMSoCWarn15;           /* '<Root>/AppIn_EEPROMSoCWarn15' */
+  real_T AppIn_BattTemp[6];            /* '<Root>/AppIn_BattTemp' */
+  real_T AppIn_BattVoltages[20];       /* '<Root>/AppIn_BattVoltages' */
+  real_T AppIn_LoadVolt;               /* '<Root>/AppIn_LoadVolt' */
+  real_T AppIn_PackVolt;               /* '<Root>/AppIn_PackVolt' */
+  real_T AppIn_BattCurrent;            /* '<Root>/AppIn_BattCurrent' */
+  real_T AppIn_LastStoredSOC;          /* '<Root>/AppIn_LastStoredSOC' */
+  real_T AppIn_LastStoredCycle;        /* '<Root>/AppIn_LastStoredCycle' */
+  real_T AppIn_LastStoredSOH;          /* '<Root>/AppIn_LastStoredSOH' */
+  OBC_E AppIn_OBCwakeup;               /* '<Root>/AppIn_OBCwakeup' */
+  Charger_Mode_E AppIn_ChgMode;        /* '<Root>/AppIn_ChgMode' */
+  CV_Mode_Timer_E AppIn_CVmodeTimer;   /* '<Root>/AppIn_CVmodeTimer' */
+  Active_DisChrg_E AppIn_ActiveDischg; /* '<Root>/AppIn_ActiveDischg' */
+  VDU_MACHINE_STS_E AppIn_MachineStatus;/* '<Root>/AppIn_MachineStatus' */
+  boolean_T AppIn_HardwiredIgn;        /* '<Root>/AppIn_HardwiredIgn' */
+  boolean_T AppIn_RTCwakeup;           /* '<Root>/AppIn_RTCwakeup' */
+  boolean_T AppIn_MCUHVIL;             /* '<Root>/AppIn_MCUHVIL' */
+  boolean_T AppIn_OBCHVIL;             /* '<Root>/AppIn_OBCHVIL' */
+  boolean_T AppIn_SoCLEDSW;            /* '<Root>/AppIn_SoCLEDSW' */
+  boolean_T AppIn_TRerror;             /* '<Root>/AppIn_TRerror' */
+  boolean_T AppIn_TRtimer;             /* '<Root>/AppIn_TRtimer' */
+  boolean_T AppIn_G3CommonFlt;         /* '<Root>/AppIn_G3CommonFlt' */
+  boolean_T AppIn_G3DischargeFlt;      /* '<Root>/AppIn_G3DischargeFlt' */
+  boolean_T AppIn_G4T1DischargeFlt;    /* '<Root>/AppIn_G4T1DischargeFlt' */
+  boolean_T AppIn_G4T2DischargeFlt;    /* '<Root>/AppIn_G4T2DischargeFlt' */
+  boolean_T AppIn_G4CommonFlt;         /* '<Root>/AppIn_G4CommonFlt' */
+  boolean_T AppIn_G4ChargeFlt;         /* '<Root>/AppIn_G4ChargeFlt' */
+  boolean_T AppIn_OBCHeartbeatFail;    /* '<Root>/AppIn_OBCHeartbeatFail' */
+  boolean_T AppIn_I2Cerror;            /* '<Root>/AppIn_I2Cerror' */
+  boolean_T AppIn_HVMosfetfb;          /* '<Root>/AppIn_HVMosfetfb' */
+  boolean_T AppIn_DCDCMosfetfb;        /* '<Root>/AppIn_DCDCMosfetfb' */
+  boolean_T AppIn_PMosfetfb;           /* '<Root>/AppIn_PMosfetfb' */
+  boolean_T AppIn_BMSVltSnsrFail;      /* '<Root>/AppIn_BMSVltSnsrFail' */
+  boolean_T AppIn_BattPackTempSnsrFail;/* '<Root>/AppIn_BattPackTempSnsrFail' */
+  boolean_T AppIn_VltImbFlt;           /* '<Root>/AppIn_VltImbFlt' */
+  boolean_T AppIn_TempImbWarn;         /* '<Root>/AppIn_TempImbWarn' */
+  boolean_T AppIn_EEPROMSoCWarn15;     /* '<Root>/AppIn_EEPROMSoCWarn15' */
+  boolean_T AppIn_BMSLowTempduringDriveWarn;
+                                  /* '<Root>/AppIn_BMSLowTempduringDriveWarn' */
+  boolean_T AppIn_BMSOverTempDriveWarnInfo;
+                                   /* '<Root>/AppIn_BMSOverTempDriveWarnInfo' */
 } NBMS_App_Inputs_St;
 
 /* Storage class 'Outputs', for system '<Root>' */
@@ -140,6 +155,8 @@ typedef struct {
   real_T AppOut_DischgCurrLimit;       /* '<Root>/AppOut_DischgCurrLimit' */
   real_T AppOut_Timer30;               /* '<Root>/AppOut_Timer30' */
   real_T AppOut_RegenCurrent;          /* '<Root>/AppOut_RegenCurrent' */
+  real_T AppOut_TTCHour;               /* '<Root>/AppOut_TTCHour' */
+  real_T AppOut_TTCMinutes;            /* '<Root>/AppOut_TTCMinutes' */
   BMS_HVMosfet_STS_E AppOut_HVMosfet;  /* '<Root>/AppOut_HVMosfet' */
   Charger_Mode_Req_E AppOut_ChgModeReq;/* '<Root>/AppOut_ChgModeReq' */
   BMS_NM_Msg_E AppOut_BMS_NM_Msg;      /* '<Root>/AppOut_BMS_NM_Msg' */
@@ -161,12 +178,22 @@ typedef struct {
   boolean_T AppOut_LowSoC;             /* '<Root>/AppOut_LowSoC' */
   boolean_T AppOut_LowSoCWarn;         /* '<Root>/AppOut_LowSoCWarn' */
   boolean_T AppOut_RegenOverCurrentFlg;/* '<Root>/AppOut_RegenOverCurrentFlg' */
-  boolean_T AppOut_DerateFlg;          /* '<Root>/AppOut_DerateFlg' */
 } NBMS_App_Outputs_St;
 
 /* Real-time Model Data Structure */
 struct tag_RTM_NBMS_App_T {
   const char_T *errorStatus;
+
+  /*
+   * Timing:
+   * The following substructure contains information regarding
+   * the timing information for the model.
+   */
+  struct {
+    struct {
+      uint32_T TID[2];
+    } TaskCounters;
+  } Timing;
 };
 
 /* Block signals (default storage) */
@@ -174,6 +201,18 @@ extern B_NBMS_App_T NBMS_App_B;
 
 /* Block states (default storage) */
 extern DW_NBMS_App_T NBMS_App_DW;
+
+/*
+ * Exported Global Parameters
+ *
+ * Note: Exported global parameters are tunable parameters with an exported
+ * global storage class designation.  Code generation will declare the memory for
+ * these parameters and exports their symbols.
+ *
+ */
+extern uint8_T CAL_CV_ChargeTime;      /* Variable: CAL_CV_ChargeTime
+                                        * Referenced by: '<S1>/Model'
+                                        */
 
 /* Model entry point functions */
 extern void NBMS_App_initialize(void);

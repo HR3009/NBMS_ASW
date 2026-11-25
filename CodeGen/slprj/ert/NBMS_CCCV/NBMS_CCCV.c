@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_CCCV'.
  *
- * Model version                  : 7.32
+ * Model version                  : 7.36
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Fri Nov 20 12:34:29 2026
+ * C/C++ source code generated on : Wed Nov 25 15:34:53 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -40,7 +40,8 @@ real_T NBMS_CCCV_CCL(real_T rtu_SoC, real_T rtu_temp)
 {
   /* Lookup_n-D: '<S3>/ContinuousSafety' */
   return look2_binlxpw(rtu_temp, rtu_SoC, &X_CCL_CONT_SAFETY_PACK[0],
-                       &Y_CCL_CONT_SAFETY_PACK[0], &TABLE_CCL_CONT_SAFETY_PACK[0],
+                       &Y_CCL_CONT_SAFETY_PACK[0],
+                       rtCP_ContinuousSafety_tableData,
                        rtCP_ContinuousSafety_maxIndex, 9U);
 }
 
@@ -200,9 +201,9 @@ void NBMS_CCCV(const OBC_E *rtu_mi_OBC_wakeup, const uint8_T *rtu_Display_SoC,
         localDW->durationCounter_1_i = 0U;
       }
 
-      if ((localDW->durationCounter_1_i > 2U) && ((*rtu_mi_OBC_wakeup == Wake_Up)
-           && (*rtu_Display_SoC <= 99) && ((real_T)*rtu_MinCellVolt * 0.001 >=
-            2.25))) {
+      if ((localDW->durationCounter_1_i > 2U) && ((*rtu_sm_BMSMODE == BMS_CHARGE)
+           && (*rtu_mi_OBC_wakeup == Wake_Up) && (*rtu_Display_SoC <= 99) &&
+           ((real_T)*rtu_MinCellVolt * 0.001 >= 2.25))) {
         localDW->is_CHARGE_CCCV = NBMS_CCCV_IN_Charge_Standby;
         *rty_Chg_Mode_Req = Standby;
         localB->ChargeCurrentLimit = 0.0;
@@ -219,8 +220,9 @@ void NBMS_CCCV(const OBC_E *rtu_mi_OBC_wakeup, const uint8_T *rtu_Display_SoC,
         localB->ChargeCurrentLimit = 0.0;
         *rty_ChargeVoltageLt = 0.0;
         *rty_soc_full = 100U;
-      } else if ((*rtu_mi_OBC_wakeup == Wake_Up) && (*rtu_Display_SoC <= 99) &&
-                 ((real_T)*rtu_MinCellVolt * 0.001 >= 2.25)) {
+      } else if ((*rtu_sm_BMSMODE == BMS_CHARGE) && (*rtu_mi_OBC_wakeup ==
+                  Wake_Up) && (*rtu_Display_SoC <= 99) && ((real_T)
+                  *rtu_MinCellVolt * 0.001 >= 2.25)) {
         localDW->is_CHARGE_CCCV = NBMS_CCCV_IN_Charge_Standby;
         *rty_Chg_Mode_Req = Standby;
         localB->ChargeCurrentLimit = 0.0;
@@ -293,8 +295,11 @@ void NBMS_CCCV(const OBC_E *rtu_mi_OBC_wakeup, const uint8_T *rtu_Display_SoC,
   /* Chart: '<Root>/BMS NM Msg' */
   localDW->Ign_prev = localDW->Ign_start;
   localDW->Ign_start = *rtu_Hardwired_Ign;
+  localDW->OBC_Wakeup_prev = localDW->OBC_Wakeup_start;
+  localDW->OBC_Wakeup_start = *rtu_mi_OBC_wakeup;
   if (localDW->is_active_c1_NBMS_CCCV == 0) {
     localDW->Ign_prev = *rtu_Hardwired_Ign;
+    localDW->OBC_Wakeup_prev = *rtu_mi_OBC_wakeup;
     localDW->is_active_c1_NBMS_CCCV = 1U;
     localDW->is_c1_NBMS_CCCV = NBMS_CCCV_IN_SLEEP;
     *rty_BMS_NM_Msg = SLEEP;
@@ -316,7 +321,8 @@ void NBMS_CCCV(const OBC_E *rtu_mi_OBC_wakeup, const uint8_T *rtu_Display_SoC,
     *rty_BMS_NM_Msg = SLEEP;
     if (((localDW->Ign_prev != localDW->Ign_start) && localDW->Ign_start) ||
         (*rtu_OBC_HVIL_input && *rtu_RTC_Wakeup) || (!*rtu_OBC_Heartbeat_fail &&
-         (*rtu_mi_OBC_wakeup == Wake_Up))) {
+         ((localDW->OBC_Wakeup_prev != localDW->OBC_Wakeup_start) &&
+          (localDW->OBC_Wakeup_start == Wake_Up)))) {
       localDW->durationCounter_1_c = 0U;
       localDW->is_c1_NBMS_CCCV = NBMS_CCCV_IN_ACTIVE;
       *rty_BMS_NM_Msg = ACTIVE;

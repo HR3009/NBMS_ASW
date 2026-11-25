@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_DischargeOCV'.
  *
- * Model version                  : 7.2
+ * Model version                  : 7.7
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Tue Nov 10 18:06:05 2026
+ * C/C++ source code generated on : Mon Nov 23 15:35:35 2026
  */
 
 #ifndef look2_binlcpw_h_

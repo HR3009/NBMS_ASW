@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_Regen'.
  *
- * Model version                  : 7.12
+ * Model version                  : 7.14
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Fri Nov 20 12:34:41 2026
+ * C/C++ source code generated on : Wed Nov 25 15:35:08 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -35,8 +35,13 @@
 #define rtmSetErrorStatusPointer(rtm, val) ((rtm)->errorStatus = (val))
 #endif
 
+extern const real_T rtCP_pooled_DsnmT4uKTAuL[117];
 extern const uint32_T rtCP_pooled_4VxQjGiMgLkO[2];
 
+#define rtCP_RgenCurrent_tableData     rtCP_pooled_DsnmT4uKTAuL  /* Expression: [0 0 0 0 0 0 0 0 0 0 0 0 0; 0 0 0 0 0 0 0 0 0 0 0 0 0; 0 0 0 0 0 0 0 0 0 0 0 0 0; 52 52 52 52 52 52 52 49 35 21 14 7 0; 52 52 52 52 52 52 52 52 49 35 21 17 2; 52 52 52 52 52 52 52 52 52 49 28 21 2; 52 52 52 52 52 52 52 52 52 49 28 21 2; 52 52 52 52 52 52 52 52 52 49 28 21 2; 0 0 0 0 0 0 0 0 0 0 0 0 0];
+
+                                                                  * Referenced by: '<Root>/Rgen Current'
+                                                                  */
 #define rtCP_RgenCurrent_maxIndex      rtCP_pooled_4VxQjGiMgLkO  /* Computed Parameter: rtCP_RgenCurrent_maxIndex
                                                                   * Referenced by: '<Root>/Rgen Current'
                                                                   */

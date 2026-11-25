@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'NBMS_SoC'.
  *
- * Model version                  : 7.101
+ * Model version                  : 7.110
  * Simulink Coder version         : 26.2 (R2026b) 22-May-2026
- * C/C++ source code generated on : Fri Nov 20 12:35:00 2026
+ * C/C++ source code generated on : Wed Nov 25 15:37:59 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -154,20 +154,23 @@ void NBMS_SoC_Init(boolean_T *rty_LOW_SOC, real_T *rty_FailSensorVolt, int16_T
   /* InitializeConditions for DiscreteIntegrator: '<S6>/CalcCurrAccum' */
   localDW->CalcCurrAccum_PrevResetState = 2;
 
-  /* InitializeConditions for UnitDelay: '<S42>/ZeroReset' */
-  localDW->ZeroReset_DSTATE = true;
-
   /* InitializeConditions for UnitDelay: '<S42>/uDlySoC' */
   localDW->uDlySoC_DSTATE = 100U;
+
+  /* InitializeConditions for UnitDelay: '<S6>/Unit Delay' */
+  localDW->UnitDelay_DSTATE = BMS_SLEEP;
+
+  /* InitializeConditions for UnitDelay: '<S42>/ZeroReset' */
+  localDW->ZeroReset_DSTATE = true;
 
   /* InitializeConditions for UnitDelay: '<S42>/udlyDSoC' */
   localDW->udlyDSoC_DSTATE = 100U;
 
-  /* InitializeConditions for UnitDelay: '<S18>/udlySoH' */
-  localDW->udlySoH_DSTATE_k = 100U;
-
   /* InitializeConditions for DiscreteIntegrator: '<S17>/Accumulate BattCurrent' */
   localDW->AccumulateBattCurrent_PrevReset = 2;
+
+  /* InitializeConditions for UnitDelay: '<S17>/udlyBMSMode' */
+  localDW->udlyBMSMode_DSTATE = BMS_SLEEP;
 
   /* InitializeConditions for DiscreteIntegrator: '<S41>/CoulombCounter' */
   localDW->CoulombCounter_PrevResetState = 2;
@@ -289,18 +292,17 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
               const Charger_Mode_Req_E *rtu_Charger_Mode_Req, const BMS_MODE_E
               *rtu_sm_BMSMODE_en, const real_T *rtu_AppIn_LastStoredSOC, const
               real_T *rtu_AppIn_LastStoredCycle, const boolean_T
-              *rtu_AppIn_I2Cerror, const real_T *rtu_AppIn_LastStoredSOH, const
-              OBC_E *rtu_OBCWakeup, const real_T *rtu_mi_Pack_Volt, const
-              VEH_STT_LVL1_E *rtu_AppIn_VehL1, const real_T
-              *rtu_DischrgCurrLimit, const boolean_T *rtu_RTC_Wakeup, const
-              boolean_T *rtu_AppIn_SoCLEDSW, const boolean_T
-              *rtu_EEPROM_SOC_WARN15, uint8_T *rty_Display_SOC, real_T
-              *rty_Battery_Capacity, boolean_T *rty_LOW_SOC_WARN_15, boolean_T
-              *rty_LOW_SOC, boolean_T *rty_LOW_SOC_WARN, real_T
-              *rty_Batt_Pack_SOC, real_T *rty_LifeCycle, real_T *rty_SOH,
-              int16_T *rty_VtAvgMax, real_T *rty_CurrentCapacity, uint16_T
-              *rty_SOCcc, uint16_T *rty_SOCAvg, int16_T *rty_Vmin, real_T
-              *rty_SOC_OCVInit, real_T *rty_SOCAvgInitial, real_T
+              *rtu_AppIn_I2Cerror, const OBC_E *rtu_OBCWakeup, const real_T
+              *rtu_mi_Pack_Volt, const VDU_MACHINE_STS_E
+              *rtu_AppIn_MachineStatus, const real_T *rtu_DischrgCurrLimit,
+              const boolean_T *rtu_RTC_Wakeup, const boolean_T
+              *rtu_AppIn_SoCLEDSW, const boolean_T *rtu_EEPROM_SOC_WARN15,
+              uint8_T *rty_Display_SOC, real_T *rty_Battery_Capacity, boolean_T *
+              rty_LOW_SOC_WARN_15, boolean_T *rty_LOW_SOC, boolean_T
+              *rty_LOW_SOC_WARN, real_T *rty_Batt_Pack_SOC, real_T
+              *rty_LifeCycle, int16_T *rty_VtAvgMax, real_T *rty_CurrentCapacity,
+              uint16_T *rty_SOCcc, uint16_T *rty_SOCAvg, int16_T *rty_Vmin,
+              real_T *rty_SOC_OCVInit, real_T *rty_SOCAvgInitial, real_T
               *rty_AvailableEnergy, int16_T *rty_VtAvgMin, real_T
               *rty_FailSensorVolt, int16_T *rty_FailSensorVoltAvg, int16_T
               *rty_BatteryCurrentAvg5sec, real_T *rty_ChargeCapacity,
@@ -309,9 +311,9 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
               *localDW, ZCE_NBMS_SoC_T *localZCE)
 {
   real_T maxV;
-  real_T rtb_InternalVoltageDrop_0;
-  real_T rtb_ScaledGoldenDC_e;
-  real_T rtb_SoCCoulombCounting;
+  real_T rtb_ArbitratedInitSoc;
+  real_T rtb_ScaledDOD;
+  real_T rtb_SumofAvgVolt_0;
   int32_T i;
   int32_T rtb_CountofNonZeroCell_0;
   int32_T y;
@@ -323,36 +325,34 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
   int16_T rtb_OpenCircuitVoltage;
   uint16_T rtb_InitialSoCAvg;
   uint16_T rtb_SOCAvgHystersis;
-  uint16_T rtb_Uk1;
+  uint16_T rtb_SoCcc_a;
   uint8_T rtb_Init;
   boolean_T rtb_Compare_ei[20];
   boolean_T TriggerswhentheBMSModeisDischar;
+  boolean_T rtb_AND;
   boolean_T rtb_ChgStarted;
   boolean_T rtb_Compare_bn;
   boolean_T rtb_Compare_c2;
-  boolean_T rtb_Compare_cf;
-  boolean_T rtb_Compare_lv;
   boolean_T rtb_Compare_mx;
   boolean_T rtb_Compare_o1;
-  boolean_T rtb_FixPtRelationalOperator_c;
+  boolean_T rtb_Compare_pt;
   boolean_T rtb_IntegratorReset;
-  boolean_T rtb_IntegratorReset_tmp;
   boolean_T tmp;
   for (i = 0; i < 20; i++) {
     /* DataTypeConversion: '<S1>/ConvertToFixdt' */
-    rtb_SoCCoulombCounting = floor(rtu_AppIn_BattVoltages[i] / 0.001);
-    if (rtIsNaN(rtb_SoCCoulombCounting) || rtIsInf(rtb_SoCCoulombCounting)) {
-      rtb_SoCCoulombCounting = 0.0;
+    rtb_SumofAvgVolt_0 = floor(rtu_AppIn_BattVoltages[i] / 0.001);
+    if (rtIsNaN(rtb_SumofAvgVolt_0) || rtIsInf(rtb_SumofAvgVolt_0)) {
+      rtb_SumofAvgVolt_0 = 0.0;
     } else {
-      rtb_SoCCoulombCounting = fmod(rtb_SoCCoulombCounting, 65536.0);
+      rtb_SumofAvgVolt_0 = fmod(rtb_SumofAvgVolt_0, 65536.0);
     }
 
-    if (rtb_SoCCoulombCounting < 0.0) {
+    if (rtb_SumofAvgVolt_0 < 0.0) {
       /* DataTypeConversion: '<S1>/ConvertToFixdt' */
-      rtb_OCVInitial = (int16_T)-(int16_T)(uint16_T)-rtb_SoCCoulombCounting;
+      rtb_OCVInitial = (int16_T)-(int16_T)(uint16_T)-rtb_SumofAvgVolt_0;
     } else {
       /* DataTypeConversion: '<S1>/ConvertToFixdt' */
-      rtb_OCVInitial = (int16_T)(uint16_T)rtb_SoCCoulombCounting;
+      rtb_OCVInitial = (int16_T)(uint16_T)rtb_SumofAvgVolt_0;
     }
 
     /* End of DataTypeConversion: '<S1>/ConvertToFixdt' */
@@ -406,17 +406,17 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
   /* End of Outputs for SubSystem: '<S1>/CalcOCV' */
 
   /* DataTypeConversion: '<S1>/FixdtTypeConvert' */
-  rtb_SoCCoulombCounting = floor(*rty_SOC_OCVInit / 0.001);
-  if (rtIsNaN(rtb_SoCCoulombCounting) || rtIsInf(rtb_SoCCoulombCounting)) {
-    rtb_SoCCoulombCounting = 0.0;
+  rtb_SumofAvgVolt_0 = floor(*rty_SOC_OCVInit / 0.001);
+  if (rtIsNaN(rtb_SumofAvgVolt_0) || rtIsInf(rtb_SumofAvgVolt_0)) {
+    rtb_SumofAvgVolt_0 = 0.0;
   } else {
-    rtb_SoCCoulombCounting = fmod(rtb_SoCCoulombCounting, 65536.0);
+    rtb_SumofAvgVolt_0 = fmod(rtb_SumofAvgVolt_0, 65536.0);
   }
 
-  if (rtb_SoCCoulombCounting < 0.0) {
-    rtb_OCVInitial = (int16_T)-(int16_T)(uint16_T)-rtb_SoCCoulombCounting;
+  if (rtb_SumofAvgVolt_0 < 0.0) {
+    rtb_OCVInitial = (int16_T)-(int16_T)(uint16_T)-rtb_SumofAvgVolt_0;
   } else {
-    rtb_OCVInitial = (int16_T)(uint16_T)rtb_SoCCoulombCounting;
+    rtb_OCVInitial = (int16_T)(uint16_T)rtb_SumofAvgVolt_0;
   }
 
   /* End of DataTypeConversion: '<S1>/FixdtTypeConvert' */
@@ -442,7 +442,7 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
         localDW->is_SOC_Init = NBMS_SoC_IN_Charge;
         rtb_Init = 1U;
       } else if ((*rtu_sm_BMSMODE_en == BMS_DISCHARGE) || *rtu_RTC_Wakeup ||
-                 *rtu_AppIn_SoCLEDSW) {
+                 *rtu_AppIn_SoCLEDSW || (*rtu_sm_BMSMODE_en == BMS_FAULT)) {
         localDW->is_SOC_Init = NBMS_SoC_IN_Discharge;
         rtb_Init = 2U;
       }
@@ -649,40 +649,38 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
      *  RelationalOperator: '<S104>/Compare'
      *  RelationalOperator: '<S92>/CheckCurrentWithinLimit'
      */
-    if ((*rtu_AppIn_VehL1 == DRIVE) && (*rtu_AppIn_BattCurrent <=
+    if ((*rtu_AppIn_MachineStatus == DRIVE) && (*rtu_AppIn_BattCurrent <=
          *rtu_DischrgCurrLimit)) {
       /* DataTypeConversion: '<S107>/ConvertToFixdt' */
-      rtb_SoCCoulombCounting = floor(*rtu_DischrgCurrLimit / 0.01);
-      if (rtIsNaN(rtb_SoCCoulombCounting) || rtIsInf(rtb_SoCCoulombCounting)) {
-        rtb_SoCCoulombCounting = 0.0;
+      rtb_SumofAvgVolt_0 = floor(*rtu_DischrgCurrLimit / 0.01);
+      if (rtIsNaN(rtb_SumofAvgVolt_0) || rtIsInf(rtb_SumofAvgVolt_0)) {
+        rtb_SumofAvgVolt_0 = 0.0;
       } else {
-        rtb_SoCCoulombCounting = fmod(rtb_SoCCoulombCounting, 65536.0);
+        rtb_SumofAvgVolt_0 = fmod(rtb_SumofAvgVolt_0, 65536.0);
       }
 
-      if (rtb_SoCCoulombCounting < 0.0) {
+      if (rtb_SumofAvgVolt_0 < 0.0) {
         /* DataTypeConversion: '<S107>/ConvertToFixdt' */
-        localB->u1stSample_d = (int16_T)-(int16_T)(uint16_T)
-          -rtb_SoCCoulombCounting;
+        localB->u1stSample_d = (int16_T)-(int16_T)(uint16_T)-rtb_SumofAvgVolt_0;
       } else {
         /* DataTypeConversion: '<S107>/ConvertToFixdt' */
-        localB->u1stSample_d = (int16_T)(uint16_T)rtb_SoCCoulombCounting;
+        localB->u1stSample_d = (int16_T)(uint16_T)rtb_SumofAvgVolt_0;
       }
     } else {
       /* DataTypeConversion: '<S107>/ConvertToFixdt' */
-      rtb_SoCCoulombCounting = floor(*rtu_AppIn_BattCurrent / 0.01);
-      if (rtIsNaN(rtb_SoCCoulombCounting) || rtIsInf(rtb_SoCCoulombCounting)) {
-        rtb_SoCCoulombCounting = 0.0;
+      rtb_SumofAvgVolt_0 = floor(*rtu_AppIn_BattCurrent / 0.01);
+      if (rtIsNaN(rtb_SumofAvgVolt_0) || rtIsInf(rtb_SumofAvgVolt_0)) {
+        rtb_SumofAvgVolt_0 = 0.0;
       } else {
-        rtb_SoCCoulombCounting = fmod(rtb_SoCCoulombCounting, 65536.0);
+        rtb_SumofAvgVolt_0 = fmod(rtb_SumofAvgVolt_0, 65536.0);
       }
 
-      if (rtb_SoCCoulombCounting < 0.0) {
+      if (rtb_SumofAvgVolt_0 < 0.0) {
         /* DataTypeConversion: '<S107>/ConvertToFixdt' */
-        localB->u1stSample_d = (int16_T)-(int16_T)(uint16_T)
-          -rtb_SoCCoulombCounting;
+        localB->u1stSample_d = (int16_T)-(int16_T)(uint16_T)-rtb_SumofAvgVolt_0;
       } else {
         /* DataTypeConversion: '<S107>/ConvertToFixdt' */
-        localB->u1stSample_d = (int16_T)(uint16_T)rtb_SoCCoulombCounting;
+        localB->u1stSample_d = (int16_T)(uint16_T)rtb_SumofAvgVolt_0;
       }
     }
 
@@ -779,52 +777,63 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
     (rtb_Compare_c2 && localB->Compare_b) << 1U) + rtb_Logic_idx_0_tmp) << 1U) +
     localDW->Memory_PreviousInput];
 
-  /* Sum: '<S93>/SumofAvgVolt' */
-  tmpForInput[0] = localB->AvgVoltofCell0;
-  tmpForInput[1] = localB->AvgVoltofCell1;
-  tmpForInput[2] = localB->AvgVoltofCell2;
-  tmpForInput[3] = localB->AvgVoltofCell3;
-  tmpForInput[4] = localB->AvgVoltofCell4;
-  tmpForInput[5] = localB->AvgVoltofCell5;
-  tmpForInput[6] = localB->AvgVoltofCell6;
-  tmpForInput[7] = localB->AvgVoltofCell7;
-  tmpForInput[8] = localB->AvgVoltofCell8;
-  tmpForInput[9] = localB->AvgVoltofCell9;
-  tmpForInput[10] = localB->AvgVoltofCell10;
-  tmpForInput[11] = localB->AvgVoltofCell11;
-  tmpForInput[12] = localB->AvgVoltofCell12;
-  tmpForInput[13] = localB->AvgVoltofCell13;
-  tmpForInput[14] = localB->AvgVoltofCell14;
-  tmpForInput[15] = localB->AvgVoltofCell15;
-  tmpForInput[16] = localB->AvgVoltofCell16;
-  tmpForInput[17] = localB->AvgVoltofCell17;
-  tmpForInput[18] = localB->AvgVoltofCell18;
-  tmpForInput[19] = localB->AvgVoltofCell19;
-  rtb_InternalVoltageDrop_0 = 0.0;
-
-  /* Sum: '<S93>/CountofNonZeroCellVolt' */
+  /* Sum: '<S93>/CountofNonZeroCellVolt' incorporates:
+   *  RelationalOperator: '<S134>/Compare'
+   */
   rtb_CountofNonZeroCell_0 = 0;
   for (i = 0; i < 20; i++) {
-    /* Sum: '<S93>/SumofAvgVolt' */
-    rtb_InternalVoltageDrop_0 += (real_T)tmpForInput[i] * 0.001;
-
-    /* Sum: '<S93>/CountofNonZeroCellVolt' incorporates:
-     *  RelationalOperator: '<S134>/Compare'
-     */
     rtb_CountofNonZeroCell_0 += rtb_Compare_ei[i];
   }
 
-  /* Product: '<S93>/Average' incorporates:
+  /* Switch: '<S93>/selAvgVolt' incorporates:
+   *  Constant: '<S93>/zeroavgvt'
+   *  Product: '<S93>/Average'
    *  Sum: '<S93>/CountofNonZeroCellVolt'
-   *  Sum: '<S93>/SumofAvgVolt'
    */
-  rtb_SoCCoulombCounting = floor(rtb_InternalVoltageDrop_0 / (real_T)
-    rtb_CountofNonZeroCell_0 / 0.01);
-  if (rtIsNaN(rtb_SoCCoulombCounting) || rtIsInf(rtb_SoCCoulombCounting)) {
-    rtb_SoCCoulombCounting = 0.0;
+  if (rtb_CountofNonZeroCell_0 > 0) {
+    /* Sum: '<S93>/SumofAvgVolt' */
+    tmpForInput[0] = localB->AvgVoltofCell0;
+    tmpForInput[1] = localB->AvgVoltofCell1;
+    tmpForInput[2] = localB->AvgVoltofCell2;
+    tmpForInput[3] = localB->AvgVoltofCell3;
+    tmpForInput[4] = localB->AvgVoltofCell4;
+    tmpForInput[5] = localB->AvgVoltofCell5;
+    tmpForInput[6] = localB->AvgVoltofCell6;
+    tmpForInput[7] = localB->AvgVoltofCell7;
+    tmpForInput[8] = localB->AvgVoltofCell8;
+    tmpForInput[9] = localB->AvgVoltofCell9;
+    tmpForInput[10] = localB->AvgVoltofCell10;
+    tmpForInput[11] = localB->AvgVoltofCell11;
+    tmpForInput[12] = localB->AvgVoltofCell12;
+    tmpForInput[13] = localB->AvgVoltofCell13;
+    tmpForInput[14] = localB->AvgVoltofCell14;
+    tmpForInput[15] = localB->AvgVoltofCell15;
+    tmpForInput[16] = localB->AvgVoltofCell16;
+    tmpForInput[17] = localB->AvgVoltofCell17;
+    tmpForInput[18] = localB->AvgVoltofCell18;
+    tmpForInput[19] = localB->AvgVoltofCell19;
+    rtb_SumofAvgVolt_0 = 0.0;
+    for (i = 0; i < 20; i++) {
+      rtb_SumofAvgVolt_0 += (real_T)tmpForInput[i] * 0.001;
+    }
+
+    /* Product: '<S93>/Average' incorporates:
+     *  Sum: '<S93>/SumofAvgVolt'
+     */
+    i = (int32_T)fmod(floor(rtb_SumofAvgVolt_0 / (real_T)
+      rtb_CountofNonZeroCell_0 / 0.01), 65536.0);
+    if (i < 0) {
+      i = (uint16_T)-(int16_T)(uint16_T)-(real_T)i;
+    } else {
+      i = (uint16_T)i;
+    }
+
+    rtb_ScaledDOD = (real_T)i * 0.01;
   } else {
-    rtb_SoCCoulombCounting = fmod(rtb_SoCCoulombCounting, 65536.0);
+    rtb_ScaledDOD = 0.0;
   }
+
+  /* End of Switch: '<S93>/selAvgVolt' */
 
   /* Switch: '<S92>/selInternalResistance' incorporates:
    *  Constant: '<S106>/Constant'
@@ -835,12 +844,12 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
    *  UnitDelay: '<S1>/udlyPackSoC'
    */
   if (*rtu_sm_BMSMODE_en == BMS_CHARGE) {
-    rtb_ScaledGoldenDC_e = look2_binlcpw(maxV, localDW->udlyPackSoC_DSTATE,
-      &X_DCIR_CHG[0], &Y_DCIR_CHG[0], &TABLE_DCIR_CHG[0],
+    rtb_ArbitratedInitSoc = look2_binlcpw(maxV, localDW->udlyPackSoC_DSTATE,
+      &X_DCIR_CHG[0], &Y_DCIR_CHG[0], rtCP_DCIRCharge_tableData,
       rtCP_DCIRCharge_maxIndex, 7U);
   } else {
-    rtb_ScaledGoldenDC_e = look2_binlcpw(maxV, localDW->udlyPackSoC_DSTATE,
-      &X_DCIR_DISCH[0], &Y_DCIR_DISCH[0], &TABLE_DCIR_DISCH[0],
+    rtb_ArbitratedInitSoc = look2_binlcpw(maxV, localDW->udlyPackSoC_DSTATE,
+      &X_DCIR_DISCH[0], &Y_DCIR_DISCH[0], rtCP_DCIRdisCharge_tableData,
       rtCP_DCIRdisCharge_maxIndex, 7U);
   }
 
@@ -854,32 +863,25 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
    *  Sum: '<S93>/MinVoltDiff'
    *  Switch: '<S107>/Sample Accumulator '
    */
-  rtb_InternalVoltageDrop_0 = floor((real_T)localB->usecAvgBatteryCurrent * 0.01
-    / 7.0 * rtb_ScaledGoldenDC_e / 0.001);
-  tmp = (rtIsNaN(rtb_InternalVoltageDrop_0) || rtIsInf(rtb_InternalVoltageDrop_0));
+  rtb_SumofAvgVolt_0 = floor((real_T)localB->usecAvgBatteryCurrent * 0.01 / 7.0 *
+    rtb_ArbitratedInitSoc / 0.001);
+  tmp = (rtIsNaN(rtb_SumofAvgVolt_0) || rtIsInf(rtb_SumofAvgVolt_0));
   if (tmp) {
-    rtb_ScaledGoldenDC_e = 0.0;
+    rtb_ArbitratedInitSoc = 0.0;
   } else {
-    rtb_ScaledGoldenDC_e = fmod(rtb_InternalVoltageDrop_0, 65536.0);
+    rtb_ArbitratedInitSoc = fmod(rtb_SumofAvgVolt_0, 65536.0);
   }
 
-  /* Product: '<S93>/Average' */
-  if (rtb_SoCCoulombCounting < 0.0) {
-    i = (uint16_T)-(int16_T)(uint16_T)-rtb_SoCCoulombCounting;
+  if (rtb_ArbitratedInitSoc < 0.0) {
+    i = (int16_T)-(int16_T)(uint16_T)-rtb_ArbitratedInitSoc;
   } else {
-    i = (uint16_T)rtb_SoCCoulombCounting;
+    i = (int16_T)(uint16_T)rtb_ArbitratedInitSoc;
   }
 
-  /* Sum: '<S91>/VoltDiff' incorporates:
-   *  Product: '<S93>/Average'
-   */
-  if (rtb_ScaledGoldenDC_e < 0.0) {
-    y = (int16_T)-(int16_T)(uint16_T)-rtb_ScaledGoldenDC_e;
-  } else {
-    y = (int16_T)(uint16_T)rtb_ScaledGoldenDC_e;
-  }
+  rtb_OpenCircuitVoltage = (int16_T)((int16_T)(int32_T)fmod(floor(rtb_ScaledDOD /
+    0.001), 65536.0) - i);
 
-  rtb_OpenCircuitVoltage = (int16_T)((int16_T)((uint32_T)i * 10U) - y);
+  /* End of Sum: '<S91>/VoltDiff' */
 
   /* RelationalOperator: '<S101>/Compare' incorporates:
    *  Constant: '<S101>/Constant'
@@ -916,32 +918,30 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
 
   /* Switch: '<S91>/Switch1' */
   if (rtb_Compare_bn) {
-    rtb_SoCCoulombCounting = floor(localB->ChgInitialSoC_b / 0.01);
-    if (rtIsNaN(rtb_SoCCoulombCounting) || rtIsInf(rtb_SoCCoulombCounting)) {
-      rtb_SoCCoulombCounting = 0.0;
+    rtb_ArbitratedInitSoc = floor(localB->ChgInitialSoC_b / 0.01);
+    if (rtIsNaN(rtb_ArbitratedInitSoc) || rtIsInf(rtb_ArbitratedInitSoc)) {
+      rtb_ArbitratedInitSoc = 0.0;
     } else {
-      rtb_SoCCoulombCounting = fmod(rtb_SoCCoulombCounting, 65536.0);
+      rtb_ArbitratedInitSoc = fmod(rtb_ArbitratedInitSoc, 65536.0);
     }
 
-    if (rtb_SoCCoulombCounting < 0.0) {
-      rtb_SOCAvgHystersis = (uint16_T)-(int16_T)(uint16_T)
-        -rtb_SoCCoulombCounting;
+    if (rtb_ArbitratedInitSoc < 0.0) {
+      rtb_SOCAvgHystersis = (uint16_T)-(int16_T)(uint16_T)-rtb_ArbitratedInitSoc;
     } else {
-      rtb_SOCAvgHystersis = (uint16_T)rtb_SoCCoulombCounting;
+      rtb_SOCAvgHystersis = (uint16_T)rtb_ArbitratedInitSoc;
     }
   } else {
-    rtb_SoCCoulombCounting = floor(localB->DischgInitialSoC_i / 0.01);
-    if (rtIsNaN(rtb_SoCCoulombCounting) || rtIsInf(rtb_SoCCoulombCounting)) {
-      rtb_SoCCoulombCounting = 0.0;
+    rtb_ArbitratedInitSoc = floor(localB->DischgInitialSoC_i / 0.01);
+    if (rtIsNaN(rtb_ArbitratedInitSoc) || rtIsInf(rtb_ArbitratedInitSoc)) {
+      rtb_ArbitratedInitSoc = 0.0;
     } else {
-      rtb_SoCCoulombCounting = fmod(rtb_SoCCoulombCounting, 65536.0);
+      rtb_ArbitratedInitSoc = fmod(rtb_ArbitratedInitSoc, 65536.0);
     }
 
-    if (rtb_SoCCoulombCounting < 0.0) {
-      rtb_SOCAvgHystersis = (uint16_T)-(int16_T)(uint16_T)
-        -rtb_SoCCoulombCounting;
+    if (rtb_ArbitratedInitSoc < 0.0) {
+      rtb_SOCAvgHystersis = (uint16_T)-(int16_T)(uint16_T)-rtb_ArbitratedInitSoc;
     } else {
-      rtb_SOCAvgHystersis = (uint16_T)rtb_SoCCoulombCounting;
+      rtb_SOCAvgHystersis = (uint16_T)rtb_ArbitratedInitSoc;
     }
   }
 
@@ -958,8 +958,13 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
    *  RelationalOperator: '<S98>/FixPt Relational Operator'
    *  RelationalOperator: '<S99>/FixPt Relational Operator'
    *  Switch: '<S91>/Switch1'
+   *  UnitDelay: '<S57>/Delay Input1'
    *  UnitDelay: '<S98>/Delay Input1'
    *  UnitDelay: '<S99>/Delay Input1'
+   *
+   * Block description for '<S57>/Delay Input1':
+   *
+   *  Store in Global RAM
    *
    * Block description for '<S98>/Delay Input1':
    *
@@ -974,82 +979,35 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
     localDW->DelayInput1_DSTATE_g)) << 1U) + rtb_Logic_idx_0_tmp) << 1U) +
     localDW->Memory_PreviousInput_c;
 
-  /* Logic: '<S18>/ChgStarted' incorporates:
-   *  Constant: '<S29>/Constant'
-   *  Constant: '<S30>/Constant'
-   *  Constant: '<S31>/Constant'
-   *  Logic: '<S18>/IsCharging'
-   *  RelationalOperator: '<S29>/Compare'
-   *  RelationalOperator: '<S30>/Compare'
-   *  RelationalOperator: '<S31>/Compare'
-   *  UnitDelay: '<S18>/udlyChgModeReq'
-   */
-  rtb_ChgStarted = ((localDW->udlyChgModeReq_DSTATE == Standby) &&
-                    ((*rtu_Charger_Mode_Req == CC_Start) ||
-                     (*rtu_Charger_Mode_Req == CV)));
-
-  /* RelationalOperator: '<S69>/Compare' incorporates:
-   *  Constant: '<S69>/Constant'
-   */
-  rtb_Compare_cf = (*rtu_Charger_Mode_Req == Charge_Complete);
-
-  /* RelationalOperator: '<S70>/FixPt Relational Operator' incorporates:
-   *  UnitDelay: '<S70>/Delay Input1'
-   *
-   * Block description for '<S70>/Delay Input1':
-   *
-   *  Store in Global RAM
-   */
-  rtb_FixPtRelationalOperator_c = ((int32_T)rtb_Compare_cf > (int32_T)
-    localDW->DelayInput1_DSTATE_a);
-
-  /* Outputs for Triggered SubSystem: '<S60>/LatchFullSoc' incorporates:
-   *  TriggerPort: '<S71>/Trigger'
-   */
-  if (rtb_FixPtRelationalOperator_c && (localZCE->LatchFullSoc_Trig_ZCE !=
-       POS_ZCSIG)) {
-    /* SignalConversion generated from: '<S71>/SOC_Full' */
-    localB->LatchedFullSoC = *rtu_soc_full;
-  }
-
-  localZCE->LatchFullSoc_Trig_ZCE = rtb_FixPtRelationalOperator_c;
-
-  /* End of Outputs for SubSystem: '<S60>/LatchFullSoc' */
-
-  /* RelationalOperator: '<S55>/Compare' incorporates:
-   *  Constant: '<S55>/Constant'
-   */
-  rtb_Compare_bn = (*rtu_sm_BMSMODE_en == BMS_CHARGE);
-
   /* MultiPortSwitch: '<S91>/Multiport Switch' */
   switch (rtb_Init) {
    case 0:
-    rtb_ScaledGoldenDC_e = localB->DischgInitialSoC;
+    rtb_ArbitratedInitSoc = localB->DischgInitialSoC;
     break;
 
    case 1:
-    rtb_ScaledGoldenDC_e = localB->ChgInitialSoC;
+    rtb_ArbitratedInitSoc = localB->ChgInitialSoC;
     break;
 
    default:
-    rtb_ScaledGoldenDC_e = localB->DischgInitialSoC;
+    rtb_ArbitratedInitSoc = localB->DischgInitialSoC;
     break;
   }
 
   /* End of MultiPortSwitch: '<S91>/Multiport Switch' */
 
   /* DataTypeConversion: '<S91>/ConvertToFixdt' */
-  rtb_SoCCoulombCounting = floor(rtb_ScaledGoldenDC_e / 0.01);
-  if (rtIsNaN(rtb_SoCCoulombCounting) || rtIsInf(rtb_SoCCoulombCounting)) {
-    rtb_SoCCoulombCounting = 0.0;
+  rtb_ArbitratedInitSoc = floor(rtb_ArbitratedInitSoc / 0.01);
+  if (rtIsNaN(rtb_ArbitratedInitSoc) || rtIsInf(rtb_ArbitratedInitSoc)) {
+    rtb_ArbitratedInitSoc = 0.0;
   } else {
-    rtb_SoCCoulombCounting = fmod(rtb_SoCCoulombCounting, 65536.0);
+    rtb_ArbitratedInitSoc = fmod(rtb_ArbitratedInitSoc, 65536.0);
   }
 
-  if (rtb_SoCCoulombCounting < 0.0) {
-    rtb_InitialSoCAvg = (uint16_T)-(int16_T)(uint16_T)-rtb_SoCCoulombCounting;
+  if (rtb_ArbitratedInitSoc < 0.0) {
+    rtb_InitialSoCAvg = (uint16_T)-(int16_T)(uint16_T)-rtb_ArbitratedInitSoc;
   } else {
-    rtb_InitialSoCAvg = (uint16_T)rtb_SoCCoulombCounting;
+    rtb_InitialSoCAvg = (uint16_T)rtb_ArbitratedInitSoc;
   }
 
   /* End of DataTypeConversion: '<S91>/ConvertToFixdt' */
@@ -1059,48 +1017,71 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
    *  DataTypeConversion: '<S91>/ConvertToFixdt'
    *  Switch: '<S91>/Switch1'
    *  UnitDelay: '<S57>/Delay Input1'
+   *  UnitDelay: '<S99>/Delay Input1'
    *
    * Block description for '<S57>/Delay Input1':
    *
    *  Store in Global RAM
+   *
+   * Block description for '<S99>/Delay Input1':
+   *
+   *  Store in Global RAM
    */
   if (rtCP_Logic_table_c[rtb_Logic_idx_0_tmp + 8U]) {
-    rtb_Uk1 = rtb_InitialSoCAvg;
+    localDW->DelayInput1_DSTATE = rtb_InitialSoCAvg;
   } else {
-    rtb_Uk1 = rtb_SOCAvgHystersis;
+    localDW->DelayInput1_DSTATE = rtb_SOCAvgHystersis;
   }
 
   /* End of Switch: '<S91>/Switch2' */
 
   /* Saturate: '<S91>/SoCBoundaries' incorporates:
    *  UnitDelay: '<S57>/Delay Input1'
+   *  UnitDelay: '<S99>/Delay Input1'
    *
    * Block description for '<S57>/Delay Input1':
    *
    *  Store in Global RAM
+   *
+   * Block description for '<S99>/Delay Input1':
+   *
+   *  Store in Global RAM
    */
-  if (rtb_Uk1 <= 10000) {
-    *rty_SOCAvg = rtb_Uk1;
+  if (localDW->DelayInput1_DSTATE <= 10000) {
+    *rty_SOCAvg = localDW->DelayInput1_DSTATE;
   } else {
     *rty_SOCAvg = 10000U;
   }
 
   /* End of Saturate: '<S91>/SoCBoundaries' */
 
+  /* UnitDelay: '<S57>/Delay Input1' incorporates:
+   *  UnitDelay: '<S99>/Delay Input1'
+   *
+   * Block description for '<S57>/Delay Input1':
+   *
+   *  Store in Global RAM
+   *
+   * Block description for '<S99>/Delay Input1':
+   *
+   *  Store in Global RAM
+   */
+  localDW->DelayInput1_DSTATE = localDW->DelayInput1_DSTATE_f;
+
   /* RelationalOperator: '<S76>/Compare' incorporates:
    *  Constant: '<S76>/Constant'
    */
-  rtb_Compare_lv = (*rtu_Charger_Mode_Req == Charge_Complete);
+  rtb_Compare_pt = (*rtu_Charger_Mode_Req == Charge_Complete);
 
   /* Outputs for Triggered SubSystem: '<S45>/LatchSoC' incorporates:
    *  TriggerPort: '<S78>/Trigger'
    */
-  if (rtb_Compare_lv && (localZCE->LatchSoC_Trig_ZCE != POS_ZCSIG)) {
+  if (rtb_Compare_pt && (localZCE->LatchSoC_Trig_ZCE != POS_ZCSIG)) {
     /* SignalConversion generated from: '<S78>/SOC_Full' */
     localB->SoC = *rtu_soc_full;
   }
 
-  localZCE->LatchSoC_Trig_ZCE = rtb_Compare_lv;
+  localZCE->LatchSoC_Trig_ZCE = rtb_Compare_pt;
 
   /* End of Outputs for SubSystem: '<S45>/LatchSoC' */
 
@@ -1127,15 +1108,14 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
   /* Logic: '<S6>/InvertState' incorporates:
    *  DiscreteIntegrator: '<S6>/CalcCurrAccum'
    */
-  rtb_IntegratorReset_tmp = !rtb_Compare_c2;
+  rtb_AND = !rtb_Compare_c2;
 
   /* Logic: '<S6>/IntegratorResetTrigger' incorporates:
    *  Constant: '<S39>/Constant'
    *  Logic: '<S6>/InvertState'
    *  RelationalOperator: '<S39>/Compare'
    */
-  rtb_IntegratorReset = ((*rtu_Charger_Mode_Req == Charge_Complete) ||
-    rtb_IntegratorReset_tmp);
+  rtb_IntegratorReset = ((*rtu_Charger_Mode_Req == Charge_Complete) || rtb_AND);
 
   /* DiscreteIntegrator: '<S6>/DischargeAccumulator' incorporates:
    *  DiscreteIntegrator: '<S6>/CalcCurrAccum'
@@ -1148,11 +1128,11 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
     localDW->DischargeAccumulator_DSTATE = 0.0;
   }
 
-  rtb_SoCCoulombCounting = -32768.0 * (real_T)localB->usecAvgBatteryCurrent *
+  rtb_ArbitratedInitSoc = -32768.0 * (real_T)localB->usecAvgBatteryCurrent *
     3.0517578125E-7 / *rty_Battery_Capacity * 0.0002777777777777778 * 0.1;
 
   /* DiscreteIntegrator: '<S6>/DischargeAccumulator' */
-  localDW->DischargeAccumulator_DSTATE += rtb_SoCCoulombCounting;
+  localDW->DischargeAccumulator_DSTATE += rtb_ArbitratedInitSoc;
 
   /* Chart: '<S45>/SocStateController' incorporates:
    *  Constant: '<S75>/Constant'
@@ -1176,7 +1156,7 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
       break;
 
      case NBMS_SoC_IN_entry1:
-      if (rtb_Compare_lv) {
+      if (rtb_Compare_pt) {
         localDW->is_c15_NBMS_SoC = NBMS_SoC_IN_entry2;
         i = 1;
       } else {
@@ -1208,12 +1188,12 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
   /* End of Chart: '<S45>/SocStateController' */
 
   /* DiscreteIntegrator: '<S6>/CalcCurrAccum' */
-  if (rtb_IntegratorReset_tmp && (localDW->CalcCurrAccum_PrevResetState == 1)) {
+  if (rtb_AND && (localDW->CalcCurrAccum_PrevResetState == 1)) {
     localDW->CalcCurrAccum_DSTATE = 0.0;
   }
 
   /* DiscreteIntegrator: '<S6>/CalcCurrAccum' */
-  localDW->CalcCurrAccum_DSTATE += rtb_SoCCoulombCounting;
+  localDW->CalcCurrAccum_DSTATE += rtb_ArbitratedInitSoc;
 
   /* Switch: '<S6>/selSoCcc' incorporates:
    *  Constant: '<S40>/Constant'
@@ -1259,8 +1239,8 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
    *  Switch: '<S6>/selSoCcc'
    *  UnitDelay: '<S6>/udlySoCcc'
    */
-  rtb_SoCCoulombCounting = look1_binlxpw(localDW->udlySoCcc_DSTATE,
-    rtCP_USERSOC_bp01Data, rtCP_USERSOC_tableData, 1U);
+  rtb_ScaledDOD = look1_binlxpw(localDW->udlySoCcc_DSTATE, rtCP_USERSOC_bp01Data,
+    rtCP_USERSOC_tableData, 1U);
 
   /* Outputs for Enabled SubSystem: '<S42>/CalcSoCCorrection' incorporates:
    *  EnablePort: '<S51>/EnableBlock'
@@ -1271,15 +1251,20 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
    *  RelationalOperator: '<S54>/Compare'
    *  RelationalOperator: '<S57>/FixPt Relational Operator'
    *  UnitDelay: '<S57>/Delay Input1'
+   *  UnitDelay: '<S99>/Delay Input1'
    *
    * Block description for '<S57>/Delay Input1':
    *
    *  Store in Global RAM
+   *
+   * Block description for '<S99>/Delay Input1':
+   *
+   *  Store in Global RAM
    */
   if ((*rtu_sm_BMSMODE_en == BMS_SLEEP) || (*rty_SOCAvg ==
-       localDW->DelayInput1_DSTATE_f)) {
+       localDW->DelayInput1_DSTATE)) {
     /* Sum: '<S51>/SoCDeviation' */
-    localB->Switch2 = (real_T)*rty_SOCAvg * 0.01 - rtb_SoCCoulombCounting;
+    localB->Switch2 = (real_T)*rty_SOCAvg * 0.01 - rtb_ScaledDOD;
 
     /* Switch: '<S51>/selSleepStateFallBack' incorporates:
      *  Constant: '<S51>/SecperHour'
@@ -1302,9 +1287,9 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
      *  Constant: '<S51>/ClampZero'
      */
     if (localB->Switch2 >= 0.0) {
-      rtb_ScaledGoldenDC_e = localB->Switch2;
+      rtb_ArbitratedInitSoc = localB->Switch2;
     } else {
-      rtb_ScaledGoldenDC_e = 0.0;
+      rtb_ArbitratedInitSoc = 0.0;
     }
 
     /* End of Switch: '<S51>/selUpperBoundaryCheck' */
@@ -1314,11 +1299,11 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
      *  Switch: '<S51>/selLowerBoundaryCheck'
      *  UnitDelay: '<S51>/udlySoCError'
      */
-    if (localDW->udlySoCError_DSTATE > rtb_ScaledGoldenDC_e) {
+    if (localDW->udlySoCError_DSTATE > rtb_ArbitratedInitSoc) {
       /* Sum: '<S51>/SoCDeviation' incorporates:
        *  Switch: '<S68>/Switch2'
        */
-      localB->Switch2 = rtb_ScaledGoldenDC_e;
+      localB->Switch2 = rtb_ArbitratedInitSoc;
     } else {
       if (localB->Switch2 >= 0.0) {
         /* Sum: '<S51>/SoCDeviation' incorporates:
@@ -1350,15 +1335,15 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
   /* DataTypeConversion: '<S42>/ConvertToFixdt' incorporates:
    *  Sum: '<S42>/CalcCorrectedSoCcc'
    */
-  rtb_SoCCoulombCounting = (localB->Switch2 + rtb_SoCCoulombCounting) / 0.01;
-  if (rtb_SoCCoulombCounting < 65536.0) {
-    if (rtb_SoCCoulombCounting >= 0.0) {
-      rtb_Uk1 = (uint16_T)rtb_SoCCoulombCounting;
+  rtb_ArbitratedInitSoc = (localB->Switch2 + rtb_ScaledDOD) / 0.01;
+  if (rtb_ArbitratedInitSoc < 65536.0) {
+    if (rtb_ArbitratedInitSoc >= 0.0) {
+      rtb_SoCcc_a = (uint16_T)rtb_ArbitratedInitSoc;
     } else {
-      rtb_Uk1 = 0U;
+      rtb_SoCcc_a = 0U;
     }
   } else {
-    rtb_Uk1 = MAX_uint16_T;
+    rtb_SoCcc_a = MAX_uint16_T;
   }
 
   /* Switch: '<S42>/SoCccBoundarySelection' incorporates:
@@ -1375,27 +1360,105 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
      *  DataTypeConversion: '<S42>/ConvertToFixdt'
      *  RelationalOperator: '<S65>/LowerRelop1'
      */
-    if (rtb_Uk1 > *rty_SOCAvg) {
+    if (rtb_SoCcc_a > *rty_SOCAvg) {
       /* Switch: '<S42>/SoCccBoundarySelection' */
-      rtb_Uk1 = *rty_SOCAvg;
+      rtb_SoCcc_a = *rty_SOCAvg;
     }
-  } else if (rtb_Uk1 > 10000) {
+  } else if (rtb_SoCcc_a > 10000) {
     /* Switch: '<S66>/Switch2' incorporates:
      *  Constant: '<S42>/UpperBoundSoC'
      *  Switch: '<S42>/SoCccBoundarySelection'
      *  Switch: '<S65>/Switch2'
      */
-    rtb_Uk1 = 10000U;
-  } else if (rtb_Uk1 < *rty_SOCAvg) {
+    rtb_SoCcc_a = 10000U;
+  } else if (rtb_SoCcc_a < *rty_SOCAvg) {
     /* Switch: '<S66>/Switch' incorporates:
      *  Switch: '<S42>/SoCccBoundarySelection'
      *  Switch: '<S65>/Switch2'
      *  Switch: '<S66>/Switch2'
      */
-    rtb_Uk1 = *rty_SOCAvg;
+    rtb_SoCcc_a = *rty_SOCAvg;
   }
 
   /* End of Switch: '<S42>/SoCccBoundarySelection' */
+
+  /* Switch: '<S42>/selSocIgnLatch' */
+  if (*rtu_Ignition_Sts) {
+    /* Switch: '<S42>/selActiveOrHoldDisplaySoc' */
+    if (localB->Compare_b) {
+      /* UnitDelay: '<S42>/udlySoC' incorporates:
+       *  Constant: '<S62>/CalDODMinThrsh'
+       *  Constant: '<S62>/ScalingFactor'
+       *  Constant: '<S62>/calDODMaxThrsh'
+       *  Constant: '<S62>/calDODMinThrsh'
+       *  Constant: '<S63>/ScalingFactor'
+       *  Constant: '<S63>/calDODMaxThrsh'
+       *  Constant: '<S63>/calDODMinThrsh'
+       *  Product: '<S42>/SoCFactorScaling'
+       *  Product: '<S62>/CalcOffset'
+       *  Product: '<S62>/ScaleMinThrsh'
+       *  Product: '<S63>/CalcSoCFactor'
+       *  Sum: '<S42>/OffsetCorrection'
+       *  Sum: '<S62>/DODThrshDiff'
+       *  Sum: '<S63>/DODThrshDiff'
+       *  Switch: '<S42>/SoCccBoundarySelection'
+       */
+      localDW->udlySoC_DSTATE = ((real_T)rtb_SoCcc_a * 0.01 - 100.0 * (real_T)
+        CAL_DOD_MIN_THRSH / (real_T)(uint8_T)(CAL_DOD_MAX_THRSH -
+        CAL_DOD_MIN_THRSH)) * (100.0 / (real_T)(uint8_T)(CAL_DOD_MAX_THRSH -
+        CAL_DOD_MIN_THRSH));
+    } else {
+      /* UnitDelay: '<S42>/udlySoC' incorporates:
+       *  UnitDelay: '<S42>/uDlySoC'
+       */
+      localDW->udlySoC_DSTATE = localDW->uDlySoC_DSTATE;
+    }
+
+    /* End of Switch: '<S42>/selActiveOrHoldDisplaySoc' */
+  }
+
+  /* End of Switch: '<S42>/selSocIgnLatch' */
+
+  /* RelationalOperator: '<S55>/Compare' incorporates:
+   *  Constant: '<S55>/Constant'
+   */
+  rtb_Compare_pt = (*rtu_sm_BMSMODE_en == BMS_CHARGE);
+
+  /* Switch: '<S42>/selModeTransitionRef' */
+  if (rtb_Compare_pt) {
+    /* DataTypeConversion: '<S42>/ConvtTouint8' incorporates:
+     *  UnitDelay: '<S42>/udlySoC'
+     */
+    if (localDW->udlySoC_DSTATE < 256.0) {
+      if (localDW->udlySoC_DSTATE >= 0.0) {
+        rtb_Init = (uint8_T)localDW->udlySoC_DSTATE;
+      } else {
+        rtb_Init = 0U;
+      }
+    } else {
+      rtb_Init = MAX_uint8_T;
+    }
+
+    /* End of DataTypeConversion: '<S42>/ConvtTouint8' */
+  } else {
+    /* DataTypeConversion: '<S42>/ConvertTouin8' incorporates:
+     *  UnitDelay: '<S42>/udlySoC'
+     */
+    rtb_ArbitratedInitSoc = ceil(localDW->udlySoC_DSTATE);
+    if (rtb_ArbitratedInitSoc < 256.0) {
+      if (rtb_ArbitratedInitSoc >= 0.0) {
+        rtb_Init = (uint8_T)rtb_ArbitratedInitSoc;
+      } else {
+        rtb_Init = 0U;
+      }
+    } else {
+      rtb_Init = MAX_uint8_T;
+    }
+
+    /* End of DataTypeConversion: '<S42>/ConvertTouin8' */
+  }
+
+  /* End of Switch: '<S42>/selModeTransitionRef' */
 
   /* Outputs for Triggered SubSystem: '<S6>/LatchTempinit' incorporates:
    *  TriggerPort: '<S44>/Ignition'
@@ -1431,9 +1494,9 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
    */
   if (*rtu_AppIn_I2Cerror || (fabs(localB->DischgInitialSoC_p -
         *rtu_AppIn_LastStoredSOC) >= 3.0)) {
-    rtb_SoCCoulombCounting = localB->DischgInitialSoC_p;
+    rtb_ArbitratedInitSoc = localB->DischgInitialSoC_p;
   } else {
-    rtb_SoCCoulombCounting = *rtu_AppIn_LastStoredSOC;
+    rtb_ArbitratedInitSoc = *rtu_AppIn_LastStoredSOC;
   }
 
   /* End of Switch: '<S6>/selSocInitArbitration' */
@@ -1445,25 +1508,25 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
    *  RelationalOperator: '<S38>/Compare'
    *  UnitDelay: '<S6>/Unit Delay'
    */
-  rtb_Compare_lv = ((localDW->UnitDelay_DSTATE == BMS_SLEEP) &&
-                    (*rtu_sm_BMSMODE_en == BMS_STANDBY));
+  rtb_AND = ((localDW->UnitDelay_DSTATE == BMS_SLEEP) && (*rtu_sm_BMSMODE_en ==
+              BMS_STANDBY));
 
   /* Chart: '<S6>/InitialSocManager' */
   if (localDW->is_active_c14_NBMS_SoC == 0) {
     localDW->is_active_c14_NBMS_SoC = 1U;
     localDW->is_c14_NBMS_SoC = NBMS_SoC_IN_StoreInitialSOC;
-    localB->InitialSOC = rtb_SoCCoulombCounting;
+    localB->InitialSOC = rtb_ArbitratedInitSoc;
   } else if (localDW->is_c14_NBMS_SoC == NBMS_SoC_IN_IgnOff) {
-    if (rtb_Compare_lv) {
+    if (rtb_AND) {
       localDW->is_c14_NBMS_SoC = NBMS_SoC_IN_StoreInitialSOC;
-      localB->InitialSOC = rtb_SoCCoulombCounting;
+      localB->InitialSOC = rtb_ArbitratedInitSoc;
     }
 
     /* case IN_StoreInitialSOC: */
-  } else if (!rtb_Compare_lv) {
+  } else if (!rtb_AND) {
     localDW->is_c14_NBMS_SoC = NBMS_SoC_IN_IgnOff;
   } else {
-    localB->InitialSOC = rtb_SoCCoulombCounting;
+    localB->InitialSOC = rtb_ArbitratedInitSoc;
   }
 
   /* End of Chart: '<S6>/InitialSocManager' */
@@ -1475,12 +1538,12 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
    *  UnitDelay: '<S42>/udlyDislaySoC'
    */
   if (localB->Compare_b) {
-    rtb_SoCCoulombCounting = (real_T)rtb_Uk1 * 0.01;
+    rtb_ArbitratedInitSoc = (real_T)rtb_SoCcc_a * 0.01;
   } else if (localDW->ZeroReset_DSTATE) {
     /* Switch: '<S42>/selInitialSoc' */
-    rtb_SoCCoulombCounting = localB->InitialSOC;
+    rtb_ArbitratedInitSoc = localB->InitialSOC;
   } else {
-    rtb_SoCCoulombCounting = localDW->udlyDislaySoC_DSTATE;
+    rtb_ArbitratedInitSoc = localDW->udlyDislaySoC_DSTATE;
   }
 
   /* End of Switch: '<S42>/selSoCOutput' */
@@ -1491,11 +1554,11 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
      *  UnitDelay: '<S61>/uDlyBattSoC'
      *  UnitDelay: '<S61>/udlyBattSoC'
      */
-    if (rtb_Compare_bn) {
+    if (rtb_Compare_pt) {
       localDW->udlyBattSoC_DSTATE = fmax(localDW->uDlyBattSoC_DSTATE,
-        rtb_SoCCoulombCounting);
+        rtb_ArbitratedInitSoc);
     } else {
-      localDW->udlyBattSoC_DSTATE = fmin(rtb_SoCCoulombCounting,
+      localDW->udlyBattSoC_DSTATE = fmin(rtb_ArbitratedInitSoc,
         localDW->udlyBattSoC_DSTATE);
     }
 
@@ -1521,79 +1584,6 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
   }
 
   /* End of Outputs for SubSystem: '<S42>/LatchBattSoc' */
-
-  /* Switch: '<S42>/selSocIgnLatch' */
-  if (*rtu_Ignition_Sts) {
-    /* Switch: '<S42>/selActiveOrHoldDisplaySoc' */
-    if (localB->Compare_b) {
-      /* UnitDelay: '<S42>/udlySoC' incorporates:
-       *  Constant: '<S62>/CalDODMinThrsh'
-       *  Constant: '<S62>/ScalingFactor'
-       *  Constant: '<S62>/calDODMaxThrsh'
-       *  Constant: '<S62>/calDODMinThrsh'
-       *  Constant: '<S63>/ScalingFactor'
-       *  Constant: '<S63>/calDODMaxThrsh'
-       *  Constant: '<S63>/calDODMinThrsh'
-       *  Product: '<S42>/SoCFactorScaling'
-       *  Product: '<S62>/CalcOffset'
-       *  Product: '<S62>/ScaleMinThrsh'
-       *  Product: '<S63>/CalcSoCFactor'
-       *  Sum: '<S42>/OffsetCorrection'
-       *  Sum: '<S62>/DODThrshDiff'
-       *  Sum: '<S63>/DODThrshDiff'
-       *  Switch: '<S42>/SoCccBoundarySelection'
-       */
-      localDW->udlySoC_DSTATE = ((real_T)rtb_Uk1 * 0.01 - 100.0 * (real_T)
-        CAL_DOD_MIN_THRSH / (real_T)(uint8_T)(CAL_DOD_MAX_THRSH -
-        CAL_DOD_MIN_THRSH)) * (100.0 / (real_T)(uint8_T)(CAL_DOD_MAX_THRSH -
-        CAL_DOD_MIN_THRSH));
-    } else {
-      /* UnitDelay: '<S42>/udlySoC' incorporates:
-       *  UnitDelay: '<S42>/uDlySoC'
-       */
-      localDW->udlySoC_DSTATE = localDW->uDlySoC_DSTATE;
-    }
-
-    /* End of Switch: '<S42>/selActiveOrHoldDisplaySoc' */
-  }
-
-  /* End of Switch: '<S42>/selSocIgnLatch' */
-
-  /* Switch: '<S42>/selModeTransitionRef' */
-  if (rtb_Compare_bn) {
-    /* DataTypeConversion: '<S42>/ConvtTouint8' incorporates:
-     *  UnitDelay: '<S42>/udlySoC'
-     */
-    if (localDW->udlySoC_DSTATE < 256.0) {
-      if (localDW->udlySoC_DSTATE >= 0.0) {
-        rtb_Init = (uint8_T)localDW->udlySoC_DSTATE;
-      } else {
-        rtb_Init = 0U;
-      }
-    } else {
-      rtb_Init = MAX_uint8_T;
-    }
-
-    /* End of DataTypeConversion: '<S42>/ConvtTouint8' */
-  } else {
-    /* DataTypeConversion: '<S42>/ConvertTouin8' incorporates:
-     *  UnitDelay: '<S42>/udlySoC'
-     */
-    rtb_SoCCoulombCounting = ceil(localDW->udlySoC_DSTATE);
-    if (rtb_SoCCoulombCounting < 256.0) {
-      if (rtb_SoCCoulombCounting >= 0.0) {
-        rtb_Init = (uint8_T)rtb_SoCCoulombCounting;
-      } else {
-        rtb_Init = 0U;
-      }
-    } else {
-      rtb_Init = MAX_uint8_T;
-    }
-
-    /* End of DataTypeConversion: '<S42>/ConvertTouin8' */
-  }
-
-  /* End of Switch: '<S42>/selModeTransitionRef' */
 
   /* Chart: '<S60>/StateWaitCondition' incorporates:
    *  UnitDelay: '<S60>/udlyEnableCurrent'
@@ -1621,14 +1611,40 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
 
   /* End of Chart: '<S60>/StateWaitCondition' */
 
+  /* RelationalOperator: '<S69>/Compare' incorporates:
+   *  Constant: '<S69>/Constant'
+   */
+  rtb_Compare_pt = (*rtu_Charger_Mode_Req == Charge_Complete);
+
+  /* RelationalOperator: '<S70>/FixPt Relational Operator' incorporates:
+   *  UnitDelay: '<S70>/Delay Input1'
+   *
+   * Block description for '<S70>/Delay Input1':
+   *
+   *  Store in Global RAM
+   */
+  rtb_AND = ((int32_T)rtb_Compare_pt > (int32_T)localDW->DelayInput1_DSTATE_a);
+
+  /* Outputs for Triggered SubSystem: '<S60>/LatchFullSoc' incorporates:
+   *  TriggerPort: '<S71>/Trigger'
+   */
+  if (rtb_AND && (localZCE->LatchFullSoc_Trig_ZCE != POS_ZCSIG)) {
+    /* SignalConversion generated from: '<S71>/SOC_Full' */
+    localB->LatchedFullSoC = *rtu_soc_full;
+  }
+
+  localZCE->LatchFullSoc_Trig_ZCE = rtb_AND;
+
+  /* End of Outputs for SubSystem: '<S60>/LatchFullSoc' */
+
   /* Switch: '<S60>/selFullChargeSocSource' incorporates:
    *  Constant: '<S52>/Constant'
    *  RelationalOperator: '<S52>/Compare'
    *  Switch: '<S42>/selDisplaySocFallback'
    *  Switch: '<S42>/selFinalGaugeOutput'
    */
-  if (rtb_FixPtRelationalOperator_c) {
-    rtb_ScaledGoldenDC_e = localB->LatchedFullSoC;
+  if (rtb_AND) {
+    rtb_ArbitratedInitSoc = localB->LatchedFullSoC;
   } else {
     if (localB->Compare_b) {
       /* Switch: '<S42>/selChargeSocCompensation' incorporates:
@@ -1660,18 +1676,18 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
       /* End of Switch: '<S42>/selChargeSocCompensation' */
 
       /* Switch: '<S42>/selFinalGaugeOutput' */
-      rtb_ScaledGoldenDC_e = localDW->UdlySoc_DSTATE;
+      rtb_ArbitratedInitSoc = localDW->UdlySoc_DSTATE;
     } else if (*rtu_sm_BMSMODE_en != BMS_SLEEP) {
       /* Switch: '<S42>/selDisplaySocFallback' incorporates:
        *  Switch: '<S42>/selFinalGaugeOutput'
        */
-      rtb_ScaledGoldenDC_e = localB->InitialSOC;
+      rtb_ArbitratedInitSoc = localB->InitialSOC;
     } else {
       /* Switch: '<S42>/selFinalGaugeOutput' incorporates:
        *  Constant: '<S42>/ZeroSoC'
        *  Switch: '<S42>/selDisplaySocFallback'
        */
-      rtb_ScaledGoldenDC_e = 0.0;
+      rtb_ArbitratedInitSoc = 0.0;
     }
 
     /* Switch: '<S60>/selTerminationSocRef' incorporates:
@@ -1692,15 +1708,15 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
      *  Switch: '<S42>/selFinalGaugeOutput'
      *  Switch: '<S60>/selDisplaySocFallback'
      */
-    if ((*rty_Batt_Pack_SOC <= 99.0) && (rtb_ScaledGoldenDC_e == 100.0) &&
+    if ((*rty_Batt_Pack_SOC <= 99.0) && (rtb_ArbitratedInitSoc == 100.0) &&
         (localB->out != 0.0)) {
-      rtb_ScaledGoldenDC_e = 99.0;
-    } else if ((rtb_ScaledGoldenDC_e == 100.0) && (*rtu_sm_BMSMODE_en ==
+      rtb_ArbitratedInitSoc = 99.0;
+    } else if ((rtb_ArbitratedInitSoc == 100.0) && (*rtu_sm_BMSMODE_en ==
                 BMS_CHARGE)) {
       /* Switch: '<S60>/selDisplaySocFallback' incorporates:
        *  UnitDelay: '<S42>/udlyDSoC'
        */
-      rtb_ScaledGoldenDC_e = localDW->udlyDSoC_DSTATE;
+      rtb_ArbitratedInitSoc = localDW->udlyDSoC_DSTATE;
     }
 
     /* End of Switch: '<S60>/selTerminationSocRef' */
@@ -1709,15 +1725,15 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
   /* End of Switch: '<S60>/selFullChargeSocSource' */
 
   /* Saturate: '<S42>/SoCBoundaries' */
-  if (rtb_ScaledGoldenDC_e > 100.0) {
-    rtb_ScaledGoldenDC_e = 100.0;
-  } else if (rtb_ScaledGoldenDC_e < 0.0) {
-    rtb_ScaledGoldenDC_e = 0.0;
+  if (rtb_ArbitratedInitSoc > 100.0) {
+    rtb_ArbitratedInitSoc = 100.0;
+  } else if (rtb_ArbitratedInitSoc < 0.0) {
+    rtb_ArbitratedInitSoc = 0.0;
   }
 
-  rtb_SoCCoulombCounting = ceil(rtb_ScaledGoldenDC_e);
-  if (rtb_SoCCoulombCounting < 256.0) {
-    rtb_Init = (uint8_T)rtb_SoCCoulombCounting;
+  rtb_ArbitratedInitSoc = ceil(rtb_ArbitratedInitSoc);
+  if (rtb_ArbitratedInitSoc < 256.0) {
+    rtb_Init = (uint8_T)rtb_ArbitratedInitSoc;
   } else {
     rtb_Init = MAX_uint8_T;
   }
@@ -1784,15 +1800,15 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
 
   /* Sum: '<S93>/MinVoltDiff' */
   if (tmp) {
-    rtb_SoCCoulombCounting = 0.0;
+    rtb_ArbitratedInitSoc = 0.0;
   } else {
-    rtb_SoCCoulombCounting = fmod(rtb_InternalVoltageDrop_0, 65536.0);
+    rtb_ArbitratedInitSoc = fmod(rtb_SumofAvgVolt_0, 65536.0);
   }
 
-  if (rtb_SoCCoulombCounting < 0.0) {
-    i = (int16_T)-(int16_T)(uint16_T)-rtb_SoCCoulombCounting;
+  if (rtb_ArbitratedInitSoc < 0.0) {
+    i = (int16_T)-(int16_T)(uint16_T)-rtb_ArbitratedInitSoc;
   } else {
-    i = (int16_T)(uint16_T)rtb_SoCCoulombCounting;
+    i = (int16_T)(uint16_T)rtb_ArbitratedInitSoc;
   }
 
   *rty_VtAvgMin = (int16_T)(rtb_OpenCircuitVoltage - i);
@@ -1821,26 +1837,39 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
 
   /* End of Switch: '<S42>/selDisplaySoC' */
 
+  /* Switch: '<S4>/selderateflg1' incorporates:
+   *  Constant: '<S14>/Constant'
+   *  Constant: '<S15>/Constant'
+   *  Constant: '<S9>/Constant'
+   *  RelationalOperator: '<S9>/Compare'
+   */
+  if (*rty_Display_SOC <= 20) {
+    *rty_Batt_SoC_Derating = SOC_Derating;
+  } else {
+    *rty_Batt_SoC_Derating = SOC_NoDerating;
+  }
+
+  /* End of Switch: '<S4>/selderateflg1' */
+
+  /* Logic: '<S18>/ChgStarted' incorporates:
+   *  Constant: '<S29>/Constant'
+   *  Constant: '<S30>/Constant'
+   *  Constant: '<S31>/Constant'
+   *  Logic: '<S18>/IsCharging'
+   *  RelationalOperator: '<S29>/Compare'
+   *  RelationalOperator: '<S30>/Compare'
+   *  RelationalOperator: '<S31>/Compare'
+   *  UnitDelay: '<S18>/udlyChgModeReq'
+   */
+  rtb_ChgStarted = ((localDW->udlyChgModeReq_DSTATE == Standby) &&
+                    ((*rtu_Charger_Mode_Req == CC_Start) ||
+                     (*rtu_Charger_Mode_Req == CV)));
+
   /* Logic: '<S18>/CalcChargMeasureTrigger' incorporates:
    *  Constant: '<S28>/Constant'
    *  RelationalOperator: '<S28>/Compare'
    */
-  rtb_FixPtRelationalOperator_c = (rtb_ChgStarted && (*rty_Display_SOC < 10));
-
-  /* Logic: '<S18>/UpdateSoHTrigger' incorporates:
-   *  CombinatorialLogic: '<S25>/Logic'
-   *  Constant: '<S27>/Constant'
-   *  Constant: '<S32>/Constant'
-   *  Memory: '<S25>/Memory'
-   *  RelationalOperator: '<S27>/Compare'
-   *  RelationalOperator: '<S32>/Compare'
-   *  UnitDelay: '<S18>/udlySoHtrigger'
-   */
-  localDW->Memory_PreviousInput_m = rtCP_Logic_table_a[((((uint32_T)
-    rtb_FixPtRelationalOperator_c << 1U) + localDW->udlySoHtrigger_DSTATE) << 1U)
-    + localDW->Memory_PreviousInput_m];
-  localDW->udlySoHtrigger_DSTATE = (localDW->Memory_PreviousInput_m &&
-    (*rtu_Charger_Mode_Req == Charge_Complete) && (*rty_Display_SOC == 100));
+  rtb_AND = (rtb_ChgStarted && (*rty_Display_SOC < 10));
 
   /* Outputs for Enabled SubSystem: '<S18>/CalcChgMeasured' incorporates:
    *  EnablePort: '<S23>/Enable'
@@ -1850,8 +1879,7 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
    */
   if (*rtu_sm_BMSMODE_en == BMS_CHARGE) {
     /* DiscreteIntegrator: '<S23>/CalcAccumulatedBattCurr' */
-    if (rtb_FixPtRelationalOperator_c &&
-        (localDW->CalcAccumulatedBattCurr_PrevRes <= 0)) {
+    if (rtb_AND && (localDW->CalcAccumulatedBattCurr_PrevRes <= 0)) {
       localDW->CalcAccumulatedBattCurr_DSTATE = 0.0;
     }
 
@@ -1868,101 +1896,22 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
      */
     localDW->CalcAccumulatedBattCurr_DSTATE += fabs((real_T)
       localB->usecAvgBatteryCurrent * 0.01) * 0.0002777777777777778 * 0.1;
-    localDW->CalcAccumulatedBattCurr_PrevRes = (int8_T)
-      rtb_FixPtRelationalOperator_c;
+    localDW->CalcAccumulatedBattCurr_PrevRes = (int8_T)rtb_AND;
   }
 
   /* End of RelationalOperator: '<S26>/Compare' */
   /* End of Outputs for SubSystem: '<S18>/CalcChgMeasured' */
 
-  /* Outputs for Triggered SubSystem: '<S18>/Initial_SoC_Storage' incorporates:
-   *  TriggerPort: '<S35>/TriggerWhenChargeHasinitiated'
-   */
-  if (rtb_ChgStarted && (localZCE->Initial_SoC_Storage_Trig_ZCE != POS_ZCSIG)) {
-    /* SignalConversion generated from: '<S35>/Display_SOC' */
-    localB->SoCStart = *rty_Display_SOC;
-  }
-
-  localZCE->Initial_SoC_Storage_Trig_ZCE = rtb_ChgStarted;
-
-  /* End of Outputs for SubSystem: '<S18>/Initial_SoC_Storage' */
-
-  /* Switch: '<S18>/selLifecycleClamp' incorporates:
-   *  Constant: '<S18>/MaxSoH'
-   *  Constant: '<S34>/Constant'
-   *  RelationalOperator: '<S34>/Compare'
-   *  UnitDelay: '<S5>/udlyLifeCycle'
-   */
-  if (localDW->udlyLifeCycle_DSTATE > 0.0) {
-    /* Switch: '<S18>/selIgnFallbackSoH' incorporates:
-     *  RelationalOperator: '<S33>/FixPt Relational Operator'
-     *  Switch: '<S18>/selUpdatedSoH'
-     *  UnitDelay: '<S18>/udlySoHtrigger'
-     *  UnitDelay: '<S33>/Delay Input1'
-     *
-     * Block description for '<S33>/Delay Input1':
-     *
-     *  Store in Global RAM
-     */
-    if ((int32_T)*rtu_Ignition_Sts > (int32_T)localDW->DelayInput1_DSTATE_j) {
-      rtb_ScaledGoldenDC_e = *rtu_AppIn_LastStoredSOH;
-    } else if (localDW->udlySoHtrigger_DSTATE) {
-      /* Switch: '<S18>/selUpdatedSoH' incorporates:
-       *  Constant: '<S18>/Charg_Capacity1'
-       *  Constant: '<S24>/MaxSoC'
-       *  Constant: '<S24>/MaxSoH'
-       *  Gain: '<S24>/scaleMeasuredCharge'
-       *  MinMax: '<S24>/CalcMinSoH'
-       *  Product: '<S24>/CalcDischgCapacity'
-       *  Product: '<S24>/CalcSoH'
-       *  Sum: '<S24>/CalcDOD'
-       */
-      rtb_ScaledGoldenDC_e = fmin(10000.0 * localB->ChargeMeasured / (real_T)
-        ((100 - localB->SoCStart) * CAL_GOLDEN_CHARGE), 100.0);
-    } else {
-      /* Switch: '<S18>/selUpdatedSoH' incorporates:
-       *  UnitDelay: '<S18>/udlySoH'
-       */
-      rtb_ScaledGoldenDC_e = localDW->udlySoH_DSTATE_k;
-    }
-
-    /* End of Switch: '<S18>/selIgnFallbackSoH' */
-  } else {
-    rtb_ScaledGoldenDC_e = 100.0;
-  }
-
-  /* End of Switch: '<S18>/selLifecycleClamp' */
-
-  /* Saturate: '<S18>/SoHBoundaries' incorporates:
-   *  UnitDelay: '<S18>/udlySoH'
-   */
-  if (rtb_ScaledGoldenDC_e > 100.0) {
-    rtb_ScaledGoldenDC_e = 100.0;
-  } else if (rtb_ScaledGoldenDC_e < 0.0) {
-    rtb_ScaledGoldenDC_e = 0.0;
-  }
-
-  rtb_SoCCoulombCounting = ceil(rtb_ScaledGoldenDC_e);
-  if (rtb_SoCCoulombCounting < 256.0) {
-    localDW->udlySoH_DSTATE_k = (uint8_T)rtb_SoCCoulombCounting;
-  } else {
-    localDW->udlySoH_DSTATE_k = MAX_uint8_T;
-  }
-
-  /* End of Saturate: '<S18>/SoHBoundaries' */
-
-  /* DataTypeConversion: '<S18>/cnvToDouble' incorporates:
-   *  UnitDelay: '<S18>/udlySoH'
-   */
-  *rty_SOH = localDW->udlySoH_DSTATE_k;
+  /* Gain: '<S18>/scalechargemeasured' */
+  *rty_ChargeCapacity = 0.001 * localB->ChargeMeasured;
 
   /* RelationalOperator: '<S22>/Compare' incorporates:
    *  Constant: '<S22>/Constant'
    */
-  rtb_ChgStarted = (*rtu_sm_BMSMODE_en == BMS_SLEEP);
+  rtb_AND = (*rtu_sm_BMSMODE_en == BMS_SLEEP);
 
   /* DiscreteIntegrator: '<S17>/Accumulate BattCurrent' */
-  if (rtb_ChgStarted && (localDW->AccumulateBattCurrent_PrevReset <= 0)) {
+  if (rtb_AND && (localDW->AccumulateBattCurrent_PrevReset <= 0)) {
     localDW->AccumulateBattCurrent_DSTATE = 0.0;
   }
 
@@ -2020,14 +1969,14 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
      *  Constant: '<S17>/calSoHEnable'
      */
     if (CAL_SOH_Enable) {
-      rtb_SoCCoulombCounting = *rty_SOH;
+      rtb_ArbitratedInitSoc = NBMS_SoC_ConstB.SoH;
     } else {
-      rtb_SoCCoulombCounting = 100.0;
+      rtb_ArbitratedInitSoc = 100.0;
     }
 
     *rty_LifeCycle = localDW->AccumulateBattCurrent_DSTATE / 2.0 /
       (0.0009999871253967285 * (real_T)CAL_GOLDEN_DC * (0.010009765625 * (real_T)
-        CAL_DOD) * (0.01 * rtb_SoCCoulombCounting)) +
+        CAL_DOD) * (0.01 * rtb_ArbitratedInitSoc)) +
       localDW->udlyCycleCount_DSTATE;
   } else {
     *rty_LifeCycle = localDW->udlyLifeCylce_DSTATE;
@@ -2035,27 +1984,17 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
 
   /* End of Switch: '<S17>/selLifeCycleOutput' */
 
-  /* Gain: '<S18>/scalechargemeasured' */
-  *rty_ChargeCapacity = 0.001 * localB->ChargeMeasured;
-
-  /* Switch: '<S4>/selderateflg1' incorporates:
-   *  Constant: '<S14>/Constant'
-   *  Constant: '<S15>/Constant'
-   *  Constant: '<S9>/Constant'
-   *  RelationalOperator: '<S9>/Compare'
+  /* Outputs for Triggered SubSystem: '<S18>/Initial_SoC_Storage' incorporates:
+   *  TriggerPort: '<S35>/TriggerWhenChargeHasinitiated'
    */
-  if (*rty_Display_SOC <= 20) {
-    *rty_Batt_SoC_Derating = SOC_Derating;
-  } else {
-    *rty_Batt_SoC_Derating = SOC_No_Derating;
-  }
+  localZCE->Initial_SoC_Storage_Trig_ZCE = rtb_ChgStarted;
 
-  /* End of Switch: '<S4>/selderateflg1' */
+  /* End of Outputs for SubSystem: '<S18>/Initial_SoC_Storage' */
 
   /* RelationalOperator: '<S48>/Compare' incorporates:
    *  Constant: '<S48>/Constant'
    */
-  rtb_FixPtRelationalOperator_c = (*rtu_sm_BMSMODE_en == BMS_CHARGE);
+  rtb_ChgStarted = (*rtu_sm_BMSMODE_en == BMS_CHARGE);
 
   /* DiscreteIntegrator: '<S41>/CoulombCounter' */
   if (TriggerswhentheBMSModeisDischar && (localDW->CoulombCounter_PrevResetState
@@ -2087,8 +2026,8 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
    *
    *  Store in Global RAM
    */
-  rtb_Compare_bn = ((int32_T)rtb_FixPtRelationalOperator_c > (int32_T)
-                    localDW->DelayInput1_DSTATE_ju);
+  rtb_Compare_bn = ((int32_T)rtb_ChgStarted > (int32_T)
+                    localDW->DelayInput1_DSTATE_j);
 
   /* Outputs for Triggered SubSystem: '<S41>/LatchInitCapacity' incorporates:
    *  TriggerPort: '<S50>/Trigger'
@@ -2117,7 +2056,7 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
    *  Switch: '<S41>/selSoHsource'
    *  UnitDelay: '<S41>/udlyCurrentCapacity'
    */
-  if (rtb_FixPtRelationalOperator_c) {
+  if (rtb_ChgStarted) {
     localDW->udlyCurrentCapacity_DSTATE = localDW->CoulombCounter_DSTATE +
       localB->InitialCapacity;
   } else {
@@ -2276,19 +2215,19 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
     }
 
     /* DataTypeConversion: '<S108>/ConvertToFixdt' */
-    rtb_SoCCoulombCounting = floor(*rtu_AppIn_BattCurrent / 0.01);
-    if (rtIsNaN(rtb_SoCCoulombCounting) || rtIsInf(rtb_SoCCoulombCounting)) {
-      rtb_SoCCoulombCounting = 0.0;
+    rtb_ArbitratedInitSoc = floor(*rtu_AppIn_BattCurrent / 0.01);
+    if (rtIsNaN(rtb_ArbitratedInitSoc) || rtIsInf(rtb_ArbitratedInitSoc)) {
+      rtb_ArbitratedInitSoc = 0.0;
     } else {
-      rtb_SoCCoulombCounting = fmod(rtb_SoCCoulombCounting, 65536.0);
+      rtb_ArbitratedInitSoc = fmod(rtb_ArbitratedInitSoc, 65536.0);
     }
 
-    if (rtb_SoCCoulombCounting < 0.0) {
+    if (rtb_ArbitratedInitSoc < 0.0) {
       /* DataTypeConversion: '<S108>/ConvertToFixdt' */
-      localB->u1stSample = (int16_T)-(int16_T)(uint16_T)-rtb_SoCCoulombCounting;
+      localB->u1stSample = (int16_T)-(int16_T)(uint16_T)-rtb_ArbitratedInitSoc;
     } else {
       /* DataTypeConversion: '<S108>/ConvertToFixdt' */
-      localB->u1stSample = (int16_T)(uint16_T)rtb_SoCCoulombCounting;
+      localB->u1stSample = (int16_T)(uint16_T)rtb_ArbitratedInitSoc;
     }
 
     /* End of DataTypeConversion: '<S108>/ConvertToFixdt' */
@@ -2354,9 +2293,9 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
   /* Sum: '<S93>/SumofRawVolt' incorporates:
    *  DataTypeConversion: '<S1>/ConvertToFixdt'
    */
-  rtb_SoCCoulombCounting = 0.0;
+  rtb_ArbitratedInitSoc = 0.0;
   for (i = 0; i < 20; i++) {
-    rtb_SoCCoulombCounting += (real_T)localB->ConvBattVolt[i] * 0.001;
+    rtb_ArbitratedInitSoc += (real_T)localB->ConvBattVolt[i] * 0.001;
   }
 
   /* Outputs for Enabled SubSystem: '<S93>/OneSensorVoltFailure' incorporates:
@@ -2383,22 +2322,22 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
     /* Sum: '<S155>/VoltDifference' incorporates:
      *  Sum: '<S93>/SumofRawVolt'
      */
-    *rty_FailSensorVolt = *rtu_mi_Pack_Volt - rtb_SoCCoulombCounting;
+    *rty_FailSensorVolt = *rtu_mi_Pack_Volt - rtb_ArbitratedInitSoc;
 
     /* DataTypeConversion: '<S156>/FixdtDataTypeConversion' */
-    rtb_SoCCoulombCounting = floor(*rty_FailSensorVolt / 0.001);
-    if (rtIsNaN(rtb_SoCCoulombCounting) || rtIsInf(rtb_SoCCoulombCounting)) {
-      rtb_SoCCoulombCounting = 0.0;
+    rtb_ArbitratedInitSoc = floor(*rty_FailSensorVolt / 0.001);
+    if (rtIsNaN(rtb_ArbitratedInitSoc) || rtIsInf(rtb_ArbitratedInitSoc)) {
+      rtb_ArbitratedInitSoc = 0.0;
     } else {
-      rtb_SoCCoulombCounting = fmod(rtb_SoCCoulombCounting, 65536.0);
+      rtb_ArbitratedInitSoc = fmod(rtb_ArbitratedInitSoc, 65536.0);
     }
 
-    if (rtb_SoCCoulombCounting < 0.0) {
+    if (rtb_ArbitratedInitSoc < 0.0) {
       /* DataTypeConversion: '<S156>/FixdtDataTypeConversion' */
-      localB->u1stVoltage = (int16_T)-(int16_T)(uint16_T)-rtb_SoCCoulombCounting;
+      localB->u1stVoltage = (int16_T)-(int16_T)(uint16_T)-rtb_ArbitratedInitSoc;
     } else {
       /* DataTypeConversion: '<S156>/FixdtDataTypeConversion' */
-      localB->u1stVoltage = (int16_T)(uint16_T)rtb_SoCCoulombCounting;
+      localB->u1stVoltage = (int16_T)(uint16_T)rtb_ArbitratedInitSoc;
     }
 
     /* End of DataTypeConversion: '<S156>/FixdtDataTypeConversion' */
@@ -2477,8 +2416,8 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
   /* Saturate: '<S42>/SoCccBoundaries' incorporates:
    *  Switch: '<S42>/SoCccBoundarySelection'
    */
-  if (rtb_Uk1 <= 10000) {
-    *rty_SOCcc = rtb_Uk1;
+  if (rtb_SoCcc_a <= 10000) {
+    *rty_SOCcc = rtb_SoCcc_a;
   } else {
     *rty_SOCcc = 10000U;
   }
@@ -2523,15 +2462,15 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
    *  MinMax: '<S93>/FindMaxAvgVt'
    */
   if (tmp) {
-    rtb_SoCCoulombCounting = 0.0;
+    rtb_SumofAvgVolt_0 = 0.0;
   } else {
-    rtb_SoCCoulombCounting = fmod(rtb_InternalVoltageDrop_0, 65536.0);
+    rtb_SumofAvgVolt_0 = fmod(rtb_SumofAvgVolt_0, 65536.0);
   }
 
-  if (rtb_SoCCoulombCounting < 0.0) {
-    i = (int16_T)-(int16_T)(uint16_T)-rtb_SoCCoulombCounting;
+  if (rtb_SumofAvgVolt_0 < 0.0) {
+    i = (int16_T)-(int16_T)(uint16_T)-rtb_SumofAvgVolt_0;
   } else {
-    i = (int16_T)(uint16_T)rtb_SoCCoulombCounting;
+    i = (int16_T)(uint16_T)rtb_SumofAvgVolt_0;
   }
 
   *rty_VtAvgMax = (int16_T)(rtb_OCVInitial - i);
@@ -2547,9 +2486,9 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
    *  RelationalOperator: '<S11>/Compare'
    */
   if ((maxV < 10.0) || (maxV >= 56.0)) {
-    *rty_Batt_Temp_Derating = Derating;
+    *rty_Batt_Temp_Derating = Temp_Derating;
   } else {
-    *rty_Batt_Temp_Derating = No_Derating;
+    *rty_Batt_Temp_Derating = Temp_NoDerating;
   }
 
   /* End of Switch: '<S4>/selderateflg' */
@@ -2619,28 +2558,6 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
    */
   localDW->Memory_PreviousInput_c = rtCP_Logic_table_c[rtb_Logic_idx_0_tmp];
 
-  /* Update for UnitDelay: '<S18>/udlyChgModeReq' */
-  localDW->udlyChgModeReq_DSTATE = *rtu_Charger_Mode_Req;
-
-  /* Update for UnitDelay: '<S70>/Delay Input1'
-   *
-   * Block description for '<S70>/Delay Input1':
-   *
-   *  Store in Global RAM
-   */
-  localDW->DelayInput1_DSTATE_a = rtb_Compare_cf;
-
-  /* Update for Switch: '<S41>/selSoHsource' incorporates:
-   *  UnitDelay: '<S1>/udlySoH'
-   */
-  localDW->udlySoH_DSTATE = *rty_SOH;
-
-  /* Update for DiscreteIntegrator: '<S6>/DischargeAccumulator' */
-  localDW->DischargeAccumulator_PrevResetS = (int8_T)rtb_IntegratorReset;
-
-  /* Update for DiscreteIntegrator: '<S6>/CalcCurrAccum' */
-  localDW->CalcCurrAccum_PrevResetState = (int8_T)rtb_Compare_c2;
-
   /* Update for UnitDelay: '<S57>/Delay Input1'
    *
    * Block description for '<S57>/Delay Input1':
@@ -2648,6 +2565,28 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
    *  Store in Global RAM
    */
   localDW->DelayInput1_DSTATE_f = *rty_SOCAvg;
+
+  /* Update for Switch: '<S41>/selSoHsource' incorporates:
+   *  UnitDelay: '<S1>/udlySoH'
+   */
+  localDW->udlySoH_DSTATE = NBMS_SoC_ConstB.SoH;
+
+  /* Update for DiscreteIntegrator: '<S6>/DischargeAccumulator' */
+  localDW->DischargeAccumulator_PrevResetS = (int8_T)rtb_IntegratorReset;
+
+  /* Update for DiscreteIntegrator: '<S6>/CalcCurrAccum' */
+  localDW->CalcCurrAccum_PrevResetState = (int8_T)rtb_Compare_c2;
+
+  /* Update for UnitDelay: '<S42>/uDlySoC' */
+  localDW->uDlySoC_DSTATE = *rty_Display_SOC;
+
+  /* Update for UnitDelay: '<S42>/UDlySOC' */
+  localDW->UDlySOC_DSTATE = *rty_Display_SOC;
+
+  /* Update for Switch: '<S42>/selChargeSocCompensation' incorporates:
+   *  UnitDelay: '<S42>/UdlySoc'
+   */
+  localDW->UdlySoc_DSTATE = *rty_Display_SOC;
 
   /* Update for UnitDelay: '<S6>/Unit Delay' */
   localDW->UnitDelay_DSTATE = *rtu_sm_BMSMODE_en;
@@ -2660,39 +2599,28 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
   /* Update for UnitDelay: '<S42>/udlyDislaySoC' */
   localDW->udlyDislaySoC_DSTATE = *rty_Display_SOC;
 
-  /* Update for UnitDelay: '<S42>/UDlySOC' */
-  localDW->UDlySOC_DSTATE = *rty_Display_SOC;
-
-  /* Update for UnitDelay: '<S42>/uDlySoC' */
-  localDW->uDlySoC_DSTATE = *rty_Display_SOC;
-
-  /* Update for Switch: '<S42>/selChargeSocCompensation' incorporates:
-   *  UnitDelay: '<S42>/UdlySoc'
-   */
-  localDW->UdlySoc_DSTATE = *rty_Display_SOC;
-
   /* Update for UnitDelay: '<S60>/udlyEnableCurrent' */
   localDW->udlyEnableCurrent_DSTATE = localB->Compare_b;
 
   /* Update for UnitDelay: '<S42>/udlyDSoC' */
   localDW->udlyDSoC_DSTATE = *rty_Display_SOC;
 
-  /* Update for UnitDelay: '<S42>/udlyDisplaySoC' */
-  localDW->udlyDisplaySoC_DSTATE = *rty_Display_SOC;
-
-  /* Update for UnitDelay: '<S33>/Delay Input1'
+  /* Update for UnitDelay: '<S70>/Delay Input1'
    *
-   * Block description for '<S33>/Delay Input1':
+   * Block description for '<S70>/Delay Input1':
    *
    *  Store in Global RAM
    */
-  localDW->DelayInput1_DSTATE_j = *rtu_Ignition_Sts;
+  localDW->DelayInput1_DSTATE_a = rtb_Compare_pt;
 
-  /* Update for UnitDelay: '<S5>/udlyLifeCycle' */
-  localDW->udlyLifeCycle_DSTATE = *rty_LifeCycle;
+  /* Update for UnitDelay: '<S42>/udlyDisplaySoC' */
+  localDW->udlyDisplaySoC_DSTATE = *rty_Display_SOC;
+
+  /* Update for UnitDelay: '<S18>/udlyChgModeReq' */
+  localDW->udlyChgModeReq_DSTATE = *rtu_Charger_Mode_Req;
 
   /* Update for DiscreteIntegrator: '<S17>/Accumulate BattCurrent' */
-  localDW->AccumulateBattCurrent_PrevReset = (int8_T)rtb_ChgStarted;
+  localDW->AccumulateBattCurrent_PrevReset = (int8_T)rtb_AND;
 
   /* Update for UnitDelay: '<S17>/udlyBMSMode' */
   localDW->udlyBMSMode_DSTATE = *rtu_sm_BMSMODE_en;
@@ -2710,7 +2638,7 @@ void NBMS_SoC(const uint8_T *rtu_soc_full, const real_T rtu_Batt_Temps[6], const
    *
    *  Store in Global RAM
    */
-  localDW->DelayInput1_DSTATE_ju = rtb_FixPtRelationalOperator_c;
+  localDW->DelayInput1_DSTATE_j = rtb_ChgStarted;
 
   /* Update for UnitDelay: '<S1>/udlyStartSoC' */
   localDW->udlyStartSoC_DSTATE = rtb_Compare_c2;
